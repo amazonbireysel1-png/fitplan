@@ -524,9 +524,6 @@
       <img id="modalExPhoto" alt="">
       <div class="no-photo-note" id="modalNoPhotoNote" style="display:none;"></div>
     </div>
-    <div class="figure-stage">
-      <div id="figureMuscleMini"></div>
-    </div>
     <div class="modal-title" id="modalExName"></div>
     <div class="modal-muscle" id="modalExMuscle"></div>
     <div class="modal-how-label" id="modalHowLabel">Nasıl Yapılır</div>
@@ -3123,7 +3120,6 @@ function openExerciseModal(id, key, dayList){
   currentModalExId = id; currentModalKey = key;
   const ex = EX[id];
   const active = activeVariant(id);
-  document.getElementById('figureMuscleMini').innerHTML = muscleMiniWidget(id);
   const photoWrap = document.getElementById('modalExPhotoWrap');
   const photoInfo = imageInfoForOptionVariant(id, exerciseSwaps[id] || 0);
   const noPhotoNote = document.getElementById('modalNoPhotoNote');
