@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title id="pageTitle">FitPlan — Kişisel Antrenman Programı</title>
+
+<!-- Telefona "uygulama gibi" eklenebilmesi için (Ana Ekrana Ekle / Yükle) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e0293d">
+<meta name="background-color" content="#08090A">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FitPlan">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #08090A;
+    --panel: #111214;
+    --card: #17181B;
+    --card2: #1D1F23;
+    --line: #26272B;
+    --ink: #F5F6F7;
+    --muted: #8B8F98;
+    --accent: #E0293D;
+    --accent-dark: #B81F30;
+    --accent-ink: #FFFFFF;
+    --danger: #FF6B4A;
+    --warn: #FFB020;
+    --rest: #4C6FFF;
+  }
+
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%; height: 100dvh;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    overscroll-behavior: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    touch-action: none;
+  }
+
+  .app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .app-header {
+    flex-shrink: 0;
+    padding: max(16px, env(safe-area-inset-top, 0px)) 18px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+  }
+
+  .brand { display: flex; align-items: center; gap: 8px; }
+  .brand .logo { font-size: 20px; }
+  .brand h1 { font-size: 18px; margin: 0; font-weight: 800; letter-spacing: -0.3px; }
+  .brand .logo-accent { color: var(--accent); }
+
+  #langSelect {
+    background: var(--card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    outline: none;
+  }
+
+  .tabs {
+    flex-shrink: 0;
+    display: flex;
+    gap: 6px;
+    padding: 8px 14px 10px;
+    background: var(--bg);
+  }
+  .tab-btn {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 10px 2px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  .content-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: 4px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ---- cards ---- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .card h3 { margin: 0 0 4px; font-size: 13px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .big-stat { font-size: 30px; font-weight: 800; color: var(--accent); }
+  .big-stat .unit { font-size: 14px; color: var(--muted); font-weight: 600; margin-left: 4px; }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .stat-box { background: var(--card2); border-radius: 12px; padding: 10px; text-align: center; }
+  .stat-box .val { font-size: 16px; font-weight: 800; }
+  .stat-box .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .day-label { font-size: 20px; font-weight: 800; margin-bottom: 2px; }
+  .day-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+
+  .progress-bar { height: 8px; border-radius: 6px; background: var(--card2); overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+
+  .ex-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .ex-row.done { border-color: var(--accent-dark); background: linear-gradient(90deg, rgba(200,255,61,0.08), transparent); }
+  .ex-thumb {
+    width: 52px; height: 52px; border-radius: 12px; background: var(--card2);
+    flex-shrink: 0; position: relative; overflow: hidden;
+  }
+  .ex-thumb svg.pose { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ex-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ex-info { flex: 1; min-width: 0; }
+  .ex-name { font-weight: 700; font-size: 14px; }
+  .ex-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .ex-check {
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: transparent;
+  }
+  .ex-row.done .ex-check { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .ex-alt-line { display: flex; align-items: center; gap: 6px; margin-top: 3px; cursor: pointer; padding: 2px 4px; border-radius: 6px; }
+  .ex-alt-line:active { background: var(--card2); }
+  .ex-alt { font-size: 12.5px; color: var(--ink); font-weight: 700; flex: 1; min-width: 0; }
+  .ex-swapped-badge { font-size: 10px; color: var(--accent); font-weight: 700; margin-top: 3px; }
+  .use-alt-btn {
+    flex-shrink: 0; border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    font-size: 9.5px; font-weight: 800; border-radius: 6px; padding: 2px 7px; cursor: pointer;
+  }
+  .use-alt-btn:active { background: var(--accent); color: var(--accent-ink); }
+  .modal-alt {
+    background: var(--card); border-left: 3px solid var(--accent); border-radius: 8px;
+    padding: 9px 12px; font-size: 12.5px; color: var(--ink); margin-bottom: 10px; line-height: 1.4;
+  }
+  .modal-alt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; padding: 4px 6px; border-radius: 8px; cursor: pointer; }
+  .modal-alt-row:first-child { margin-top: 0; }
+  .modal-alt-row.previewing { background: var(--card2); }
+  .modal-alt-row .alt-name-text { cursor: pointer; }
+  .modal-swapped-note { font-size: 11.5px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+  .modal-alt-row .alt-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .alt-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14.5px; font-weight: 700; }
+
+  .bodymap-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 8px 0; }
+  .bodymap-card {
+    width: 100%; max-width: 420px; box-sizing: border-box; padding: 16px 14px 14px;
+    border-radius: 20px; background: linear-gradient(180deg, rgba(224,41,61,0.08), rgba(224,41,61,0) 60%), var(--card);
+    box-shadow: 0 0 0 1px var(--line), 0 8px 24px rgba(0,0,0,0.25);
+  }
+  .bodymap-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .bodymap-title { font-size: 13px; font-weight: 800; color: var(--ink); }
+  .bodymap-count-pill {
+    font-size: 11px; font-weight: 800; color: var(--muted); background: var(--card2);
+    border: 1.5px solid var(--line); border-radius: 20px; padding: 4px 10px; transition: all .15s;
+  }
+  .bodymap-count-pill.active { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+  .bodymap-row { display: flex; gap: 14px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+  .bodymap-col { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1 1 160px; max-width: 190px; }
+  .bodymap-label { font-size: 10.5px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .bodymap-svg { width: 108px; height: 200px; }
+  .bz { fill: var(--card); stroke: var(--line); stroke-width: 1.5; cursor: pointer; transition: fill .15s, stroke .15s; }
+  .bz.sel { fill: var(--accent); stroke: var(--accent); }
+  .bz-static { fill: var(--line); }
+  .bodymap-photo {
+    position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden;
+    background: var(--card2); box-shadow: 0 0 0 1px var(--line), 0 2px 10px rgba(0,0,0,0.3);
+    transition: box-shadow .2s;
+  }
+  .bodymap-photo.has-sel { box-shadow: 0 0 0 1.5px var(--accent), 0 0 22px rgba(224,41,61,0.45); }
+  .bodymap-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-zone {
+    position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;
+    background: rgba(224,41,61,0); transition: background .18s;
+  }
+  .photo-zone.hint { background: rgba(224,41,61,0.28); }
+  .photo-zone.sel { background: radial-gradient(circle, rgba(255,90,105,0.75), rgba(224,41,61,0.55)); }
+  .photo-zone:active { background: rgba(224,41,61,0.35); }
+  .zone-chip-row { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .zone-chip {
+    display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--ink);
+    background: var(--card2); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 10px; cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s, transform .1s;
+  }
+  .zone-chip-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); flex: none; transition: background .15s, box-shadow .15s; }
+  .zone-chip:active { transform: scale(0.97); }
+  .zone-chip.hint { border-color: var(--accent); background: rgba(224,41,61,0.1); }
+  .zone-chip.sel { background: rgba(224,41,61,0.16); color: var(--ink); border-color: var(--accent); font-weight: 800; }
+  .zone-chip.sel .zone-chip-dot { background: var(--accent); box-shadow: 0 0 8px rgba(224,41,61,0.8); }
+  .zone-chip.sel::after { content: '✓'; margin-left: auto; color: var(--accent); font-weight: 900; }
+  .bz-outline { fill: none; stroke: var(--line); stroke-width: 1; opacity: 0.5; }
+  .bodymap-legend { font-size: 10.5px; color: var(--muted); text-align: center; max-width: 260px; }
+  .focus-day-badge {
+    display: inline-block; font-size: 10.5px; font-weight: 800; color: var(--accent);
+    background: rgba(224,41,61,0.12); border-radius: 8px; padding: 3px 9px; margin-bottom: 8px;
+  }
+
+  .macro-card { margin-bottom: 10px; }
+  .macro-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .macro-head .mtitle { font-size: 13px; font-weight: 800; }
+  .macro-head .mnums { font-size: 12px; color: var(--muted); }
+  .macro-head .mnums b { color: var(--ink); }
+  .macro-bar { height: 9px; border-radius: 6px; background: var(--card2); overflow: hidden; }
+  .macro-bar .fill { height: 100%; border-radius: 6px; transition: width 0.3s, background 0.3s; }
+  .macro-warn { font-size: 11.5px; margin-top: 5px; font-weight: 700; }
+  .macro-warn.over { color: var(--danger); }
+  .macro-warn.low { color: var(--warn); }
+
+  .food-search {
+    width: 100%; background: var(--card); border: 1.5px solid var(--line); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px; font-size: 14px; outline: none; margin-bottom: 12px;
+  }
+  .food-search:focus { border-color: var(--accent); }
+  .food-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 11px 14px; margin-bottom: 8px; cursor: pointer;
+  }
+  .food-row .fname { font-weight: 700; font-size: 13.5px; }
+  .food-row .fkcal { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .food-row .fadd { color: var(--accent); font-size: 20px; font-weight: 800; flex-shrink: 0; }
+  .meal-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--card2); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px;
+  }
+  .meal-row .mname { font-weight: 700; font-size: 13px; }
+  .meal-row .mmeta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .meal-row .mkcal { font-weight: 800; font-size: 14px; color: var(--accent); }
+  .meal-row .mrm { color: var(--danger); font-size: 16px; cursor: pointer; margin-left: 8px; background:none; border:none; }
+
+  .rest-card {
+    text-align: center;
+    padding: 30px 16px;
+    color: var(--muted);
+  }
+  .rest-card .emoji { font-size: 36px; margin-bottom: 8px; }
+
+  .complete-day-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 800;
+    font-size: 14px;
+    margin-top: 6px;
+    cursor: pointer;
+  }
+  .complete-day-btn:disabled { background: var(--card2); color: var(--muted); }
+
+  .week-strip { display: flex; gap: 6px; margin-bottom: 14px; }
+  .week-chip {
+    flex: 1; text-align: center; padding: 10px 2px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--line); cursor: pointer;
+  }
+  .week-chip .wd { font-size: 10px; color: var(--muted); font-weight: 700; }
+  .week-chip .wt { font-size: 11px; margin-top: 4px; color: var(--ink); font-weight: 700; }
+  .week-chip.rest .wt { color: var(--rest); }
+  .week-chip.done { background: rgba(200,255,61,0.12); border-color: var(--accent-dark); }
+  .week-chip.active { border-color: var(--accent); }
+
+  .profile-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .profile-row:last-child { border-bottom: none; }
+  .profile-row .k { color: var(--muted); }
+  .profile-row .v { font-weight: 700; }
+
+  .btn-secondary {
+    width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); font-weight: 700; font-size: 13px; margin-top: 10px; cursor: pointer;
+  }
+  .btn-danger { color: var(--danger); }
+
+  /* ---- Onboarding ---- */
+  .onboarding {
+    position: absolute; inset: 0; background: var(--bg); z-index: 40;
+    display: flex; flex-direction: column;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: max(24px, env(safe-area-inset-top,0px)) 22px calc(24px + env(safe-area-inset-bottom,0px));
+  }
+  .ob-progress { display: flex; gap: 5px; margin-bottom: 26px; }
+  .ob-progress span { flex: 1; height: 4px; border-radius: 3px; background: var(--card2); }
+  .ob-progress span.on { background: var(--accent); }
+  .ob-step { flex: 1; display: none; flex-direction: column; }
+  .ob-step.active { display: flex; }
+  .ob-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+  .ob-q { font-size: 24px; font-weight: 800; margin-bottom: 22px; line-height: 1.3; }
+  .ob-input {
+    width: 100%; background: var(--card); border: 1.5px solid var(--line); color: var(--ink);
+    border-radius: 14px; padding: 16px; font-size: 20px; font-weight: 700; outline: none; text-align: center;
+  }
+  .ob-input:focus { border-color: var(--accent); }
+  .ob-options { display: flex; flex-direction: column; gap: 10px; }
+  .ob-opt {
+    background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 16px;
+    cursor: pointer; display: flex; flex-direction: column; gap: 3px;
+  }
+  .ob-opt .t { font-weight: 800; font-size: 15px; }
+  .ob-opt .d { font-size: 12px; color: var(--muted); }
+  .ob-opt.selected { border-color: var(--accent); background: rgba(200,255,61,0.08); }
+  .ob-row2 { display: flex; gap: 10px; }
+  .ob-row2 .ob-opt { flex: 1; text-align: center; align-items: center; }
+  .ob-nav { display: flex; gap: 10px; margin-top: auto; padding-top: 20px; }
+  .ob-btn {
+    flex: 1; padding: 15px; border-radius: 14px; border: none; font-weight: 800; font-size: 15px; cursor: pointer;
+  }
+  .ob-btn.next { background: var(--accent); color: var(--accent-ink); }
+  .ob-btn.next:disabled { background: var(--card2); color: var(--muted); }
+  .ob-btn.back { background: var(--card); color: var(--ink); border: 1px solid var(--line); flex: 0 0 70px; }
+  .ob-result { text-align: center; }
+  .ob-result .emoji { font-size: 46px; margin-bottom: 10px; }
+
+  /* ---- Exercise modal ---- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    width: 100%; max-width: 480px; background: var(--panel); border-radius: 22px 22px 0 0;
+    padding: 18px 20px calc(20px + env(safe-area-inset-bottom,0px));
+    max-height: 86vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  .modal-close-row { display: flex; justify-content: flex-end; }
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--card2); border: none;
+    color: var(--ink); font-size: 16px; cursor: pointer;
+  }
+  .figure-stage {
+    width: 100%; background: var(--card); border-radius: 16px; position: relative;
+    margin-bottom: 14px; overflow: hidden; display: flex; align-items: center;
+    justify-content: center; padding: 18px 8px;
+  }
+  .modal-photo {
+    width: 100%; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden;
+    background: var(--card); margin-bottom: 10px; position: relative;
+  }
+  .modal-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .no-photo-note {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 10px;
+    background: rgba(0,0,0,0.65); color: #fff; font-size: 11px; font-weight: 700; text-align: center;
+  }
+  .mini-muscle-svg { width: 84px; }
+  .mz { fill: var(--card2); stroke: var(--line); stroke-width: 1.5; }
+  .mz.sel { fill: var(--accent); stroke: var(--accent); }
+  .mz-static { fill: var(--line); }
+  .mini-muscle-label { font-size: 13px; color: var(--ink); text-align: center; margin-top: 8px; font-weight: 800; line-height: 1.3; }
+  .pose-a { animation: poseFadeA 1.5s ease-in-out infinite alternate; }
+  .pose-b { animation: poseFadeB 1.5s ease-in-out infinite alternate; }
+  @keyframes poseFadeA { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes poseFadeB { from { opacity: 0; } to { opacity: 1; } }
+  .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 2px; }
+  .modal-muscle { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+  .modal-how-label {
+    font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .modal-how { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .modal-how li {
+    display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #D7D9DC;
+  }
+  .modal-how .step-num {
+    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--card2);
+    color: var(--accent); font-size: 11px; font-weight: 800; display: flex; align-items: center;
+    justify-content: center; margin-top: 1px;
+  }
+  .modal-sets { display: flex; gap: 10px; margin-bottom: 16px; }
+  .modal-sets .box { flex: 1; background: var(--card); border-radius: 12px; padding: 10px; text-align: center; }
+  .modal-sets .box .v { font-size: 17px; font-weight: 800; }
+  .modal-sets .box .l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .modal-done-btn {
+    width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 800; font-size: 15px;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  }
+  .modal-done-btn.done { background: var(--card2); color: var(--ink); }
+
+  /* ---- Weight check-in / measurements ---- */
+  .measure-toggle-btn {
+    width: 100%; cursor: pointer; text-align: left; margin-top: 10px;
+    display: flex; flex-direction: column; gap: 3px;
+    border: 1.5px solid var(--accent-dark); background: rgba(200,255,61,0.08);
+    border-radius: 12px; padding: 13px 14px;
+  }
+  .measure-toggle-btn .mt-main { font-size: 14px; font-weight: 800; color: var(--ink); }
+  .measure-toggle-btn .mt-sub { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .measure-note { font-size: 11.5px; color: var(--muted); margin: 8px 0 4px; }
+  .measure-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .measure-field label { font-size: 11px; color: var(--muted); font-weight: 700; }
+  .measure-field input {
+    width: 100%; margin-top: 4px; background: var(--card); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 10px; padding: 10px; font-size: 14px; outline: none; text-align: center;
+  }
+  .measure-field input:focus { border-color: var(--accent); }
+
+  .row-sub { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .checkin-due-btn { background: var(--warn) !important; color: #241900 !important; }
+  .weight-due-banner {
+    display: flex; align-items: center; gap: 8px; background: rgba(255,176,32,0.14);
+    border: 1px solid rgba(255,176,32,0.4); color: var(--warn); font-weight: 800; font-size: 12.5px;
+    border-radius: 12px; padding: 10px 12px; margin-top: 10px;
+  }
+
+  .toast {
+    position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom,0px));
+    background: var(--card2); border: 1px solid var(--line); color: var(--ink);
+    padding: 13px 16px; border-radius: 14px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45); opacity: 0; transform: translateY(16px);
+    pointer-events: none; transition: opacity .25s, transform .25s; z-index: 60; line-height: 1.4;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="app-header">
+    <div class="brand"><span class="logo">💪</span><h1 id="titleText">Fit<span class="logo-accent">Plan</span></h1></div>
+    <select id="langSelect" aria-label="Language"></select>
+  </div>
+
+  <div class="tabs" id="mainTabs" style="display:none;">
+    <button class="tab-btn active" data-tab="today" id="tabTodayLabel">Bugün</button>
+    <button class="tab-btn" data-tab="week" id="tabWeekLabel">Program</button>
+    <button class="tab-btn" data-tab="nutrition" id="tabNutritionLabel">Beslenme</button>
+    <button class="tab-btn" data-tab="profile" id="tabProfileLabel">Profil</button>
+  </div>
+
+  <div class="content-scroll" id="contentScroll" style="display:none;">
+    <div class="tab-panel active" id="panel-today"></div>
+    <div class="tab-panel" id="panel-week"></div>
+    <div class="tab-panel" id="panel-nutrition"></div>
+    <div class="tab-panel" id="panel-profile"></div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="onboarding" id="onboarding">
+    <div class="ob-progress" id="obProgress"></div>
+    <div id="obSteps"></div>
+  </div>
+</div>
+
+<!-- CUSTOM FOOD MODAL -->
+<div class="modal-overlay" id="customFoodModal">
+  <div class="modal-sheet">
+    <div class="modal-close-row"><button class="modal-close" id="customFoodCloseBtn">×</button></div>
+    <div class="modal-title" id="customFoodTitleText">Özel Gıda Ekle</div>
+    <div style="margin: 14px 0;">
+      <label style="font-size:12px;color:var(--muted);font-weight:700;" id="customFoodNameLabel">GIDA ADI</label>
+      <input class="ob-input" id="customFoodNameInput" type="text" style="margin-top:6px;text-align:left;font-size:16px;">
+    </div>
+    <div style="margin: 14px 0;">
+      <label style="font-size:12px;color:var(--muted);font-weight:700;" id="customFoodKcalLabel">100 GRAM BAŞINA KALORİ</label>
+      <input class="ob-input" id="customFoodKcalInput" type="number" inputmode="numeric" placeholder="kcal" style="margin-top:6px;">
+    </div>
+    <button class="modal-done-btn" id="customFoodSaveBtn">Kaydet ve Ekle</button>
+  </div>
+</div>
+
+<!-- FOOD MODAL -->
+<div class="modal-overlay" id="foodModal">
+  <div class="modal-sheet">
+    <div class="modal-close-row"><button class="modal-close" id="foodModalCloseBtn">×</button></div>
+    <div class="modal-title" id="foodModalName"></div>
+    <div class="modal-muscle" id="foodModalPer100"></div>
+    <div style="margin: 14px 0;">
+      <label style="font-size:12px;color:var(--muted);font-weight:700;">GRAM</label>
+      <input class="ob-input" id="foodGramsInput" type="number" inputmode="numeric" value="100" style="margin-top:6px;">
+    </div>
+    <div class="modal-sets" id="foodModalCalc"></div>
+    <button class="modal-done-btn" id="foodAddBtn">Öğüne Ekle</button>
+  </div>
+</div>
+
+<!-- EXERCISE MODAL -->
+<div class="modal-overlay" id="exerciseModal">
+  <div class="modal-sheet">
+    <div class="modal-close-row"><button class="modal-close" id="modalCloseBtn">×</button></div>
+    <div class="modal-photo" id="modalExPhotoWrap" style="display:none;">
+      <img id="modalExPhoto" alt="">
+      <div class="no-photo-note" id="modalNoPhotoNote" style="display:none;"></div>
+    </div>
+    <div class="figure-stage">
+      <div id="figureMuscleMini"></div>
+    </div>
+    <div class="modal-title" id="modalExName"></div>
+    <div class="modal-muscle" id="modalExMuscle"></div>
+    <div class="modal-how-label" id="modalHowLabel">Nasıl Yapılır</div>
+    <ul class="modal-how" id="modalExHow"></ul>
+    <div class="modal-alt" id="modalExAlt" style="display:none;"></div>
+    <div class="modal-sets" id="modalExSets"></div>
+    <button class="modal-done-btn" id="modalDoneBtn">Tamamladım</button>
+  </div>
+</div>
+
+<!-- WEEKLY CHECK-IN MODAL -->
+<div class="modal-overlay" id="checkinModal">
+  <div class="modal-sheet">
+    <div class="modal-close-row"><button class="modal-close" id="checkinCloseBtn">×</button></div>
+    <div class="modal-title" id="checkinTitleText">Haftalık Tartılma</div>
+    <div style="margin: 14px 0;">
+      <label style="font-size:12px;color:var(--muted);font-weight:700;" id="checkinWeightLabelText">GÜNCEL KİLON (KG)</label>
+      <input class="ob-input" id="checkinWeightInput" type="number" inputmode="decimal" style="margin-top:6px;">
+    </div>
+    <button class="measure-toggle-btn" id="measurementsToggleBtn">
+      <span class="mt-main" id="measurementsToggleMain">📏 Vücut Ölçülerini Ekle</span>
+      <span class="mt-sub" id="measurementsToggleSubText">opsiyonel, ama daha detaylı takip için önerilir</span>
+    </button>
+    <div id="measurementsSection" style="display:none;">
+      <div class="measure-note" id="measurementsNoteText">Mezuran yoksa boş bırakabilirsin, sadece kilo yeterli.</div>
+      <div class="measure-grid">
+        <div class="measure-field"><label id="waistLabelText">Bel (cm)</label><input type="number" inputmode="decimal" id="measure_waist"></div>
+        <div class="measure-field"><label id="hipLabelText">Kalça (cm)</label><input type="number" inputmode="decimal" id="measure_hip"></div>
+        <div class="measure-field"><label id="chestLabelText">Göğüs (cm)</label><input type="number" inputmode="decimal" id="measure_chest"></div>
+        <div class="measure-field"><label id="armLabelText">Kol (cm)</label><input type="number" inputmode="decimal" id="measure_arm"></div>
+        <div class="measure-field"><label id="thighLabelText">Bacak (cm)</label><input type="number" inputmode="decimal" id="measure_thigh"></div>
+      </div>
+    </div>
+    <button class="modal-done-btn" id="checkinSaveBtn" style="margin-top:16px;">Kaydet</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   TRANSLATIONS
+========================================================= */
+const T = {
+  tr: {
+    pageTitle: "FitPlan — Kişisel Antrenman Programı",
+    tabToday: "Bugün", tabWeek: "Program", tabNutrition: "Beslenme", tabProfile: "Profil",
+    nutritionTitle: "Kalori Hesaplama", searchFoodPlaceholder: "Yemek ara (ör. tavuk, pirinç)…",
+    todaysMeals: "Bugün Yediklerin", noMealsYet: "Henüz bir şey eklemedin.", consumed: "Alınan", remaining: "Kalan",
+    addToMeal: "Öğüne Ekle", gramsLabel: "GRAM", per100g: "100g başına", noFoodFound: "Sonuç bulunamadı.",
+    addCustomFood: "Listede yok, kendim ekleyeceğim", customFoodTitle: "Özel Gıda Ekle",
+    customFoodName: "GIDA ADI", customFoodKcal: "100 GRAM BAŞINA KALORİ", saveAndAdd: "Kaydet ve Ekle",
+    whatDidYouEat: "Ne Yedin? Ekle",
+    targetLabel: "Hedef", macroOverWarn: "Hedefini aştın", macroLowWarn: "Bugün için oldukça az aldın", calorieWord: "Kalori",
+    obEyebrow: "ADIM", obGenderQ: "Cinsiyetin nedir?", male: "Erkek", female: "Kadın",
+    obAgeQ: "Yaşın kaç?", obHeightQ: "Boyun kaç cm?", obWeightQ: "Kilon kaç kg?",
+    obActivityQ: "Günlük aktiflik seviyen?",
+    actLow: "Az hareketli", actLowD: "Masa başı iş, az egzersiz",
+    actMid: "Orta hareketli", actMidD: "Haftada birkaç kez hareket",
+    actHigh: "Çok hareketli", actHighD: "Fiziksel iş veya sık antrenman",
+    obGoalQ: "Hedefin nedir?",
+    goalLose: "Zayıflamak", goalLoseD: "Yağ kaybı, kalori açığı",
+    goalGain: "Kilo almak", goalGainD: "Yüksek kalori fazlası, zayıf biri için genel kilo artışı",
+    goalMuscle: "Kas yapmak", goalMuscleD: "Hafif kalori fazlası, hipertrofi odaklı antrenman",
+    goalLeanBulk: "Kilo alırken kas yapmak", goalLeanBulkD: "Orta kalori fazlası + güç/hipertrofi antrenmanı (lean bulk)",
+    goalRecomp: "Zayıflarken kas yapmak", goalRecompD: "Hafif açık + güç antrenmanı",
+    obRestDaysQ: "Haftada hangi günler antrenman yapacaksın?", selectedCount: "gün seçildi",
+    obFocusQ: "Özellikle hangi bölgeleri çalıştırmak istiyorsun?",
+    focusAreasNote: "İstersen boş bırakabilirsin, o zaman program dengeli kalır. Seçtiğin bölgeler haftanda daha sık yer alır.",
+    focusFatLossCaveat: "Not: Egzersizle sadece o bölgeden yağ eritemezsin — kilo verirken yağ tüm vücuttan orantılı olarak azalır. Buradaki seçim o bölgenin kasını daha çok çalıştırıp şekillendirmen içindir.",
+    focusDayBadge: "🎯 Odak Günü",
+    worksHereLabel: "Burası çalışıyor",
+    howToLabel: "Nasıl Yapılır",
+    obTargetWeightQ: "Hedef kilon kaç kg?",
+    targetWeightNote: "Bilmiyorsan veya emin değilsen boş bırakabilirsin, istersen profil kısmından sonra da girebilirsin.",
+    targetWeightPlaceholder: "opsiyonel",
+    next: "Devam", back: "Geri", finish: "Programımı Oluştur",
+    resultTitle: "Programın hazır!", resultSub: "Günlük kalori hedefin ve haftalık antrenman planın oluşturuldu.",
+    kcalTarget: "Günlük Kalori Hedefi", protein: "Protein", carb: "Karbonhidrat", fat: "Yağ",
+    todaysWorkout: "Bugünün Antrenmanı", restDay: "Dinlenme Günü", restDayMsg: "Bugün dinlenme günü — vücudun toparlanıyor. Yarın devam!",
+    completeDay: "Günü Tamamla", dayCompleted: "Gün Tamamlandı ✓",
+    set: "set", reps: "tekrar", sec: "sn", min: "dk",
+    weeklyProgram: "Haftalık Program", markDone: "Tamamladım", alreadyDone: "Tamamlandı ✓",
+    yourProfile: "Profilin", height: "Boy", weight: "Kilo", age: "Yaş", gender: "Cinsiyet",
+    activity: "Aktiflik", goal: "Hedef", bmi: "VKİ", streak: "Seri", days: "gün",
+    editProfile: "Bilgilerimi Güncelle", resetConfirm: "Profilini sıfırlamak istediğine emin misin?",
+    calorieNote: "Bu kalori hedefi genel bir tahmindir; ciddi sağlık durumların varsa bir uzmana danış.",
+    alternativeLabel: "Alternatif",
+    useThisLabel: "Kullan",
+    usingAltBadge: "Alternatif kullanılıyor",
+    backToMainLabel: "Ana harekete dön",
+    calorieDeficitNote: "📉 Her gün bu kadar ye. Bu miktar, kilo vermen için normalden biraz daha az.",
+    calorieSurplusNote: "📈 Her gün bu kadar ye. Bu miktar, kilo alman için normalden biraz daha fazla.",
+    calorieMaintainNote: "⚖️ Her gün bu kadar ye. Bu miktar, kilonu koruman için normal ihtiyacına yakın.",
+    weightTracking: "Kilo Takibi", targetWeightLabel: "Hedef Kilo", lastWeighIn: "Son Tartılma",
+    daysAgo: "gün önce", today2: "Bugün", checkinDueBadge: "Tartılma zamanı!", weighInBtn: "Tartıldım",
+    kgToGo: "kg kaldı", goalReachedShort: "Hedefe ulaşıldı 🎉",
+    startWeightLabel: "Başlangıç", remainingLabel: "Kalan", percentCompleteLabel: "Tamamlandı",
+    lostLabel: "Verdiğin", gainedLabel: "Aldığın",
+    weeklyRecommendedNote: "En sağlıklısı haftada bir kilo bilgini girmen.",
+    checkinTitle: "Haftalık Tartılma", checkinWeightLabel: "GÜNCEL KİLON (KG)",
+    measurementsToggle: "📏 Vücut Ölçülerini Ekle", measurementsToggleSub: "opsiyonel, ama daha detaylı takip için önerilir",
+    measurementsNote: "Mezuran yoksa boş bırakabilirsin, sadece kilo yeterli.",
+    waistLabel: "Bel (cm)", hipLabel: "Kalça (cm)", chestLabel: "Göğüs (cm)", armLabel: "Kol (cm)", thighLabel: "Bacak (cm)",
+    saveCheckin: "Kaydet",
+    measureReminderTitle: "Daha sağlıklı ve gerçekçi takip için ölçülerini de girmeni öneririz 📏",
+    measureReminderLater: "Daha Sonra", measureReminderNow: "Şimdi Gir",
+    adjustSlowMsg: "İlerlemen beklenenden yavaş — kalori hedefin {from} → {to} kcal olarak güncellendi.",
+    adjustFastMsg: "İlerlemen beklenenden hızlı — kalori hedefin {from} → {to} kcal olarak güncellendi.",
+    onTrackMsg: "Harika gidiyorsun, ilerlemen hedefine uygun. Kalori hedefin aynı kaldı.",
+    tooSoonMsg: "Kilon kaydedildi. Kalori hedefini otomatik güncellemek için en az 6 gün sonra tekrar tartıl.",
+    goalReachedMsg: "Tebrikler, hedef kilona ulaştın! 🎉 İstersen yeni bir hedefle devam edebilirsin.",
+    weightSaved: "Kilon kaydedildi."
+  },
+  en: {
+    pageTitle: "FitPlan — Personal Workout Program",
+    tabToday: "Today", tabWeek: "Program", tabNutrition: "Nutrition", tabProfile: "Profile",
+    nutritionTitle: "Calorie Calculator", searchFoodPlaceholder: "Search food (e.g. chicken, rice)…",
+    todaysMeals: "Today's Meals", noMealsYet: "Nothing added yet.", consumed: "Consumed", remaining: "Remaining",
+    addToMeal: "Add to Meal", gramsLabel: "GRAMS", per100g: "per 100g", noFoodFound: "No results found.",
+    addCustomFood: "Not in the list, I'll add it myself", customFoodTitle: "Add Custom Food",
+    customFoodName: "FOOD NAME", customFoodKcal: "CALORIES PER 100g", saveAndAdd: "Save & Add",
+    whatDidYouEat: "What Did You Eat? Add",
+    targetLabel: "Target", macroOverWarn: "You've exceeded your target", macroLowWarn: "Quite low for today so far", calorieWord: "Calories",
+    obEyebrow: "STEP", obGenderQ: "What's your gender?", male: "Male", female: "Female",
+    obAgeQ: "How old are you?", obHeightQ: "What's your height (cm)?", obWeightQ: "What's your weight (kg)?",
+    obActivityQ: "Your daily activity level?",
+    actLow: "Low activity", actLowD: "Desk job, little exercise",
+    actMid: "Moderate", actMidD: "Active a few times a week",
+    actHigh: "Very active", actHighD: "Physical job or frequent training",
+    obGoalQ: "What's your goal?",
+    goalLose: "Lose weight", goalLoseD: "Fat loss, calorie deficit",
+    goalGain: "Gain weight", goalGainD: "Larger surplus, general weight gain for underweight people",
+    goalMuscle: "Build muscle", goalMuscleD: "Small surplus, hypertrophy-focused training",
+    goalLeanBulk: "Lean bulk (gain weight + build muscle)", goalLeanBulkD: "Moderate surplus + strength/hypertrophy training",
+    goalRecomp: "Recomp (lose fat + build muscle)", goalRecompD: "Slight deficit + strength training",
+    obRestDaysQ: "Which days will you train each week?", selectedCount: "days selected",
+    obFocusQ: "Which areas do you especially want to work on?",
+    focusAreasNote: "You can leave this empty to keep a balanced program. Whatever you pick shows up more often in your week.",
+    focusFatLossCaveat: "Note: exercise can't burn fat from just one area — when you lose weight, fat comes off the whole body proportionally. This selection is for building and toning that area's muscle, not spot fat loss.",
+    focusDayBadge: "🎯 Focus Day",
+    worksHereLabel: "Works here",
+    howToLabel: "How To",
+    obTargetWeightQ: "What's your target weight (kg)?",
+    targetWeightNote: "If you're not sure, leave it blank — you can add it later from your profile.",
+    targetWeightPlaceholder: "optional",
+    next: "Continue", back: "Back", finish: "Build My Program",
+    resultTitle: "Your program is ready!", resultSub: "Your daily calorie target and weekly workout plan have been created.",
+    kcalTarget: "Daily Calorie Target", protein: "Protein", carb: "Carbs", fat: "Fat",
+    todaysWorkout: "Today's Workout", restDay: "Rest Day", restDayMsg: "Today is a rest day — your body is recovering. See you tomorrow!",
+    completeDay: "Complete Day", dayCompleted: "Day Completed ✓",
+    set: "sets", reps: "reps", sec: "sec", min: "min",
+    weeklyProgram: "Weekly Program", markDone: "Mark Done", alreadyDone: "Completed ✓",
+    yourProfile: "Your Profile", height: "Height", weight: "Weight", age: "Age", gender: "Gender",
+    activity: "Activity", goal: "Goal", bmi: "BMI", streak: "Streak", days: "days",
+    editProfile: "Update My Info", resetConfirm: "Are you sure you want to reset your profile?",
+    calorieNote: "This calorie target is a general estimate; consult a professional if you have health conditions.",
+    alternativeLabel: "Alternative",
+    useThisLabel: "Use this",
+    usingAltBadge: "Using alternative",
+    backToMainLabel: "Back to main exercise",
+    calorieDeficitNote: "📉 Eat about this much every day. It's a bit less than normal, to help you lose weight.",
+    calorieSurplusNote: "📈 Eat about this much every day. It's a bit more than normal, to help you gain weight.",
+    calorieMaintainNote: "⚖️ Eat about this much every day. It's close to your normal need, to help you maintain your weight.",
+    weightTracking: "Weight Tracking", targetWeightLabel: "Target Weight", lastWeighIn: "Last Weigh-in",
+    daysAgo: "days ago", today2: "Today", checkinDueBadge: "Time to weigh in!", weighInBtn: "Log Weight",
+    kgToGo: "kg to go", goalReachedShort: "Goal reached 🎉",
+    startWeightLabel: "Start", remainingLabel: "Remaining", percentCompleteLabel: "Complete",
+    lostLabel: "Lost", gainedLabel: "Gained",
+    weeklyRecommendedNote: "For the best results, log your weight once a week.",
+    checkinTitle: "Weekly Check-in", checkinWeightLabel: "CURRENT WEIGHT (KG)",
+    measurementsToggle: "📏 Add Body Measurements", measurementsToggleSub: "optional, but recommended for more detailed tracking",
+    measurementsNote: "No measuring tape? Skip it — weight alone is enough.",
+    waistLabel: "Waist (cm)", hipLabel: "Hips (cm)", chestLabel: "Chest (cm)", armLabel: "Arm (cm)", thighLabel: "Thigh (cm)",
+    saveCheckin: "Save",
+    measureReminderTitle: "For healthier, more accurate tracking, we recommend adding body measurements too 📏",
+    measureReminderLater: "Later", measureReminderNow: "Add Now",
+    adjustSlowMsg: "Your progress is slower than expected — your calorie target was updated from {from} to {to} kcal.",
+    adjustFastMsg: "Your progress is faster than expected — your calorie target was updated from {from} to {to} kcal.",
+    onTrackMsg: "You're right on track! Your calorie target stays the same.",
+    tooSoonMsg: "Weight saved. Weigh in again after at least 6 days to auto-update your calorie target.",
+    goalReachedMsg: "Congrats, you've reached your target weight! 🎉 You can set a new goal if you'd like.",
+    weightSaved: "Weight saved."
+  }
+};
+let lang = "tr";
+function t(key){ return T[lang][key]; }
+
+const GOAL_LABELS = {
+  lose: {tr:"Zayıflamak", en:"Lose weight"},
+  gain: {tr:"Kilo almak", en:"Gain weight"},
+  muscle: {tr:"Kas yapmak", en:"Build muscle"},
+  leanBulk: {tr:"Kilo alırken kas yapmak", en:"Lean bulk"},
+  recomp: {tr:"Zayıflarken kas yapmak", en:"Recomp"}
+};
+const ACTIVITY_LABELS = {
+  low: {tr:"Az hareketli", en:"Low activity"},
+  mid: {tr:"Orta hareketli", en:"Moderate"},
+  high: {tr:"Çok hareketli", en:"Very active"}
+};
+const ACTIVITY_MULT = { low: 1.25, mid: 1.5, high: 1.8 };
+// Daily calorie offset from TDEE used when the plan is first created, and the
+// baseline the weekly auto-adjustment compares actual progress against.
+const GOAL_OFFSET = { lose: -500, recomp: -200, muscle: 250, leanBulk: 350, gain: 500 };
+// ~7700 kcal ≈ 1kg of body fat — standard estimate used to translate a daily
+// calorie offset into an expected weekly rate of weight change.
+const KCAL_PER_KG = 7700;
+
+/* =========================================================
+   DAY LABELS
+========================================================= */
+const DAY_LABELS = {
+  tr: { full: ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"], short: ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"] },
+  en: { full: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], short: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] }
+};
+function todayIndex(){ return (new Date().getDay() + 6) % 7; } // 0=Mon..6=Sun
+function dateKey(offsetDays){
+  const d = new Date();
+  d.setDate(d.getDate() + (offsetDays||0));
+  return d.toISOString().slice(0,10);
+}
+function dateKeyForWeekdayThisWeek(idx){
+  const diff = idx - todayIndex();
+  return dateKey(diff);
+}
+
+/* =========================================================
+   EXERCISE LIBRARY (original stick-figure poses, no copyrighted media)
+========================================================= */
+const EX = {
+  squat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Squat',en:'Squat'},
+    how:{tr:'Ayaklarını omuz genişliğinde aç, sırtın düz kalsın, kalçanı geriye ve aşağı it, dizlerin ayak ucunu geçmesin, sonra kalk.',en:'Feet shoulder-width apart, keep your back straight, push your hips back and down, knees behind your toes, then stand back up.'},
+    type:'reps', sets:3, reps:15,
+    poseA:{head:[50,14],neck:[50,24],hip:[50,52],handL:[38,42],handR:[62,42],footL:[43,90],footR:[57,90]},
+    poseB:{head:[50,32],neck:[50,42],hip:[50,66],handL:[30,50],handR:[70,50],footL:[38,90],footR:[62,90]} },
+  lunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Lunge',en:'Lunge'},
+    how:{tr:'Bir adım öne çık, arka diz yere yaklaşsın, ön diz 90 derece bükülsün, sonra başlangıca dön. Bacakları değiştirerek tekrarla.',en:'Step forward, lower your back knee toward the floor, front knee bent at 90°, then return. Alternate legs.'},
+    type:'reps', sets:3, reps:12,
+    poseA:{head:[50,14],neck:[50,24],hip:[50,52],handL:[42,45],handR:[58,45],footL:[45,90],footR:[55,90]},
+    poseB:{head:[48,30],neck:[48,40],hip:[48,60],handL:[38,50],handR:[58,50],footL:[25,88],footR:[75,82]} },
+  pushup: { muscle:{tr:'Göğüs / Kol',en:'Chest / Arms'}, name:{tr:'Push-up',en:'Push-up'},
+    how:{tr:'Plank pozisyonunda ellerini omuz hizasına koy, dirseklerini bükerek göğsünü yere yaklaştır, sonra it kaldır.',en:'From a plank position, hands under shoulders, bend your elbows to lower your chest, then push back up.'},
+    type:'reps', sets:3, reps:12,
+    poseA:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[90,44],footR:[96,51]},
+    poseB:{head:[12,42],neck:[23,46],hip:[60,50],handL:[25,62],handR:[21,64],footL:[90,55],footR:[96,60]} },
+  plank: { muscle:{tr:'Karın / Core',en:'Core'}, name:{tr:'Plank',en:'Plank'},
+    how:{tr:'Ön kolların ve ayak uçların üzerinde, vücudun baştan ayağa düz bir çizgi oluştursun, karnını sık ve pozisyonu koru.',en:'Hold your body in a straight line on your forearms and toes, keep your core tight.'},
+    type:'duration', sets:3, duration:30,
+    poseA:{head:[12,40],neck:[23,44],hip:[60,47],handL:[25,64],handR:[21,66],footL:[90,52],footR:[96,57]},
+    poseB:{head:[12,41],neck:[23,45],hip:[60,48],handL:[25,64],handR:[21,66],footL:[90,53],footR:[96,58]} },
+  situp: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Sit-up',en:'Sit-up'},
+    how:{tr:'Sırt üstü yat, dizlerini bük, ellerini göğsünde çaprazla, üst gövdeni dizlerine doğru kaldır, sonra yavaşça in.',en:'Lie on your back, knees bent, curl your upper body toward your knees, then lower slowly.'},
+    type:'reps', sets:3, reps:15,
+    poseA:{head:[15,60],neck:[26,60],hip:[65,60],handL:[30,48],handR:[30,72],footL:[92,52],footR:[92,68]},
+    poseB:{head:[45,35],neck:[52,40],hip:[65,60],handL:[48,32],handR:[48,44],footL:[92,52],footR:[92,68]} },
+  gluteBridge: { muscle:{tr:'Kalça',en:'Glutes'}, name:{tr:'Glute Bridge',en:'Glute Bridge'},
+    how:{tr:'Sırt üstü yat, dizlerini bük, ayak tabanların yerde, kalçanı yukarı it, tepede sık, sonra yavaşça in.',en:'Lie on your back, knees bent, feet flat, lift your hips up, squeeze at the top, then lower slowly.'},
+    type:'reps', sets:3, reps:15,
+    poseA:{head:[12,62],neck:[24,61],hip:[58,61],handL:[12,52],handR:[16,68],footL:[78,61],footR:[83,63]},
+    poseB:{head:[12,62],neck:[24,59],hip:[58,46],handL:[12,52],handR:[16,68],footL:[78,61],footR:[83,63]} },
+  superman: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Superman',en:'Superman'},
+    how:{tr:'Yüzükoyun yat, kollarını öne uzat, kollarını, göğsünü ve bacaklarını aynı anda yerden kaldır, 2 saniye tut, sonra in.',en:'Lie face down, arms extended, lift your arms, chest and legs off the floor together, hold, then lower.'},
+    type:'reps', sets:3, reps:15,
+    poseA:{head:[12,55],neck:[24,55],hip:[62,55],handL:[6,52],handR:[10,58],footL:[92,53],footR:[92,58]},
+    poseB:{head:[12,40],neck:[24,44],hip:[62,55],handL:[2,28],handR:[6,34],footL:[92,38],footR:[92,43]} },
+  wallSit: { muscle:{tr:'Bacak',en:'Legs'}, name:{tr:'Wall Sit',en:'Wall Sit'},
+    how:{tr:'Sırtını duvara yasla, dizlerin 90 derece olacak şekilde çömel ve süre boyunca pozisyonu koru.',en:'Lean your back against a wall, slide down until your knees are at 90°, and hold the position.'},
+    type:'duration', sets:3, duration:40,
+    poseA:{head:[50,34],neck:[50,44],hip:[50,66],handL:[38,55],handR:[62,55],footL:[40,90],footR:[60,90]},
+    poseB:{head:[50,35],neck:[50,45],hip:[50,67],handL:[38,56],handR:[62,56],footL:[40,90],footR:[60,90]} },
+  highKnees: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'High Knees',en:'High Knees'},
+    how:{tr:'Yerinde koşar gibi dizlerini olabildiğince yukarı kaldırarak hızlı adımlarla koş.',en:'Run in place, driving your knees up as high as you can, at a fast pace.'},
+    type:'duration', sets:3, duration:30,
+    poseA:{head:[50,14],neck:[50,24],hip:[50,54],handL:[36,45],handR:[64,35],footL:[46,90],footR:[54,60]},
+    poseB:{head:[50,14],neck:[50,24],hip:[50,54],handL:[64,45],handR:[36,35],footL:[46,60],footR:[54,90]} },
+  mountainClimber: { muscle:{tr:'Kardiyo / Core',en:'Cardio / Core'}, name:{tr:'Mountain Climber',en:'Mountain Climber'},
+    how:{tr:'Plank pozisyonunda dizlerini sırayla göğsüne doğru hızlıca çek.',en:'From a plank position, quickly alternate driving your knees toward your chest.'},
+    type:'duration', sets:3, duration:30,
+    poseA:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[90,44],footR:[96,51]},
+    poseB:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[45,42],footR:[96,51]} },
+  bicycleCrunch: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Bicycle Crunch',en:'Bicycle Crunch'},
+    how:{tr:'Sırt üstü yat, bir dirseğini karşı dizine değdirirken diğer bacağını uzat, bisiklet çevirir gibi değiştir.',en:'Lying on your back, touch elbow to opposite knee while extending the other leg, alternate like pedaling.'},
+    type:'reps', sets:3, reps:20,
+    poseA:{head:[24,42],neck:[34,45],hip:[65,58],handL:[45,40],handR:[18,50],footL:[42,45],footR:[92,60]},
+    poseB:{head:[24,42],neck:[34,45],hip:[65,58],handL:[18,50],handR:[45,40],footL:[92,60],footR:[42,45]} },
+  tricepDips: { muscle:{tr:'Kol (Triceps)',en:'Arms (Triceps)'}, name:{tr:'Tricep Dips',en:'Tricep Dips'},
+    how:{tr:'Sandalye kenarına otur, ellerini yanlara koy, kalçanı öne kaydır, dirseklerini bükerek in, sonra it kaldır.',en:'Sit on a chair edge, hands beside you, slide your hips forward, bend elbows to lower, then push back up.'},
+    type:'reps', sets:3, reps:12,
+    poseA:{head:[60,28],neck:[58,34],hip:[52,54],handL:[74,50],handR:[78,54],footL:[28,78],footR:[34,84]},
+    poseB:{head:[60,38],neck:[58,44],hip:[52,66],handL:[74,52],handR:[78,56],footL:[28,78],footR:[34,84]} },
+  calfRaise: { muscle:{tr:'Baldır',en:'Calves'}, name:{tr:'Calf Raise',en:'Calf Raise'},
+    how:{tr:'Ayakta dur, topuklarını yerden kaldırarak parmak uçlarında yüksel, sonra yavaşça in.',en:'Stand up, rise onto your toes lifting your heels, then lower slowly.'},
+    type:'reps', sets:3, reps:20,
+    poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[42,45],handR:[58,45],footL:[45,90],footR:[55,90]},
+    poseB:{head:[50,12],neck:[50,22],hip:[50,50],handL:[42,42],handR:[58,42],footL:[46,88],footR:[54,88]} },
+  armCircles: { muscle:{tr:'Isınma',en:'Warm-up'}, name:{tr:'Arm Circles',en:'Arm Circles'},
+    how:{tr:'Kollarını yanlara aç ve küçük daireler çizerek ısınma hareketi yap.',en:'Extend your arms to the sides and make small circles as a warm-up.'},
+    type:'duration', sets:2, duration:30,
+    poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[25,18],handR:[75,18],footL:[45,90],footR:[55,90]},
+    poseB:{head:[50,16],neck:[50,26],hip:[50,54],handL:[22,45],handR:[78,45],footL:[45,90],footR:[55,90]} },
+  sidePlank: { muscle:{tr:'Karın / Core',en:'Core'}, name:{tr:'Side Plank',en:'Side Plank'},
+    how:{tr:'Yan yat, tek kolunun üzerine dayan, vücudunu düz bir çizgi haline getir ve pozisyonu koru.',en:'Lie on your side, prop up on one forearm, keep your body in a straight line and hold.'},
+    type:'duration', sets:2, duration:30,
+    poseA:{head:[14,32],neck:[25,37],hip:[62,40],handL:[27,58],handR:[27,14],footL:[90,46],footR:[95,50]},
+    poseB:{head:[14,33],neck:[25,38],hip:[62,41],handL:[27,58],handR:[27,16],footL:[90,46],footR:[95,50]} },
+  russianTwist: { muscle:{tr:'Karın (Oblik)',en:'Abs (Obliques)'}, name:{tr:'Russian Twist',en:'Russian Twist'},
+    how:{tr:'Yerde otur, dizlerini bük, gövdeni hafif geriye yasla, ellerini birleştirip gövdeni sağa sola çevir.',en:'Sit on the floor, knees bent, lean back slightly, clasp your hands and twist your torso side to side.'},
+    type:'reps', sets:3, reps:20,
+    poseA:{head:[45,35],neck:[50,42],hip:[58,58],handL:[28,48],handR:[34,48],footL:[75,68],footR:[80,66]},
+    poseB:{head:[55,35],neck:[52,42],hip:[58,58],handL:[70,48],handR:[76,48],footL:[75,68],footR:[80,66]} },
+  jumpingJack: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Jumping Jack',en:'Jumping Jack'},
+    how:{tr:'Ayakta başla, zıplayarak kollarını başının üzerinde birleştir ve bacaklarını aç, sonra başlangıca dön.',en:'Start standing, jump while raising your arms overhead and spreading your legs, then return.'},
+    type:'duration', sets:3, duration:30,
+    poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[44,42],handR:[56,42],footL:[47,90],footR:[53,90]},
+    poseB:{head:[50,10],neck:[50,20],hip:[50,50],handL:[18,10],handR:[82,10],footL:[24,90],footR:[76,90]} },
+  starJump: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Star Jump',en:'Star Jump'},
+    how:{tr:'Çömel, sonra patlayıcı bir şekilde zıplayarak kollarını ve bacaklarını yıldız şeklinde aç.',en:'Crouch down, then explosively jump up spreading your arms and legs into a star shape.'},
+    type:'reps', sets:3, reps:12,
+    poseA:{head:[50,34],neck:[50,44],hip:[50,64],handL:[38,54],handR:[62,54],footL:[40,90],footR:[60,90]},
+    poseB:{head:[50,8],neck:[50,18],hip:[50,46],handL:[15,6],handR:[85,6],footL:[20,88],footR:[80,88]} },
+  jumpSquat: { muscle:{tr:'Bacak / Kardiyo',en:'Legs / Cardio'}, name:{tr:'Jump Squat',en:'Jump Squat'},
+    how:{tr:'Squat pozisyonuna in, sonra patlayıcı bir şekilde yukarı zıpla, yumuşak bir inişle tekrar çömel.',en:'Lower into a squat, then explosively jump up, landing softly back into the squat.'},
+    type:'reps', sets:3, reps:12,
+    poseA:{head:[50,32],neck:[50,42],hip:[50,66],handL:[32,52],handR:[68,52],footL:[38,90],footR:[62,90]},
+    poseB:{head:[50,6],neck:[50,16],hip:[50,40],handL:[30,6],handR:[70,6],footL:[42,62],footR:[58,62]} },
+  burpee: { muscle:{tr:'Tüm Vücut',en:'Full Body'}, name:{tr:'Burpee',en:'Burpee'},
+    how:{tr:'Ayaktan çömel, ellerini yere koy, bacaklarını geriye at ve plank yap, geri çek ve yukarı zıpla.',en:'From standing, squat down, place hands on the floor, kick legs back into a plank, return, and jump up.'},
+    type:'reps', sets:3, reps:10,
+    poseA:{head:[50,8],neck:[50,18],hip:[50,42],handL:[35,4],handR:[65,4],footL:[45,88],footR:[55,88]},
+    poseB:{head:[12,42],neck:[23,46],hip:[60,50],handL:[25,62],handR:[21,64],footL:[90,55],footR:[96,60]} },
+
+  /* ---- Gym equipment exercises (weights / machines) ----
+     No custom pose art yet (equipment:true renders a generic barbell icon
+     until real photos/AI images replace it). `alt` is a plain-text bodyweight
+     substitute shown inline for whenever that machine isn't available. */
+  benchPress: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Bench Press',en:'Bench Press'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, barı göğüs hizasında tut, kontrollü indir ve yukarı it.',en:'Lie on a bench, hold the bar at chest level, lower it under control, then press up.'},
+    alt:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Incline Bench Press',en:'Incline Bench Press'}, type:'reps', sets:4, reps:10 },
+  inclineBenchPress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest'}, name:{tr:'Incline Bench Press',en:'Incline Bench Press'}, equipment:true,
+    how:{tr:'Eğimli bench üzerinde barı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press the bar from your upper chest, then lower under control.'},
+    alt:{tr:'Dumbbell Eğimli Press',en:'Dumbbell Incline Press'}, alt2:{tr:'Yükseğe Şınav',en:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:10 },
+  chestFly: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Chest Fly',en:'Chest Fly'}, equipment:true,
+    how:{tr:'Kollarını hafif bükerek yanlara aç, göğsünde birleştirir gibi kapat.',en:'With a slight elbow bend, open your arms wide then bring them together in front of your chest.'},
+    alt:{tr:'Cable Crossover',en:'Cable Crossover'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, type:'reps', sets:3, reps:12 },
+  latPulldown: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Lat Pulldown',en:'Lat Pulldown'}, equipment:true,
+    how:{tr:'Barı omuz genişliğinde tut, göğsüne doğru çek, yavaşça geri bırak.',en:'Grip the bar shoulder-width, pull it down to your chest, then release slowly.'},
+    alt:{tr:'Seated Cable Row',en:'Seated Cable Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row'}, alt3:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover'}, type:'reps', sets:4, reps:12 },
+  seatedCableRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Seated Cable Row',en:'Seated Cable Row'}, equipment:true,
+    how:{tr:'Kabloyu tut, dirseklerini geri çekerek gövdene doğru çek, kürek kemiklerini sıkıştır.',en:'Grip the cable, pull it toward your torso by driving your elbows back, squeeze your shoulder blades.'},
+    alt:{tr:'Barbell Row',en:'Barbell Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row'}, alt3:{tr:'Lat Pulldown',en:'Lat Pulldown'}, type:'reps', sets:4, reps:12 },
+  barbellRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Barbell Row',en:'Barbell Row'}, equipment:true,
+    how:{tr:'Öne eğil, sırtın düz kalsın, barı karnına doğru çek, kontrollü indir.',en:'Hinge forward with a flat back, pull the bar toward your stomach, then lower under control.'},
+    alt:{tr:'Dumbbell Row',en:'Dumbbell Row'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Seated Cable Row',en:'Seated Cable Row'}, type:'reps', sets:4, reps:10 },
+  deadlift: { muscle:{tr:'Sırt / Bacak',en:'Back / Legs'}, name:{tr:'Deadlift',en:'Deadlift'}, equipment:true,
+    how:{tr:'Barı yerden sırtın düz kalacak şekilde kaldır, kalçanı ileri iterek dik pozisyona gel.',en:'Lift the bar from the floor keeping your back flat, drive your hips forward to stand tall.'},
+    alt:{tr:'Hip Thrust (Makine)',en:'Hip Thrust Machine'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:8 },
+  legPress: { muscle:{tr:'Bacak',en:'Legs'}, name:{tr:'Leg Press',en:'Leg Press'}, equipment:true,
+    how:{tr:'Ayaklarını platforma omuz genişliğinde yerleştir, dizlerini bükerek platformu it.',en:'Place your feet shoulder-width on the platform, bend your knees, then press it away.'},
+    alt:{tr:'Smith Machine Squat',en:'Smith Machine Squat'}, alt2:{tr:'Squat (Vücut Ağırlığı)',en:'Bodyweight Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:4, reps:12 },
+  legExtension: { muscle:{tr:'Quadriceps',en:'Quadriceps'}, name:{tr:'Leg Extension',en:'Leg Extension'}, equipment:true,
+    how:{tr:'Makinede otur, dizlerin düz olana kadar bacaklarını kaldır, kontrollü indir.',en:'Sit in the machine, extend your legs until straight, then lower under control.'},
+    alt:{tr:'Leg Press',en:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:3, reps:15 },
+  legCurl: { muscle:{tr:'Hamstring',en:'Hamstrings'}, name:{tr:'Leg Curl',en:'Leg Curl'}, equipment:true,
+    how:{tr:'Makinede yüzükoyun uzan, topuklarını kalçana doğru çek, yavaşça indir.',en:'Lie face down in the machine, curl your heels toward your hips, then lower slowly.'},
+    alt:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Deadlift',en:'Deadlift'}, type:'reps', sets:3, reps:15 },
+  hipThrust: { muscle:{tr:'Kalça',en:'Glutes'}, name:{tr:'Hip Thrust',en:'Hip Thrust'}, equipment:true,
+    how:{tr:'Sırtını bench\'e yasla, barı kalçana yerleştir, kalçanı yukarı it, tepede sık.',en:'Rest your back on a bench, place the bar on your hips, drive your hips up, squeeze at the top.'},
+    alt:{tr:'Deadlift',en:'Deadlift'}, alt2:{tr:'Bodyweight Glute Bridge',en:'Bodyweight Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:12 },
+  shoulderPress: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Shoulder Press',en:'Shoulder Press'}, equipment:true,
+    how:{tr:'Dumbell veya makineyle omuz hizasından yukarı doğru it, kontrollü indir.',en:'Press dumbbells or the machine handles up from shoulder height, then lower under control.'},
+    alt:{tr:'Arnold Press',en:'Arnold Press'}, alt2:{tr:'Pike Şınav',en:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:12 },
+  lateralRaise: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Lateral Raise',en:'Lateral Raise'}, equipment:true,
+    how:{tr:'Dumbellleri yanlara doğru omuz hizasına kadar kaldır, yavaşça indir.',en:'Raise dumbbells out to the sides up to shoulder height, then lower slowly.'},
+    alt:{tr:'Cable Lateral Raise',en:'Cable Lateral Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Rear Delt Fly',en:'Rear Delt Fly'}, type:'reps', sets:3, reps:15 },
+  frontRaise: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Front Raise',en:'Front Raise'}, equipment:true,
+    how:{tr:'Dumbellleri öne doğru omuz hizasına kadar kaldır, kontrollü indir.',en:'Raise dumbbells forward up to shoulder height, then lower under control.'},
+    alt:{tr:'Cable Front Raise',en:'Cable Front Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Shoulder Press',en:'Shoulder Press'}, type:'reps', sets:3, reps:12 },
+  bicepCurl: { muscle:{tr:'Biceps',en:'Biceps'}, name:{tr:'Bicep Curl',en:'Bicep Curl'}, equipment:true,
+    how:{tr:'Dumbellleri dirseklerini sabit tutarak yukarı kıvır, kontrollü indir.',en:'Curl the dumbbells up keeping your elbows fixed, then lower under control.'},
+    alt:{tr:'EZ Bar Curl',en:'EZ Bar Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
+  hammerCurl: { muscle:{tr:'Biceps / Önkol',en:'Biceps / Forearms'}, name:{tr:'Hammer Curl',en:'Hammer Curl'}, equipment:true,
+    how:{tr:'Dumbellleri çekiç tutuşuyla (avuç içi içe bakacak) yukarı kıvır.',en:'Curl the dumbbells up with a hammer grip (palms facing each other).'},
+    alt:{tr:'Cable Rope Curl',en:'Cable Rope Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
+  tricepPushdown: { muscle:{tr:'Triceps',en:'Triceps'}, name:{tr:'Tricep Pushdown',en:'Tricep Pushdown'}, equipment:true,
+    how:{tr:'Kabloyu tut, dirseklerini sabit tutarak aşağı it, kontrollü geri bırak.',en:'Grip the cable, push it down keeping your elbows fixed, then release under control.'},
+    alt:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)'}, alt2:{tr:'Tricep Dips',en:'Chair Dips'}, alt3:{tr:'Tricep Kickback',en:'Tricep Kickback'}, type:'reps', sets:3, reps:15 },
+  cableCrunch: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Cable Crunch',en:'Cable Crunch'}, equipment:true,
+    how:{tr:'Kabloya diz çök, karnını sıkarak gövdeni aşağı kıvır, yavaşça geri dön.',en:'Kneel at the cable, crunch your torso down by squeezing your abs, then return slowly.'},
+    alt:{tr:'Weighted Sit-up',en:'Weighted Sit-up'}, alt2:{tr:'Sit-up',en:'Sit-up'}, alt3:{tr:'Leg Raise',en:'Leg Raise'}, type:'reps', sets:3, reps:15 },
+  legRaise: { muscle:{tr:'Alt Karın',en:'Lower Abs'}, name:{tr:'Leg Raise',en:'Leg Raise'}, equipment:true,
+    how:{tr:'Askıda veya sırt üstü, bacaklarını düz tutarak yukarı kaldır, kontrollü indir.',en:'Hanging or lying down, raise your straight legs up, then lower under control.'},
+    alt:{tr:'Ab Machine Crunch',en:'Ab Machine Crunch'}, alt2:{tr:'Bicycle Crunch',en:'Bicycle Crunch'}, alt3:{tr:'Cable Crunch',en:'Cable Crunch'}, type:'reps', sets:3, reps:15 },
+  treadmill: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Koşu Bandı (Sprint)',en:'Treadmill (Sprint Intervals)'}, equipment:true,
+    how:{tr:'Koşu bandında hızını artır, verilen süre boyunca tempolu koş, sonra yavaşlayarak dinlen.',en:'Increase the treadmill speed, run at pace for the given time, then slow down to recover.'},
+    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, alt2:{tr:'Yerinde Koşu',en:'Running in Place'}, alt3:{tr:'Elliptical',en:'Elliptical'}, type:'duration', sets:5, duration:40 },
+  bike: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, equipment:true,
+    how:{tr:'Bisiklette direnci artır, verilen süre boyunca yüksek tempoda çevir, sonra yavaşla.',en:'Increase the bike resistance, pedal at high intensity for the given time, then slow down.'},
+    alt:{tr:'Eliptik Bisiklet',en:'Elliptical'}, alt2:{tr:'High Knees',en:'High Knees'}, alt3:{tr:'Treadmill',en:'Treadmill'}, type:'duration', sets:5, duration:45 },
+  eliptik: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Eliptik Bisiklet',en:'Elliptical'}, equipment:true,
+    how:{tr:'Eliptikte kollarını da kullanarak tempolu bir şekilde ilerle, verilen süre boyunca hızını koru.',en:'Move at pace on the elliptical using your arms too, keeping your speed for the given time.'},
+    alt:{tr:'Koşu Bandı',en:'Treadmill'}, alt2:{tr:'Jumping Jack',en:'Jumping Jack'}, alt3:{tr:'Stationary Bike',en:'Stationary Bike'}, type:'duration', sets:5, duration:45 },
+
+  /* ---- Dumbbell exercises (added to widen equipment variety beyond
+     barbell/machine moves) -- same equipment:true rendering, each also
+     given a 3rd alternative (alt3) alongside alt/alt2. */
+  dumbbellBenchPress: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, iki dambılı göğüs hizasında tut, yukarı it, kontrollü indir.',en:'Lie on a bench, hold two dumbbells at chest level, press up, then lower under control.'},
+    alt:{tr:'Bench Press',en:'Bench Press'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:4, reps:10 },
+  dumbbellInclinePress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest'}, name:{tr:'Dumbbell Incline Press',en:'Dumbbell Incline Press'}, equipment:true,
+    how:{tr:'Eğimli bench üzerinde iki dambılı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press two dumbbells from your upper chest, then lower under control.'},
+    alt:{tr:'Incline Bench Press',en:'Incline Bench Press'}, alt2:{tr:'Incline Push-up',en:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:10 },
+  dumbbellPullover: { muscle:{tr:'Göğüs / Sırt',en:'Chest / Back'}, name:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, tek dambılı iki elinle başının üzerinden göğsüne doğru getir.',en:'Lying on a bench, lower a single dumbbell from overhead back down to your chest with both hands.'},
+    alt:{tr:'Lat Pulldown',en:'Lat Pulldown'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:12 },
+  dumbbellRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Dumbbell Row',en:'Dumbbell Row'}, equipment:true,
+    how:{tr:'Bir dizini ve elini bench\'e daya, diğer elinle dambılı kalçana doğru çek.',en:'Kneel one hand and knee on a bench, row the dumbbell up toward your hip with the other arm.'},
+    alt:{tr:'Barbell Row',en:'Barbell Row'}, alt2:{tr:'Seated Cable Row',en:'Seated Cable Row'}, alt3:{tr:'Renegade Row',en:'Renegade Row'}, type:'reps', sets:4, reps:12 },
+  renegadeRow: { muscle:{tr:'Sırt / Core',en:'Back / Core'}, name:{tr:'Renegade Row',en:'Renegade Row'}, equipment:true,
+    how:{tr:'Plank pozisyonunda iki elinle dambıl tut, sırayla bir dambılı kalçana doğru çek.',en:'In a plank position holding dumbbells, alternate rowing one dumbbell up toward your hip.'},
+    alt:{tr:'Dumbbell Row',en:'Dumbbell Row'}, alt2:{tr:'Plank',en:'Plank'}, alt3:{tr:'Barbell Row',en:'Barbell Row'}, type:'reps', sets:3, reps:10 },
+  arnoldPress: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Arnold Press',en:'Arnold Press'}, equipment:true,
+    how:{tr:'Dambılleri avuç içi sana bakacak şekilde omuz hizasında tut, yukarı iterken bileklerini dışa çevir.',en:'Hold dumbbells at shoulder height palms facing you, press up while rotating your wrists outward.'},
+    alt:{tr:'Shoulder Press',en:'Shoulder Press'}, alt2:{tr:'Pike Push-up',en:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:10 },
+  dumbbellShrug: { muscle:{tr:'Trapez',en:'Traps'}, name:{tr:'Dumbbell Shrug',en:'Dumbbell Shrug'}, equipment:true,
+    how:{tr:'Dambılleri yanlarda tut, omuzlarını kulaklarına doğru kaldır, tepede sık, indir.',en:'Hold dumbbells at your sides, shrug your shoulders up toward your ears, squeeze, then lower.'},
+    alt:{tr:'Barbell Shrug',en:'Barbell Shrug'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Deadlift',en:'Deadlift'}, type:'reps', sets:3, reps:15 },
+  rearDeltFly: { muscle:{tr:'Omuz (Arka)',en:'Rear Shoulders'}, name:{tr:'Rear Delt Fly',en:'Rear Delt Fly'}, equipment:true,
+    how:{tr:'Öne eğil, dambılleri yanlara doğru kaldır, kürek kemiklerini sıkıştır, kontrollü indir.',en:'Hinge forward, raise dumbbells out to the sides, squeeze your shoulder blades, then lower under control.'},
+    alt:{tr:'Cable Rear Delt Fly',en:'Cable Rear Delt Fly'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:15 },
+  concentrationCurl: { muscle:{tr:'Biceps',en:'Biceps'}, name:{tr:'Concentration Curl',en:'Concentration Curl'}, equipment:true,
+    how:{tr:'Otur, dirseğini iç uyluğuna daya, dambılı tek kolla yukarı kıvır.',en:'Sit down, brace your elbow against your inner thigh, curl the dumbbell up with one arm.'},
+    alt:{tr:'Bicep Curl',en:'Bicep Curl'}, alt2:{tr:'Hammer Curl',en:'Hammer Curl'}, alt3:{tr:'EZ Bar Curl',en:'EZ Bar Curl'}, type:'reps', sets:3, reps:12 },
+  tricepKickback: { muscle:{tr:'Triceps',en:'Triceps'}, name:{tr:'Tricep Kickback',en:'Tricep Kickback'}, equipment:true,
+    how:{tr:'Öne eğil, üst kolunu sabit tut, dirseğini geriye doğru düz uzat.',en:'Hinge forward, keep your upper arm still, extend your elbow straight back.'},
+    alt:{tr:'Tricep Pushdown',en:'Tricep Pushdown'}, alt2:{tr:'Tricep Dips',en:'Tricep Dips'}, alt3:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)'}, type:'reps', sets:3, reps:15 },
+  gobletSquat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Goblet Squat',en:'Goblet Squat'}, equipment:true,
+    how:{tr:'Dambılı göğsünün önünde iki elinle tut, squat pozisyonuna in, kalk.',en:'Hold a dumbbell at chest height with both hands, squat down, then stand back up.'},
+    alt:{tr:'Squat',en:'Squat'}, alt2:{tr:'Leg Press',en:'Leg Press'}, alt3:{tr:'Jump Squat',en:'Jump Squat'}, type:'reps', sets:4, reps:12 },
+  dumbbellRDL: { muscle:{tr:'Hamstring / Kalça',en:'Hamstrings / Glutes'}, name:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, equipment:true,
+    how:{tr:'Dambılleri tut, kalçandan öne eğil, bacaklar hafif bükülü, sırt düz kalsın, sonra dik ol.',en:'Hold dumbbells, hinge forward from your hips with a slight knee bend, keep your back flat, then stand back up.'},
+    alt:{tr:'Deadlift',en:'Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Leg Curl',en:'Leg Curl'}, type:'reps', sets:3, reps:12 },
+  dumbbellLunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge'}, equipment:true,
+    how:{tr:'İki elinde dambılla öne adım at, arka diz yere yaklaşsın, geri dön.',en:'Holding dumbbells, step forward into a lunge, lower your back knee toward the floor, then return.'},
+    alt:{tr:'Lunge',en:'Lunge'}, alt2:{tr:'Jump Squat',en:'Jump Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:3, reps:12 },
+  dumbbellStepUp: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Dumbbell Step-up',en:'Dumbbell Step-up'}, equipment:true,
+    how:{tr:'Dambılleri tut, bir ayağınla bench/platforma çık, diğerini yukarı getir, kontrollü in.',en:'Holding dumbbells, step up onto a bench or platform with one leg, bring the other up, then step down under control.'},
+    alt:{tr:'Leg Press',en:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge'}, alt3:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge'}, type:'reps', sets:3, reps:12 },
+  // Warm-up cardio, automatically added to the START of every workout day
+  // (see exercisesForDay) so each session opens with a few minutes of raised
+  // heart rate before lifting -- lighter for muscle-focused goals (just
+  // enough to warm up), longer for fat-loss goals (real extra cardio volume,
+  // since burning more calories is part of the point for that goal).
+  warmupWalk: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Isınma Yürüyüşü',en:'Warm-up Walk'}, equipment:false,
+    how:{tr:'Antrenmana başlamadan önce tempolu şekilde yürü, kalbini ısıt ve eklemlerini hazırla.',en:'Before you start lifting, walk at a brisk pace to raise your heart rate and loosen up your joints.'},
+    alt:{tr:'Sabit Bisiklet (Hafif)',en:'Stationary Bike (Easy)'}, alt2:{tr:'Yerinde Yürüyüş',en:'March in Place'},
+    type:'duration', sets:1, duration:15, durationUnit:'min' },
+  warmupCardio: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Tempolu Yürüyüş / Bisiklet',en:'Brisk Walk / Bike'}, equipment:false,
+    how:{tr:'Antrenmana başlamadan önce nefesini zorlayacak ama konuşabileceğin tempoda yürü ya da bisiklet sür -- kilo verme hedefine ekstra kalori yakımı katar.',en:'Before you start lifting, walk or cycle at a pace that raises your breathing but still lets you talk -- extra calorie burn that supports your fat-loss goal.'},
+    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, alt2:{tr:'Eliptik Bisiklet',en:'Elliptical'},
+    // 30 min (not 25) so 3 lifting days already clear 90 min/week on their
+    // own, getting the week as a whole closer to ACSM's 225+ min/week
+    // threshold for clinically significant weight loss once the two
+    // dedicated cardio days are added on top.
+    type:'duration', sets:1, duration:30, durationUnit:'min' }
+};
+
+const EX_IMG = {
+    squat:'images/squat.jpg',
+    lunge:'images/lunge.jpg',
+    pushup:'images/push-up.jpg',
+    plank:'images/plank.jpg',
+    situp:'images/sit-up.jpg',
+    gluteBridge:'images/glute-bridge.jpg',
+    superman:'images/superman.jpg',
+    wallSit:'images/wall-sit.jpg',
+    highKnees:'images/high-knees.jpg',
+    mountainClimber:'images/mountain-climber.jpg',
+    bicycleCrunch:'images/bicycle-crunch.jpg',
+    tricepDips:'images/tricep-dips.jpg',
+    calfRaise:'images/calf-raise.jpg',
+    armCircles:'images/arm-circles.jpg',
+    sidePlank:'images/side-plank.jpg',
+    russianTwist:'images/russian-twist.jpg',
+    jumpingJack:'images/jumping-jack.jpg',
+    starJump:'images/star-jump.jpg',
+    jumpSquat:'images/jump-squat.jpg',
+    burpee:'images/burpee.jpg',
+    benchPress:'images/bench-press.jpg',
+    inclineBenchPress:'images/incline-bench-press.jpg',
+    chestFly:'images/chest-fly.jpg',
+    latPulldown:'images/lat-pulldown.jpg',
+    seatedCableRow:'images/seated-cable-row.jpg',
+    barbellRow:'images/barbell-row.jpg',
+    deadlift:'images/deadlift.jpg',
+    legPress:'images/leg-press.jpg',
+    legExtension:'images/leg-extension.jpg',
+    legCurl:'images/leg-curl.jpg',
+    hipThrust:'images/hip-thrust.jpg',
+    shoulderPress:'images/shoulder-press.jpg',
+    lateralRaise:'images/lateral-raise.jpg',
+    frontRaise:'images/front-raise.jpg',
+    bicepCurl:'images/bicep-curl.jpg',
+    hammerCurl:'images/hammer-curl.jpg',
+    tricepPushdown:'images/tricep-pushdown.jpg',
+    cableCrunch:'images/cable-crunch.jpg',
+    legRaise:'images/leg-raise.jpg',
+    treadmill:'images/kosu-bandi-sprint.jpg',
+    bike:'images/sabit-bisiklet.jpg',
+    eliptik:'images/eliptik-bisiklet.jpg',
+    dumbbellBenchPress:'images/dumbbell-bench-press.jpg',
+    dumbbellInclinePress:'images/dumbbell-incline-press.jpg',
+    dumbbellPullover:'images/dumbbell-pullover.jpg',
+    dumbbellRow:'images/dumbbell-row.jpg',
+    renegadeRow:'images/renegade-row.jpg',
+    arnoldPress:'images/arnold-press.jpg',
+    dumbbellShrug:'images/dumbbell-shrug.jpg',
+    rearDeltFly:'images/rear-delt-fly.jpg',
+    concentrationCurl:'images/concentration-curl.jpg',
+    tricepKickback:'images/tricep-kickback.jpg',
+    gobletSquat:'images/goblet-squat.jpg',
+    dumbbellRDL:'images/dumbbell-romanian-deadlift.jpg',
+    dumbbellLunge:'images/dumbbell-lunge.jpg',
+    dumbbellStepUp:'images/dumbbell-step-up.jpg',
+  };
+
+const NAME_IMG = {
+    'Squat':'images/squat.jpg',
+    'Lunge':'images/lunge.jpg',
+    'Push-up':'images/push-up.jpg',
+    'Plank':'images/plank.jpg',
+    'Sit-up':'images/sit-up.jpg',
+    'Glute Bridge':'images/glute-bridge.jpg',
+    'Superman':'images/superman.jpg',
+    'Wall Sit':'images/wall-sit.jpg',
+    'High Knees':'images/high-knees.jpg',
+    'Mountain Climber':'images/mountain-climber.jpg',
+    'Bicycle Crunch':'images/bicycle-crunch.jpg',
+    'Tricep Dips':'images/tricep-dips.jpg',
+    'Calf Raise':'images/calf-raise.jpg',
+    'Arm Circles':'images/arm-circles.jpg',
+    'Side Plank':'images/side-plank.jpg',
+    'Russian Twist':'images/russian-twist.jpg',
+    'Jumping Jack':'images/jumping-jack.jpg',
+    'Star Jump':'images/star-jump.jpg',
+    'Jump Squat':'images/jump-squat.jpg',
+    'Burpee':'images/burpee.jpg',
+    'Bench Press':'images/bench-press.jpg',
+    'Incline Bench Press':'images/incline-bench-press.jpg',
+    'Chest Fly':'images/chest-fly.jpg',
+    'Lat Pulldown':'images/lat-pulldown.jpg',
+    'Seated Cable Row':'images/seated-cable-row.jpg',
+    'Barbell Row':'images/barbell-row.jpg',
+    'Deadlift':'images/deadlift.jpg',
+    'Leg Press':'images/leg-press.jpg',
+    'Leg Extension':'images/leg-extension.jpg',
+    'Leg Curl':'images/leg-curl.jpg',
+    'Hip Thrust':'images/hip-thrust.jpg',
+    'Shoulder Press':'images/shoulder-press.jpg',
+    'Lateral Raise':'images/lateral-raise.jpg',
+    'Front Raise':'images/front-raise.jpg',
+    'Bicep Curl':'images/bicep-curl.jpg',
+    'Hammer Curl':'images/hammer-curl.jpg',
+    'Tricep Pushdown':'images/tricep-pushdown.jpg',
+    'Cable Crunch':'images/cable-crunch.jpg',
+    'Leg Raise':'images/leg-raise.jpg',
+    'Treadmill (Sprint Intervals)':'images/kosu-bandi-sprint.jpg',
+    'Stationary Bike':'images/sabit-bisiklet.jpg',
+    'Elliptical':'images/eliptik-bisiklet.jpg',
+    'Dumbbell Bench Press':'images/dumbbell-bench-press.jpg',
+    'Dumbbell Incline Press':'images/dumbbell-incline-press.jpg',
+    'Dumbbell Pullover':'images/dumbbell-pullover.jpg',
+    'Dumbbell Row':'images/dumbbell-row.jpg',
+    'Renegade Row':'images/renegade-row.jpg',
+    'Arnold Press':'images/arnold-press.jpg',
+    'Dumbbell Shrug':'images/dumbbell-shrug.jpg',
+    'Rear Delt Fly':'images/rear-delt-fly.jpg',
+    'Concentration Curl':'images/concentration-curl.jpg',
+    'Tricep Kickback':'images/tricep-kickback.jpg',
+    'Goblet Squat':'images/goblet-squat.jpg',
+    'Dumbbell Romanian Deadlift':'images/dumbbell-romanian-deadlift.jpg',
+    'Dumbbell Lunge':'images/dumbbell-lunge.jpg',
+    'Dumbbell Step-up':'images/dumbbell-step-up.jpg',
+    // Aliases: these alternative-exercise names have no dedicated photo yet,
+    // but are visually identical (same equipment/pose) to an exercise we do
+    // have a photo for, so we reuse it instead of showing nothing.
+    'Bodyweight Squat':'images/squat.jpg',
+    'Bodyweight Glute Bridge':'images/glute-bridge.jpg',
+    'Treadmill':'images/kosu-bandi-sprint.jpg',
+    'Chair Dips':'images/tricep-dips.jpg',
+
+    // Alternative-exercise photos (added later so every "alt" suggestion has
+    // its own real photo instead of falling back to the base exercise's).
+    'Incline Push-up':'images/incline-push-up.jpg',
+    'Cable Crossover':'images/cable-crossover.jpg',
+    'Hip Thrust Machine':'images/hip-thrust-machine.jpg',
+    'Smith Machine Squat':'images/smith-machine-squat.jpg',
+    'Pike Push-up':'images/pike-push-up.jpg',
+    'Cable Lateral Raise':'images/cable-lateral-raise.jpg',
+    'Cable Front Raise':'images/cable-front-raise.jpg',
+    'Cable Rear Delt Fly':'images/cable-rear-delt-fly.jpg',
+    'Cable Rope Curl':'images/cable-rope-curl.jpg',
+    'EZ Bar Curl':'images/ez-bar-curl.jpg',
+    'Barbell Shrug':'images/barbell-shrug.jpg',
+    'Resistance Band Curl':'images/resistance-band-curl.jpg',
+    'Skull Crusher (EZ Bar)':'images/skull-crusher-ez-bar.jpg',
+    'Weighted Sit-up':'images/weighted-sit-up.jpg',
+    'Ab Machine Crunch':'images/ab-machine-crunch.jpg',
+    'Running in Place':'images/running-in-place.jpg',
+  };
+
+// Returns the image path for the exercise's currently active variant
+// (base exercise, or one of its alt/alt2/alt3 swaps). Falls back to the
+// base exercise's own photo, then null (caller falls back to the old
+// pose-animation/equipment icon) if nothing is found.
+// Like imageForOptionVariant, but also says whether the photo we're
+// returning is really that alternative's own photo, or just a fallback to
+// the base exercise's photo because that particular alternative doesn't
+// have one yet -- so the UI can tell the user "this one has no photo yet"
+// instead of silently showing the same picture and looking broken.
+function imageInfoForOptionVariant(id, v){
+  const ex = EX[id];
+  if (!ex) return { src: null, isFallback: false };
+  // A "ref:<otherId>" variant means this slot is borrowing a genuinely
+  // different exercise's own name + photo (used when this exercise's own
+  // "alt" suggestion turned out to already be present elsewhere in the same
+  // day's list -- see swapOptions).
+  if (typeof v === 'string' && v.indexOf('ref:') === 0){
+    const cid = v.slice(4);
+    const cEx = EX[cid];
+    if (cEx){
+      if (NAME_IMG[cEx.name.en]) return { src: NAME_IMG[cEx.name.en], isFallback: false };
+      if (EX_IMG[cid]) return { src: EX_IMG[cid], isFallback: false };
+    }
+    return { src: EX_IMG[id] || null, isFallback: true };
+  }
+  let enName = ex.name.en;
+  if (v === 1 && ex.alt) enName = ex.alt.en;
+  else if (v === 2 && ex.alt2) enName = ex.alt2.en;
+  else if (v === 3 && ex.alt3) enName = ex.alt3.en;
+  if (NAME_IMG[enName]) return { src: NAME_IMG[enName], isFallback: false };
+  return { src: EX_IMG[id] || null, isFallback: true };
+}
+function imageForOptionVariant(id, v){
+  return imageInfoForOptionVariant(id, v).src;
+}
+function imageForVariant(id){
+  return imageForOptionVariant(id, exerciseSwaps[id] || 0);
+}
+// Updates the (already-open) exercise modal's photo + name to preview a
+// given alternative, WITHOUT committing it as the chosen exercise -- used
+// both from inside the modal's own alt list, and from the "Alternatif: ..."
+// lines in the today's/week's exercise list (which open the modal and
+// preview the tapped alternative in one go).
+function applyModalPreview(pId, pVariant){
+  const info = imageInfoForOptionVariant(pId, pVariant);
+  const noPhotoNote = document.getElementById('modalNoPhotoNote');
+  if (info.src) {
+    document.getElementById('modalExPhoto').src = info.src;
+    document.getElementById('modalExPhotoWrap').style.display = 'block';
+    noPhotoNote.style.display = info.isFallback ? 'block' : 'none';
+    noPhotoNote.textContent = info.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
+  }
+  const pEx = EX[pId];
+  let pName = pEx.name[lang];
+  if (typeof pVariant === 'string' && pVariant.indexOf('ref:') === 0){
+    const cid = pVariant.slice(4);
+    if (EX[cid]) pName = EX[cid].name[lang];
+  }
+  else if (pVariant === 1 && pEx.alt) pName = pEx.alt[lang];
+  else if (pVariant === 2 && pEx.alt2) pName = pEx.alt2[lang];
+  else if (pVariant === 3 && pEx.alt3) pName = pEx.alt3[lang];
+  document.getElementById('modalExName').textContent = pName;
+  document.querySelectorAll('#modalExAlt .modal-alt-row').forEach(r => {
+    r.classList.toggle('previewing', r.dataset.previewId === pId && String(r.dataset.previewVariant) === String(pVariant));
+  });
+}
+
+
+const TEMPLATES = {
+  // Bodyweight templates: kept as no-equipment fallback days and as the
+  // source pool for each gym exercise's inline "alt" suggestion.
+  fullBodyA: ['squat','pushup','plank','gluteBridge','mountainClimber'],
+  fullBodyB: ['lunge','situp','superman','jumpingJack','calfRaise'],
+  upperBody: ['pushup','tricepDips','armCircles','plank','russianTwist'],
+  lowerBody: ['squat','lunge','jumpSquat','gluteBridge','wallSit'],
+  cardioCore: ['jumpingJack','highKnees','mountainClimber','bicycleCrunch','burpee'],
+  coreOnly: ['plank','situp','bicycleCrunch','russianTwist','sidePlank'],
+  // Gym (weights/machines) templates: the main program structure now, since
+  // this app is built for people training with weights and machines.
+  gymPush: ['benchPress','inclineBenchPress','shoulderPress','lateralRaise','tricepPushdown'],
+  gymPull: ['latPulldown','seatedCableRow','barbellRow','bicepCurl','hammerCurl'],
+  gymLegs: ['legPress','legExtension','legCurl','hipThrust','calfRaise'],
+  gymUpper: ['benchPress','latPulldown','shoulderPress','bicepCurl','tricepPushdown'],
+  gymCore: ['cableCrunch','legRaise','russianTwist','plank'],
+  gymCardio: ['treadmill','bike','eliptik','cableCrunch','legRaise'],
+  rest: []
+};
+
+// Each goal has exactly 5 workout-day templates; the remaining 2 days of the week
+// are rest days, placed wherever the user chose in onboarding (profile.restDays).
+// Gym (weight/machine) templates lead every goal now; a bodyweight cardio/core
+// day is mixed in where it fits a real gym routine (cardio finishers, etc.).
+const WORKOUT_SEQUENCES = {
+  lose:     ['gymPush','gymCardio','gymPull','gymLegs','gymCardio'],
+  gain:     ['gymPush','gymLegs','gymPull','gymUpper','gymLegs'],
+  muscle:   ['gymPush','gymPull','gymLegs','gymUpper','gymCore'],
+  leanBulk: ['gymPush','gymLegs','gymPull','gymUpper','gymLegs'],
+  recomp:   ['gymPush','gymPull','gymLegs','gymCardio','gymCore']
+};
+
+// "Odak Bölgeler" (Focus Areas): the body-map picker in onboarding lets the
+// user flag up to 3 muscle zones they personally care most about (e.g.
+// someone wants chest/shoulders, someone else wants abs).
+//
+// For "muscle" and "recomp" goals, focus zones reshape the WHOLE week: the
+// selected zones' movement patterns (push/pull/legs/upper/core) get extra
+// weekly frequency, but the 3 core patterns (push, pull, legs) always get at
+// least one slot each, so the week never fully skips a major muscle group.
+// For every other goal, we keep it lighter: 1-2 dedicated "focus day(s)"
+// (built from small per-zone exercise pools) get swapped into the week
+// (replacing a generic cardio day first, otherwise the last workout day(s)),
+// while the rest of the program stays exactly as before.
+const ZONE_EXERCISES = {
+  chest:    ['benchPress','inclineBenchPress','chestFly','dumbbellBenchPress','dumbbellInclinePress','dumbbellPullover'],
+  shoulders:['shoulderPress','lateralRaise','frontRaise','arnoldPress','dumbbellShrug','rearDeltFly'],
+  biceps:   ['bicepCurl','hammerCurl','concentrationCurl'],
+  triceps:  ['tricepPushdown','tricepDips','tricepKickback'],
+  abs:      ['cableCrunch','legRaise'],
+  legs:     ['legPress','legExtension','legCurl','gobletSquat','dumbbellLunge','dumbbellStepUp'],
+  back:     ['latPulldown','seatedCableRow','barbellRow','dumbbellRow','renegadeRow'],
+  glutes:   ['hipThrust','legPress','dumbbellRDL']
+};
+// Reverse lookup: exercise id -> which zone pool(s) it belongs to. Built from
+// ZONE_EXERCISES so it never drifts out of sync. Used to find a genuinely
+// different same-muscle exercise when an exercise's own "alt" suggestion
+// turns out to already be sitting elsewhere in the same day's list.
+const ID_ZONES = {};
+Object.entries(ZONE_EXERCISES).forEach(([zone, ids]) => {
+  ids.forEach(id => { (ID_ZONES[id] = ID_ZONES[id] || []).push(zone); });
+});
+const FOCUS_ZONE_LABELS = {
+  shoulders:{tr:'Omuz',en:'Shoulders'}, chest:{tr:'Göğüs',en:'Chest'},
+  biceps:{tr:'Ön Kol (Biceps)',en:'Biceps (Front arm)'}, triceps:{tr:'Arka Kol (Triceps)',en:'Triceps (Back arm)'},
+  abs:{tr:'Karın',en:'Abs'}, legs:{tr:'Bacak',en:'Legs'}, back:{tr:'Sırt',en:'Back'}, glutes:{tr:'Kalça',en:'Glutes'}
+};
+// Which weekly template pattern each zone belongs to, used only for the
+// full-week reshape (muscle / recomp goals).
+const ZONE_TEMPLATE = { chest:'gymPush', shoulders:'gymPush', back:'gymPull', biceps:'gymUpper', triceps:'gymUpper', abs:'gymCore', legs:'gymLegs', glutes:'gymLegs' };
+
+// Builds a 5-slot weekly sequence weighted toward the selected zones' movement
+// patterns, while always keeping at least one push, one pull and one legs day
+// so the week still addresses the whole body.
+function buildFocusSequence(zones){
+  const priority = [];
+  (zones||[]).forEach(z => { const tpl = ZONE_TEMPLATE[z]; if (tpl && !priority.includes(tpl)) priority.push(tpl); });
+  if (!priority.length) return null;
+  const seq = ['gymPush','gymPull','gymLegs'];
+  let i = 0;
+  while (seq.length < 5) { seq.push(priority[i % priority.length]); i++; }
+  return seq;
+}
+
+// Builds 1-2 synthetic "focus day" exercise lists (arrays, not template
+// names) from the selected zones' small exercise pools — used for goals that
+// keep the rest of their program untouched.
+function focusDayLists(zones){
+  if (!zones || !zones.length) return [];
+  const pools = zones.map(z => ZONE_EXERCISES[z]).filter(Boolean);
+  if (!pools.length) return [];
+  const combined = [];
+  for (let i=0; combined.length < 5; i++){
+    let addedAny = false;
+    for (const p of pools){
+      if (p[i] && !combined.includes(p[i]) && combined.length < 5){ combined.push(p[i]); addedAny = true; }
+    }
+    if (!addedAny) break;
+  }
+  const lists = [combined];
+  if (zones.length >= 2){
+    const soloPool = ZONE_EXERCISES[zones[0]];
+    if (soloPool && soloPool.length) lists.push(soloPool.slice(0,5));
+  }
+  return lists;
+}
+
+function buildWeekProgram(profile){
+  const restSet = new Set(profile.restDays || [3,6]);
+  const zones = profile.focusAreas || [];
+  const week = [];
+
+  if ((profile.goal === 'muscle' || profile.goal === 'recomp') && zones.length > 0){
+    const seq = buildFocusSequence(zones) || WORKOUT_SEQUENCES[profile.goal];
+    let si = 0;
+    for (let d=0; d<7; d++){
+      if (restSet.has(d)) { week.push('rest'); } else { week.push(seq[si % seq.length]); si++; }
+    }
+    return week;
+  }
+
+  const seq = WORKOUT_SEQUENCES[profile.goal];
+  let si = 0;
+  for (let d=0; d<7; d++){
+    if (restSet.has(d)) { week.push('rest'); }
+    else { week.push(seq[si % seq.length]); si++; }
+  }
+  const lists = focusDayLists(zones);
+  if (lists.length){
+    const workoutIdxs = week.map((v,i)=>({v,i})).filter(o => !restSet.has(o.i));
+    const cardioIdxs = workoutIdxs.filter(o => o.v === 'gymCardio').map(o=>o.i);
+    const otherIdxs = workoutIdxs.filter(o => o.v !== 'gymCardio').map(o=>o.i).reverse();
+    const candidateIdxs = [...cardioIdxs, ...otherIdxs];
+    lists.forEach((list, k) => { if (candidateIdxs[k] !== undefined) week[candidateIdxs[k]] = list; });
+  }
+  return week;
+}
+function templateForDay(profile, dayIdx){
+  return buildWeekProgram(profile)[dayIdx];
+}
+function isFocusDay(profile, dayIdx){
+  return Array.isArray(templateForDay(profile, dayIdx));
+}
+// Every workout day opens with a few minutes of cardio warm-up -- longer,
+// real cardio (walk/bike) for a fat-loss goal since that extra volume
+// actually helps the goal, just a short warm-up walk otherwise since the
+// point there is loosening up, not burning extra calories. Skipped on rest
+// days (nothing to warm up for) and on days that are already a dedicated
+// cardio session (gymCardio template), so cardio never doubles up.
+function warmupIdForGoal(goal){
+  return goal === 'lose' ? 'warmupCardio' : 'warmupWalk';
+}
+function exercisesForDay(profile, dayIdx){
+  const tpl = templateForDay(profile, dayIdx);
+  const base = Array.isArray(tpl) ? tpl : TEMPLATES[tpl];
+  if (!base || !base.length || tpl === 'gymCardio') return base || [];
+  const warmupId = warmupIdForGoal(profile.goal);
+  if (!EX[warmupId] || base[0] === warmupId) return base;
+  return [warmupId, ...base];
+}
+
+// The set/rep numbers stored on each exercise in EX are tuned for the
+// "muscle" (hypertrophy) goal -- moderate reps, moderate sets. Rather than
+// keeping a separate copy of every exercise per goal, every other goal
+// nudges those base numbers at display time.
+//
+// The adjustment is deliberately modest, based on the actual evidence
+// rather than the common "high reps burn fat" assumption:
+//   - Hypertrophy is similar across a wide rep range as long as sets are
+//     taken close to failure (low-load/high-rep vs. high-load/low-rep
+//     meta-analysis: https://pubmed.ncbi.nlm.nih.gov/28834797/), so a big
+//     rep-count jump for the "lose" goal isn't actually necessary and would
+//     mean lighter loads that make it harder to preserve muscle in a
+//     calorie deficit. So "lose" only gets a small +2 rep nudge (a slightly
+//     denser, more metabolic set) -- the real extra fat-loss lever is more
+//     cardio, handled separately (see the interval-cardio branch below and
+//     warmupCardio's own duration).
+//   - gain / leanBulk (building size/strength, eating in a surplus): fewer,
+//     heavier-implied reps and one extra set -- the classic strength-bias
+//     range, which the same evidence shows is more efficient for strength
+//     while producing similar hypertrophy.
+//   - muscle / recomp: unchanged (already the hypertrophy baseline).
+// Bounded on both ends so nothing ends up at a silly number of reps or sets.
+//
+// For duration-type cardio (treadmill/bike/elliptical -- identified by
+// sets > 1, unlike the single-set warm-up walk/bike entries), a "lose" goal
+// adds one extra interval: ACSM guidance calls for 225+ min/week of exercise
+// for clinically significant weight loss
+// (https://obesitymedicine.org/blog/how-much-physical-activity-is-needed-for-weight-loss-weight-loss-maintenance-and-weight-gain-prevention/),
+// so the dedicated cardio days carry a little more of that load.
+function goalAdjustedNumbers(ex, goal){
+  let sets = ex.sets, reps = ex.reps, duration = ex.duration;
+  if (ex.type === 'reps') {
+    if (goal === 'lose') {
+      reps = Math.min(reps + 2, 16);
+    } else if (goal === 'gain' || goal === 'leanBulk') {
+      sets = Math.min(sets + 1, 5);
+      reps = Math.max(reps - 3, 6);
+    }
+  } else if (goal === 'lose' && ex.muscle && ex.muscle.en === 'Cardio' && ex.sets > 1) {
+    sets = ex.sets + 1;
+  }
+  return { sets, reps, duration };
+}
+
+/* =========================================================
+   FOOD / CALORIE DATABASE
+   Values are well-known general nutrition facts (per 100g, public
+   domain data — not copyrighted expression), used only as estimates.
+========================================================= */
+const FOODS = [
+  { id:'chicken', tr:'Tavuk Göğsü (pişmiş)', en:'Chicken Breast (cooked)', kcal:165, p:31, c:0, f:3.6 },
+  { id:'turkey', tr:'Hindi Göğsü (pişmiş)', en:'Turkey Breast (cooked)', kcal:135, p:30, c:0, f:1 },
+  { id:'beef', tr:'Dana Eti (yağsız, pişmiş)', en:'Lean Beef (cooked)', kcal:250, p:26, c:0, f:15 },
+  { id:'lamb', tr:'Kuzu Eti (pişmiş)', en:'Lamb (cooked)', kcal:294, p:25, c:0, f:21 },
+  { id:'salmon', tr:'Somon (pişmiş)', en:'Salmon (cooked)', kcal:208, p:20, c:0, f:13 },
+  { id:'tuna', tr:'Ton Balığı (suda)', en:'Tuna (in water)', kcal:116, p:26, c:0, f:1 },
+  { id:'egg', tr:'Yumurta (haşlanmış)', en:'Egg (boiled)', kcal:155, p:13, c:1.1, f:11 },
+  { id:'rice', tr:'Pirinç (pişmiş)', en:'Rice (cooked)', kcal:130, p:2.7, c:28, f:0.3 },
+  { id:'bulgur', tr:'Bulgur (pişmiş)', en:'Bulgur (cooked)', kcal:83, p:3.1, c:19, f:0.2 },
+  { id:'pasta', tr:'Makarna (pişmiş)', en:'Pasta (cooked)', kcal:131, p:5, c:25, f:1.1 },
+  { id:'oats', tr:'Yulaf Ezmesi (pişmiş)', en:'Oatmeal (cooked)', kcal:71, p:2.5, c:12, f:1.5 },
+  { id:'bread', tr:'Beyaz Ekmek', en:'White Bread', kcal:265, p:9, c:49, f:3.2 },
+  { id:'wholeBread', tr:'Tam Buğday Ekmeği', en:'Whole Wheat Bread', kcal:247, p:13, c:41, f:3.4 },
+  { id:'potato', tr:'Patates (haşlanmış)', en:'Potato (boiled)', kcal:87, p:1.9, c:20, f:0.1 },
+  { id:'sweetPotato', tr:'Tatlı Patates (haşlanmış)', en:'Sweet Potato (boiled)', kcal:86, p:1.6, c:20, f:0.1 },
+  { id:'lentil', tr:'Mercimek (pişmiş)', en:'Lentils (cooked)', kcal:116, p:9, c:20, f:0.4 },
+  { id:'chickpea', tr:'Nohut (pişmiş)', en:'Chickpeas (cooked)', kcal:164, p:9, c:27, f:2.6 },
+  { id:'milk', tr:'Süt (tam yağlı)', en:'Whole Milk', kcal:61, p:3.2, c:4.8, f:3.3 },
+  { id:'yogurt', tr:'Yoğurt (sade)', en:'Plain Yogurt', kcal:61, p:3.5, c:4.7, f:3.3 },
+  { id:'kefir', tr:'Kefir', en:'Kefir', kcal:41, p:3.4, c:4.5, f:1 },
+  { id:'whiteCheese', tr:'Beyaz Peynir', en:'White Cheese', kcal:264, p:18, c:1.5, f:21 },
+  { id:'curdCheese', tr:'Lor Peyniri', en:'Cottage Cheese', kcal:98, p:11, c:3.4, f:4.3 },
+  { id:'apple', tr:'Elma', en:'Apple', kcal:52, p:0.3, c:14, f:0.2 },
+  { id:'banana', tr:'Muz', en:'Banana', kcal:89, p:1.1, c:23, f:0.3 },
+  { id:'orange', tr:'Portakal', en:'Orange', kcal:47, p:0.9, c:12, f:0.1 },
+  { id:'grape', tr:'Üzüm', en:'Grapes', kcal:69, p:0.7, c:18, f:0.2 },
+  { id:'watermelon', tr:'Karpuz', en:'Watermelon', kcal:30, p:0.6, c:8, f:0.2 },
+  { id:'driedApricot', tr:'Kuru Kayısı', en:'Dried Apricot', kcal:241, p:3.4, c:63, f:0.5 },
+  { id:'avocado', tr:'Avokado', en:'Avocado', kcal:160, p:2, c:9, f:15 },
+  { id:'broccoli', tr:'Brokoli', en:'Broccoli', kcal:34, p:2.8, c:7, f:0.4 },
+  { id:'spinach', tr:'Ispanak', en:'Spinach', kcal:23, p:2.9, c:3.6, f:0.4 },
+  { id:'tomato', tr:'Domates', en:'Tomato', kcal:18, p:0.9, c:3.9, f:0.2 },
+  { id:'cucumber', tr:'Salatalık', en:'Cucumber', kcal:15, p:0.7, c:3.6, f:0.1 },
+  { id:'oliveOil', tr:'Zeytinyağı', en:'Olive Oil', kcal:884, p:0, c:0, f:100 },
+  { id:'almond', tr:'Badem', en:'Almonds', kcal:579, p:21, c:22, f:50 },
+  { id:'walnut', tr:'Ceviz', en:'Walnuts', kcal:654, p:15, c:14, f:65 },
+  { id:'peanutButter', tr:'Fıstık Ezmesi', en:'Peanut Butter', kcal:588, p:25, c:20, f:50 },
+  { id:'honey', tr:'Bal', en:'Honey', kcal:304, p:0.3, c:82, f:0 },
+  { id:'chocolate', tr:'Sütlü Çikolata', en:'Milk Chocolate', kcal:535, p:7.7, c:59, f:30 },
+  { id:'pear', tr:'Armut', en:'Pear', kcal:57, p:0.4, c:15, f:0.1 },
+  { id:'strawberry', tr:'Çilek', en:'Strawberry', kcal:32, p:0.7, c:7.7, f:0.3 },
+  { id:'cherry', tr:'Kiraz', en:'Cherry', kcal:63, p:1.1, c:16, f:0.2 },
+  { id:'peach', tr:'Şeftali', en:'Peach', kcal:39, p:0.9, c:9.5, f:0.3 },
+  { id:'melon', tr:'Kavun', en:'Melon', kcal:34, p:0.8, c:8.2, f:0.2 },
+  { id:'fig', tr:'İncir', en:'Fig', kcal:74, p:0.8, c:19, f:0.3 },
+  { id:'mandarin', tr:'Mandalina', en:'Mandarin', kcal:53, p:0.8, c:13, f:0.3 },
+  { id:'kiwi', tr:'Kivi', en:'Kiwi', kcal:61, p:1.1, c:15, f:0.5 },
+  { id:'pineapple', tr:'Ananas', en:'Pineapple', kcal:50, p:0.5, c:13, f:0.1 },
+  { id:'pistachio', tr:'Antep Fıstığı', en:'Pistachio', kcal:560, p:20, c:28, f:45 },
+  { id:'hazelnut', tr:'Fındık', en:'Hazelnut', kcal:628, p:15, c:17, f:61 },
+  { id:'olive', tr:'Zeytin', en:'Olives', kcal:115, p:0.8, c:6, f:11 },
+  { id:'butter', tr:'Tereyağı', en:'Butter', kcal:717, p:0.9, c:0.1, f:81 },
+  { id:'kasarCheese', tr:'Kaşar Peyniri', en:'Kashar Cheese', kcal:350, p:25, c:1.5, f:27 },
+  { id:'tulumCheese', tr:'Tulum Peyniri', en:'Tulum Cheese', kcal:310, p:20, c:1, f:25 },
+  { id:'ayran', tr:'Ayran', en:'Ayran (yogurt drink)', kcal:35, p:1.6, c:2, f:1.8 },
+  { id:'sucuk', tr:'Sucuk', en:'Turkish Sausage (Sucuk)', kcal:400, p:20, c:2, f:35 },
+  { id:'sausage', tr:'Sosis', en:'Sausage', kcal:300, p:13, c:3, f:26 },
+  { id:'salami', tr:'Salam', en:'Salami', kcal:336, p:18, c:2, f:28 },
+  { id:'meatball', tr:'Köfte (izgara)', en:'Meatballs (grilled)', kcal:240, p:19, c:4, f:16 },
+  { id:'doner', tr:'Döner (et)', en:'Doner (meat)', kcal:220, p:20, c:5, f:13 },
+  { id:'lentilSoup', tr:'Mercimek Çorbası', en:'Lentil Soup', kcal:70, p:4, c:11, f:1.2 },
+  { id:'hummus', tr:'Humus', en:'Hummus', kcal:166, p:8, c:14, f:9.6 },
+  { id:'shrimp', tr:'Karides (pişmiş)', en:'Shrimp (cooked)', kcal:99, p:24, c:0.2, f:0.3 },
+  { id:'anchovy', tr:'Hamsi (pişmiş)', en:'Anchovy (cooked)', kcal:135, p:20, c:0, f:5.8 },
+  { id:'seaBass', tr:'Levrek (pişmiş)', en:'Sea Bass (cooked)', kcal:124, p:24, c:0, f:2.6 },
+  { id:'friedPotato', tr:'Patates Kızartması', en:'French Fries', kcal:312, p:3.4, c:41, f:15 },
+  { id:'chips', tr:'Cips', en:'Potato Chips', kcal:536, p:6.6, c:53, f:35 },
+  { id:'cracker', tr:'Kraker', en:'Crackers', kcal:440, p:9, c:70, f:14 },
+  { id:'biscuit', tr:'Bisküvi', en:'Biscuits', kcal:460, p:6, c:68, f:18 },
+  { id:'cake', tr:'Kek', en:'Cake', kcal:370, p:5, c:52, f:15 },
+  { id:'baklava', tr:'Baklava', en:'Baklava', kcal:430, p:6, c:48, f:25 },
+  { id:'sutlac', tr:'Sütlaç', en:'Rice Pudding', kcal:120, p:3, c:20, f:3 },
+  { id:'iceCream', tr:'Dondurma', en:'Ice Cream', kcal:207, p:3.5, c:24, f:11 },
+  { id:'cola', tr:'Kola', en:'Cola', kcal:42, p:0, c:10.6, f:0 },
+  { id:'juice', tr:'Meyve Suyu', en:'Fruit Juice', kcal:45, p:0.5, c:11, f:0.1 },
+  { id:'jam', tr:'Reçel', en:'Jam', kcal:250, p:0.4, c:65, f:0.1 },
+  { id:'tahini', tr:'Tahin', en:'Tahini', kcal:595, p:17, c:21, f:54 },
+  { id:'molasses', tr:'Pekmez', en:'Grape Molasses (Pekmez)', kcal:290, p:0.6, c:75, f:0.3 },
+  { id:'sugar', tr:'Şeker', en:'Sugar', kcal:387, p:0, c:100, f:0 },
+  { id:'pizza', tr:'Pizza (dilim)', en:'Pizza (slice)', kcal:266, p:11, c:33, f:10 },
+  { id:'hamburger', tr:'Hamburger', en:'Hamburger', kcal:295, p:17, c:24, f:14 }
+];
+
+/* =========================================================
+   CUSTOM (USER-ADDED) FOODS
+========================================================= */
+const CUSTOM_FOODS_KEY = 'fitplan_customfoods_v1';
+let customFoods = [];
+function loadCustomFoods(){
+  try { customFoods = JSON.parse(localStorage.getItem(CUSTOM_FOODS_KEY)) || []; } catch(e){ customFoods = []; }
+}
+function saveCustomFoods(){ localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify(customFoods)); }
+function allFoods(){ return FOODS.concat(customFoods); }
+
+/* =========================================================
+   STICK FIGURE RENDERING
+========================================================= */
+function mid(a,b){ return [(a[0]+b[0])/2, (a[1]+b[1])/2]; }
+// Build a tapered, rounded "capsule" quad between two joints of different radii —
+// reads as a real limb silhouette rather than a thin stick or a bulbous cartoon joint.
+function capsuleQuad(p1, r1, p2, r2){
+  const dx = p2[0]-p1[0], dy = p2[1]-p1[1];
+  const len = Math.hypot(dx,dy) || 1;
+  const nx = -dy/len, ny = dx/len;
+  const p1a = [p1[0]+nx*r1, p1[1]+ny*r1], p1b = [p1[0]-nx*r1, p1[1]-ny*r1];
+  const p2a = [p2[0]+nx*r2, p2[1]+ny*r2], p2b = [p2[0]-nx*r2, p2[1]-ny*r2];
+  return `${p1a[0]},${p1a[1]} ${p2a[0]},${p2a[1]} ${p2b[0]},${p2b[1]} ${p1b[0]},${p1b[1]}`;
+}
+function limbShape(p1, r1, p2, r2, fill, stroke){
+  return `<polygon points="${capsuleQuad(p1,r1,p2,r2)}" fill="${fill}" stroke="${stroke}" stroke-width="1" stroke-linejoin="round"/>
+    <circle cx="${p1[0]}" cy="${p1[1]}" r="${r1}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>
+    <circle cx="${p2[0]}" cy="${p2[1]}" r="${r2}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
+}
+function poseSvg(p, cls, color, uid){
+  const dark = shadeColor(color, -42);
+  const shadowCx = (p.footL[0] + p.footR[0]) / 2;
+  const shadowY = Math.max(p.footL[1], p.footR[1]);
+  const chestPt = [p.neck[0] + (p.hip[0]-p.neck[0])*0.32, p.neck[1] + (p.hip[1]-p.neck[1])*0.32];
+  return `<svg class="pose ${cls}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+    <ellipse cx="${shadowCx}" cy="${shadowY+2.5}" rx="17" ry="3" fill="#000" opacity="0.3"/>
+    ${limbShape(p.hip, 7, p.footL, 4.6, color, dark)}
+    ${limbShape(p.hip, 7, p.footR, 4.6, color, dark)}
+    ${limbShape(p.neck, 9.5, p.hip, 6.5, color, dark)}
+    ${limbShape(p.neck, 5, p.handL, 3.8, color, dark)}
+    ${limbShape(p.neck, 5, p.handR, 3.8, color, dark)}
+    <ellipse cx="${chestPt[0]}" cy="${chestPt[1]}" rx="6.5" ry="4" fill="#fff" opacity="0.10"/>
+    <line x1="${p.neck[0]}" y1="${p.neck[1]+1}" x2="${p.hip[0]}" y2="${p.hip[1]-1}" stroke="${dark}" stroke-width="0.9" opacity="0.35"/>
+    <ellipse cx="${p.head[0]}" cy="${p.head[1]}" rx="8" ry="9" fill="${color}" stroke="${dark}" stroke-width="1"/>
+  </svg>`;
+}
+function shadeColor(hex, percent){
+  const num = parseInt(hex.replace('#',''),16);
+  let r = (num >> 16) + Math.round(2.55*percent);
+  let g = ((num >> 8) & 0x00FF) + Math.round(2.55*percent);
+  let b = (num & 0x0000FF) + Math.round(2.55*percent);
+  r = Math.max(0, Math.min(255,r)); g = Math.max(0, Math.min(255,g)); b = Math.max(0, Math.min(255,b));
+  return '#' + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).slice(1);
+}
+let figureUidCounter = 0;
+function animatedFigure(exId, color){
+  const ex = EX[exId];
+  const uid = 'f' + (figureUidCounter++);
+  return `<div style="position:relative;width:100%;height:100%;">
+    ${poseSvg(ex.poseA, 'pose-a', color, uid)}
+    ${poseSvg(ex.poseB, 'pose-b', color, uid)}
+  </div>`;
+}
+// Placeholder thumbnail for gym-equipment exercises (no custom pose art yet):
+// a simple flat barbell glyph, standing in until real photos/AI images are added.
+function equipmentIcon(color){
+  return `<svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+    <rect x="6" y="36" width="14" height="28" rx="4" fill="${color}"/>
+    <rect x="80" y="36" width="14" height="28" rx="4" fill="${color}"/>
+    <rect x="16" y="44" width="68" height="12" rx="5" fill="${color}"/>
+  </svg>`;
+}
+// Placeholder for timed cardio (walks, bike, etc.) that has no photo and no
+// pose-animation data -- a simple stopwatch glyph rather than the barbell
+// icon (not gym equipment) or the two-frame pose animation (no poseA/poseB).
+function cardioIcon(color){
+  return `<svg viewBox="0 0 100 100" style="width:100%;height:100%;">
+    <circle cx="50" cy="54" r="32" fill="none" stroke="${color}" stroke-width="7"/>
+    <path d="M50 34 L50 56 L66 66" stroke="${color}" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="40" y="10" width="20" height="10" rx="4" fill="${color}"/>
+  </svg>`;
+}
+// Renders the small placeholder icon for an exercise: the animated pose
+// figure for bodyweight moves with pose data, a generic equipment glyph for
+// gym/machine exercises, or a stopwatch glyph for anything else (timed
+// cardio with no pose art, e.g. the warm-up walk/bike). (No video/AI
+// animation -- see EX_ZONE_MAP + muscleMiniWidget below for how the app
+// shows which muscle is working instead.)
+function exerciseThumb(id, color){
+  const photoSrc = imageForVariant(id);
+  if (photoSrc) return `<img src="${photoSrc}" alt="">`;
+  const ex = EX[id];
+  if (ex.equipment) return equipmentIcon(color);
+  if (ex.poseA) return animatedFigure(id, color);
+  return cardioIcon(color);
+}
+
+
+// Which body zone(s) light up for each exercise, and which of the two body-map
+// views (front/back) shows them. Reuses the same zone ids as the onboarding
+// body map so the highlight is exactly consistent with it. This is what lets
+// the app show "which muscle is working" reliably, without depending on an
+// AI-generated video to render the highlight correctly.
+const EX_ZONE_MAP = {
+  squat: { view:'back', zones:['legs','glutes'] },
+  lunge: { view:'back', zones:['legs','glutes'] },
+  pushup: { view:'front', zones:['chest'] },
+  plank: { view:'front', zones:['abs'] },
+  situp: { view:'front', zones:['abs'] },
+  gluteBridge: { view:'back', zones:['glutes'] },
+  superman: { view:'back', zones:['back'] },
+  wallSit: { view:'front', zones:['legs'] },
+  highKnees: { view:'front', zones:['legs'] },
+  mountainClimber: { view:'front', zones:['abs'] },
+  bicycleCrunch: { view:'front', zones:['abs'] },
+  tricepDips: { view:'back', zones:['triceps'] },
+  calfRaise: { view:'front', zones:['legs'] },
+  armCircles: { view:'front', zones:['shoulders'] },
+  sidePlank: { view:'front', zones:['abs'] },
+  russianTwist: { view:'front', zones:['abs'] },
+  jumpingJack: { view:'front', zones:['legs','shoulders'] },
+  starJump: { view:'front', zones:['legs','shoulders'] },
+  jumpSquat: { view:'front', zones:['legs'] },
+  burpee: { view:'front', zones:['chest','legs'] },
+  benchPress: { view:'front', zones:['chest'] },
+  inclineBenchPress: { view:'front', zones:['chest'] },
+  chestFly: { view:'front', zones:['chest'] },
+  latPulldown: { view:'back', zones:['back'] },
+  seatedCableRow: { view:'back', zones:['back'] },
+  barbellRow: { view:'back', zones:['back'] },
+  deadlift: { view:'back', zones:['back','legs'] },
+  legPress: { view:'front', zones:['legs'] },
+  legExtension: { view:'front', zones:['legs'] },
+  legCurl: { view:'front', zones:['legs'] },
+  hipThrust: { view:'back', zones:['glutes'] },
+  shoulderPress: { view:'front', zones:['shoulders'] },
+  lateralRaise: { view:'front', zones:['shoulders'] },
+  frontRaise: { view:'front', zones:['shoulders'] },
+  bicepCurl: { view:'front', zones:['biceps'] },
+  hammerCurl: { view:'front', zones:['biceps'] },
+  tricepPushdown: { view:'back', zones:['triceps'] },
+  cableCrunch: { view:'front', zones:['abs'] },
+  legRaise: { view:'front', zones:['abs'] },
+  treadmill: { view:'front', zones:['legs'] },
+  bike: { view:'front', zones:['legs'] },
+  eliptik: { view:'front', zones:['legs','shoulders'] }
+};
+// Small, non-interactive version of the body-map figure: just one view
+// (front or back), with the relevant zone(s) filled in red. Shown next to
+// the exercise animation/video so the user sees where it works at a glance.
+function miniZoneSVG(view, zones){
+  const z = (id) => zones.includes(id) ? 'mz sel' : 'mz';
+  const head = `<circle cx="60" cy="15" r="12" class="mz-static"/><rect x="55" y="25" width="10" height="8" class="mz-static"/>`;
+  const shoulders = `<path class="${z('shoulders')}" d="M28,37 L92,37 L85,50 L35,50 Z"/>`;
+  const legs = `<path class="${z('legs')}" d="M38,114 L58,114 L55,206 L43,206 Z"/>
+    <path class="${z('legs')}" d="M82,114 L62,114 L65,206 L77,206 Z"/>`;
+  if (view === 'front') {
+    const arms = `<path class="${z('biceps')}" d="M14,39 L27,37 L24,75 L15,77 Z"/>
+      <path class="${z('biceps')}" d="M106,39 L93,37 L96,75 L105,77 Z"/>`;
+    return `<svg viewBox="0 0 120 220" class="mini-muscle-svg">${head}${shoulders}${arms}
+      <path class="${z('chest')}" d="M35,50 L85,50 L80,78 L40,78 Z"/>
+      <path class="${z('abs')}" d="M40,78 L80,78 L84,112 L36,112 Z"/>
+      ${legs}</svg>`;
+  }
+  const arms = `<path class="${z('triceps')}" d="M14,39 L27,37 L24,75 L15,77 Z"/>
+    <path class="${z('triceps')}" d="M106,39 L93,37 L96,75 L105,77 Z"/>`;
+  return `<svg viewBox="0 0 120 220" class="mini-muscle-svg">${head}${shoulders}${arms}
+    <path class="${z('back')}" d="M35,50 L85,50 L82,95 L38,95 Z"/>
+    <path class="${z('glutes')}" d="M38,95 L82,95 L85,114 L35,114 Z"/>
+    ${legs}</svg>`;
+}
+// Full widget: the mini figure plus the actual muscle name (e.g. "Göğüs
+// çalışıyor" / "Chest is working"), so it's clear which zone the highlight
+// refers to rather than a generic "works here" caption.
+function muscleMiniWidget(id){
+  const info = EX_ZONE_MAP[id] || { view:'front', zones:[] };
+  const muscleName = EX[id].muscle[lang];
+  const label = lang === 'tr' ? `${muscleName} çalışıyor` : `${muscleName} is working`;
+  return miniZoneSVG(info.view, info.zones) + `<div class="mini-muscle-label">${label}</div>`;
+}
+
+/* =========================================================
+   STATE / PERSISTENCE
+========================================================= */
+const STORAGE_KEY = 'fitplan_profile_v1';
+const PROGRESS_KEY = 'fitplan_progress_v1';
+const NUTRITION_KEY = 'fitplan_nutrition_v1';
+const WEIGHTLOG_KEY = 'fitplan_weightlog_v1';
+const MEASURE_KEY = 'fitplan_measurements_v1';
+const MEASURE_DISMISS_KEY = 'fitplan_measure_dismiss_v1';
+const SWAP_KEY = 'fitplan_swaps_v1';
+let profile = null;
+let progress = {}; // { "2026-09-25": { squat:true, pushup:true, dayDone:true } }
+let nutritionLog = {}; // { "2026-09-25": [ { foodId, grams, kcal, p, c, f } ] }
+let weightLog = {}; // { "2026-09-25": 78.4 }
+let measureLog = {}; // { "2026-09-25": { waist, hip, chest, arm, thigh } } (any field may be null)
+let exerciseSwaps = {}; // { benchPress: 1 } -> user chose the alt (1), alt2 (2) or alt3 (3) version for that exercise slot everywhere it appears
+
+function loadState(){
+  try { profile = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e){ profile = null; }
+  try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; } catch(e){ progress = {}; }
+  try { nutritionLog = JSON.parse(localStorage.getItem(NUTRITION_KEY)) || {}; } catch(e){ nutritionLog = {}; }
+  try { weightLog = JSON.parse(localStorage.getItem(WEIGHTLOG_KEY)) || {}; } catch(e){ weightLog = {}; }
+  try { measureLog = JSON.parse(localStorage.getItem(MEASURE_KEY)) || {}; } catch(e){ measureLog = {}; }
+  try { exerciseSwaps = JSON.parse(localStorage.getItem(SWAP_KEY)) || {}; } catch(e){ exerciseSwaps = {}; }
+}
+function saveProfile(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }
+function saveProgress(){ localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }
+function saveNutritionLog(){ localStorage.setItem(NUTRITION_KEY, JSON.stringify(nutritionLog)); }
+function saveWeightLog(){ localStorage.setItem(WEIGHTLOG_KEY, JSON.stringify(weightLog)); }
+function saveMeasureLog(){ localStorage.setItem(MEASURE_KEY, JSON.stringify(measureLog)); }
+function saveSwaps(){ localStorage.setItem(SWAP_KEY, JSON.stringify(exerciseSwaps)); }
+
+// Returns { variant, name, muscle } for how exercise `id` should currently be
+// displayed: variant 0 = primary, 1 = alt, 2 = alt2, 3 = alt3 (whichever the
+// user picked via the "Kullan" button). Falls back to primary if the chosen
+// variant no longer has data.
+// Back down to 2 alternatives per exercise (alt/alt2) -- alt3 data is left
+// in place in EX but intentionally not offered here, so it's a one-line
+// revert if a 3rd option is wanted again later.
+function activeVariant(id){
+  const ex = EX[id];
+  const v = exerciseSwaps[id] || 0;
+  // A "ref:<otherId>" variant borrows another real exercise's own name (see
+  // swapOptions) -- this slot still keeps its own sets/reps/how-to.
+  if (typeof v === 'string' && v.indexOf('ref:') === 0){
+    const cEx = EX[v.slice(4)];
+    if (cEx) return { variant: v, name: cEx.name[lang], nameEn: cEx.name.en };
+  }
+  if (v === 1 && ex.alt) return { variant: 1, name: ex.alt[lang], nameEn: ex.alt.en };
+  if (v === 2 && ex.alt2) return { variant: 2, name: ex.alt2[lang], nameEn: ex.alt2.en };
+  return { variant: 0, name: ex.name[lang], nameEn: ex.name.en };
+}
+// The list of swap options to offer for exercise `id`, excluding whichever
+// variant is currently active.
+//
+// `dayList` (optional): the ids of every exercise in the SAME day's program.
+// An exercise's own "alt"/"alt2" suggestion is just a hardcoded name, and
+// sometimes that name is literally another exercise that's already sitting
+// elsewhere in that same day's list (e.g. "Leg Extension"'s alternative is
+// "Leg Press", but a leg day already includes Leg Press) -- offering it back
+// as an "alternative" is pointless. When `dayList` is given, any option that
+// collides with another exercise already in the day is dropped and, where
+// possible, swapped for a genuinely different exercise that works the same
+// muscle (via ID_ZONES/ZONE_EXERCISES) and isn't already in the day.
+function swapOptions(id, dayList){
+  const ex = EX[id];
+  const active = exerciseSwaps[id] || 0;
+  let opts = [];
+  if (active !== 0) opts.push({ variant: 0, name: ex.name[lang], nameEn: ex.name.en });
+  if (ex.alt && active !== 1) opts.push({ variant: 1, name: ex.alt[lang], nameEn: ex.alt.en });
+  if (ex.alt2 && active !== 2) opts.push({ variant: 2, name: ex.alt2[lang], nameEn: ex.alt2.en });
+
+  if (Array.isArray(dayList) && dayList.length){
+    const norm = s => (s||'').trim().toLowerCase();
+    const otherNames = new Set();
+    dayList.forEach(otherId => {
+      if (otherId === id) return;
+      const av = activeVariant(otherId);
+      if (av && av.nameEn) otherNames.add(norm(av.nameEn));
+    });
+    const before = opts.length;
+    opts = opts.filter(o => !otherNames.has(norm(o.nameEn)));
+    if (opts.length < before){
+      const usedNames = new Set(opts.map(o => norm(o.nameEn)));
+      usedNames.add(norm(ex.name.en));
+      const zones = ID_ZONES[id] || [];
+      const candidates = [];
+      zones.forEach(z => (ZONE_EXERCISES[z] || []).forEach(cid => { if (candidates.indexOf(cid) === -1) candidates.push(cid); }));
+      for (const cid of candidates){
+        if (opts.length >= 2) break;
+        if (cid === id || dayList.includes(cid)) continue;
+        const cEx = EX[cid];
+        if (!cEx) continue;
+        const cNameEn = norm(cEx.name.en);
+        if (usedNames.has(cNameEn) || otherNames.has(cNameEn)) continue;
+        opts.push({ variant: 'ref:' + cid, name: cEx.name[lang], nameEn: cEx.name.en });
+        usedNames.add(cNameEn);
+      }
+    }
+  }
+  return opts;
+}
+function setExerciseVariant(id, variant){
+  if (variant === 0) delete exerciseSwaps[id]; else exerciseSwaps[id] = variant;
+  saveSwaps();
+}
+// Reads a variant back out of a data-attribute string: numeric variants
+// (0/1/2) parse to a number, "ref:<id>" variants stay as-is.
+function parseVariant(v){
+  if (typeof v === 'string' && v.indexOf('ref:') === 0) return v;
+  const n = parseInt(v, 10);
+  return isNaN(n) ? v : n;
+}
+
+/* =========================================================
+   WEIGHT CHECK-IN / AUTO-ADJUSTMENT
+========================================================= */
+function daysBetweenKeys(d1, d2){ return Math.round((new Date(d2) - new Date(d1)) / 86400000); }
+function lastWeightEntryKey(){
+  const keys = Object.keys(weightLog).sort();
+  if (keys.length === 0) return null;
+  const k = keys[keys.length - 1];
+  return [k, weightLog[k]];
+}
+function firstWeightEntryKey(){
+  const keys = Object.keys(weightLog).sort();
+  if (keys.length === 0) return null;
+  return [keys[0], weightLog[keys[0]]];
+}
+// Progress from the very first logged weight toward the target — this is what
+// lets the UI lead with "how far you've come" instead of only "how far is
+// left", which is the more motivating framing of the same numbers.
+function weightProgress(){
+  if (!profile || profile.targetWeight == null) return null;
+  const first = firstWeightEntryKey();
+  const startWeight = first ? first[1] : profile.weight;
+  const total = profile.targetWeight - startWeight;
+  const soFar = profile.weight - startWeight;
+  const pct = total !== 0 ? Math.max(0, Math.min(100, Math.round((soFar / total) * 100))) : 100;
+  const achievedKg = pct > 0 ? Math.round(Math.abs(soFar) * 10) / 10 : 0;
+  const remainingKg = Math.max(0, Math.round(Math.abs(profile.targetWeight - profile.weight) * 10) / 10);
+  return { startWeight, pct, achievedKg, remainingKg };
+}
+function isCheckinDue(){
+  const last = lastWeightEntryKey();
+  if (!last) return false;
+  return daysBetweenKeys(last[0], dateKey(0)) >= 7;
+}
+function checkGoalReached(){
+  if (!profile || !profile.targetWeight) return false;
+  if (profile.goal === 'lose' || profile.goal === 'recomp') return profile.weight <= profile.targetWeight + 0.3;
+  if (profile.goal === 'muscle' || profile.goal === 'leanBulk' || profile.goal === 'gain') return profile.weight >= profile.targetWeight - 0.3;
+  return false;
+}
+// Saves a new weigh-in (and optional measurements), and — if at least 6 days
+// have passed since the last adjustment baseline — compares the ACTUAL weekly
+// weight-change rate to the rate the plan's calorie offset predicts, nudging
+// the calorie target up or down by a small, safe step when they diverge.
+function performCheckin(weightVal, measurements){
+  const key = dateKey(0);
+  weightLog[key] = weightVal;
+  saveWeightLog();
+  if (measurements && Object.values(measurements).some(v => v != null)) {
+    measureLog[key] = measurements;
+    saveMeasureLog();
+  }
+
+  profile.weight = weightVal;
+  profile.bmi = Math.round((weightVal / ((profile.height/100)**2)) * 10) / 10;
+
+  const baseline = profile.calBaseline || { date: key, weight: weightVal };
+  const daysSince = daysBetweenKeys(baseline.date, key);
+  let result;
+
+  if (daysSince >= 6) {
+    const actualWeeklyRate = (weightVal - baseline.weight) * 7 / daysSince;
+    const expectedWeeklyRate = GOAL_OFFSET[profile.goal] * 7 / KCAL_PER_KG;
+    const tolerance = 0.15; // kg/week slack before we bother adjusting
+    const diff = actualWeeklyRate - expectedWeeklyRate;
+    // `pace` describes the ACTUAL rate of progress vs. what the plan predicted —
+    // independent of goal direction. `step` is the resulting calorie-target
+    // change, which moves opposite ways for loss vs. gain goals even for the
+    // same pace (e.g. "too slow" tightens a deficit but loosens a surplus).
+    let step = 0, pace = null;
+    if (expectedWeeklyRate < 0) { // fat-loss-oriented goal (lose / recomp)
+      if (diff > tolerance) { step = -100; pace = 'slow'; }       // losing less than expected -> bigger deficit
+      else if (diff < -tolerance) { step = 100; pace = 'fast'; } // losing faster than expected -> ease off
+    } else { // gain-oriented goal (muscle / leanBulk / gain)
+      if (diff < -tolerance) { step = 100; pace = 'slow'; }       // gaining less than expected -> bigger surplus
+      else if (diff > tolerance) { step = -100; pace = 'fast'; } // gaining faster than expected -> ease off
+    }
+    if (step !== 0) {
+      const oldTarget = profile.target;
+      const newTarget = Math.max(1200, oldTarget + step);
+      const macros = macrosForTarget(newTarget, weightVal, profile.goal);
+      profile.target = newTarget;
+      profile.proteinG = macros.proteinG; profile.fatG = macros.fatG; profile.carbG = macros.carbG;
+      result = { type: pace, from: oldTarget, to: newTarget };
+    } else {
+      result = { type: 'ontrack' };
+    }
+    profile.calBaseline = { date: key, weight: weightVal };
+  } else {
+    result = { type: 'tooSoon' };
+  }
+
+  saveProfile();
+  return result;
+}
+function showToast(msg){
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove('show'), 4500);
+}
+
+/* =========================================================
+   CALORIE CALC
+========================================================= */
+// Macro split for a given calorie target: protein is anchored to bodyweight
+// (evidence-based g/kg range), fat gets a fixed share of calories, and carbs
+// take whatever remains. Shared between initial plan creation and the weekly
+// auto-adjustment so both always produce consistent, real numbers.
+// Plain-language answer to "is this what I eat, or what I burn?" — always
+// "what you eat", plus how it relates to normal maintenance so the deficit/
+// surplus direction implied by the goal is explicit rather than implied.
+function calorieContextText(target, tdee){
+  const diff = target - tdee;
+  const absDiff = Math.abs(Math.round(diff / 10) * 10);
+  if (diff < -30) return t('calorieDeficitNote').replace('{tdee}', tdee).replace('{diff}', absDiff);
+  if (diff > 30) return t('calorieSurplusNote').replace('{tdee}', tdee).replace('{diff}', absDiff);
+  return t('calorieMaintainNote').replace('{tdee}', tdee);
+}
+
+function macrosForTarget(target, weight, goal){
+  const proteinG = Math.round(weight * (goal === 'gain' ? 1.6 : 2.0));
+  const fatKcal = target * 0.25;
+  const fatG = Math.round(fatKcal / 9);
+  const proteinKcal = proteinG * 4;
+  const carbKcal = Math.max(0, target - proteinKcal - fatKcal);
+  const carbG = Math.round(carbKcal / 4);
+  return { proteinG, fatG, carbG };
+}
+
+function computeProfile(draft){
+  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas } = draft;
+  // The onboarding step collects which days the user WILL train (easier to
+  // reason about); the rest of the app works in terms of rest days, so we
+  // invert here, once, at save time.
+  const restDays = Array.isArray(trainDays)
+    ? [0,1,2,3,4,5,6].filter(d => !trainDays.includes(d))
+    : [3,6];
+  let bmr;
+  if (gender === 'male') bmr = 10*weight + 6.25*height - 5*age + 5;
+  else bmr = 10*weight + 6.25*height - 5*age - 161;
+  const tdee = bmr * ACTIVITY_MULT[activity];
+  let target = tdee + GOAL_OFFSET[goal];
+  target = Math.max(1200, Math.round(target / 10) * 10);
+
+  const { proteinG, fatG, carbG } = macrosForTarget(target, weight, goal);
+  const bmi = Math.round((weight / ((height/100)**2)) * 10) / 10;
+
+  return { gender, age, height, weight, activity, goal, restDays,
+    targetWeight: (targetWeight && targetWeight > 0) ? targetWeight : null,
+    focusAreas: Array.isArray(focusAreas) ? focusAreas : [],
+    tdee: Math.round(tdee), bmr: Math.round(bmr), target: Math.round(target), proteinG, fatG, carbG, bmi };
+}
+
+/* =========================================================
+   ONBOARDING
+========================================================= */
+let obDraft = {};
+let obStepIdx = 0;
+const OB_STEPS = ['gender','age','height','weight','activity','goal','focusAreas','targetWeight','restDays','result'];
+
+function renderOnboarding(){
+  const wrap = document.getElementById('obSteps');
+  const progWrap = document.getElementById('obProgress');
+  progWrap.innerHTML = OB_STEPS.slice(0,-1).map((_,i) =>
+    `<span class="${i <= obStepIdx ? 'on' : ''}"></span>`).join('');
+  document.getElementById('onboarding').scrollTop = 0;
+
+  const step = OB_STEPS[obStepIdx];
+  let html = '';
+
+  if (step === 'gender') {
+    html = obShell(t('obGenderQ'), `
+      <div class="ob-row2">
+        <div class="ob-opt ${obDraft.gender==='male'?'selected':''}" data-set="gender" data-val="male"><div class="t">🙋‍♂️ ${t('male')}</div></div>
+        <div class="ob-opt ${obDraft.gender==='female'?'selected':''}" data-set="gender" data-val="female"><div class="t">🙋‍♀️ ${t('female')}</div></div>
+      </div>`, !!obDraft.gender);
+  } else if (step === 'age') {
+    html = obShell(t('obAgeQ'), `<input class="ob-input" id="obInput" type="number" inputmode="numeric" placeholder="25" value="${obDraft.age||''}">`, !!obDraft.age);
+  } else if (step === 'height') {
+    html = obShell(t('obHeightQ'), `<input class="ob-input" id="obInput" type="number" inputmode="numeric" placeholder="170" value="${obDraft.height||''}">`, !!obDraft.height);
+  } else if (step === 'weight') {
+    html = obShell(t('obWeightQ'), `<input class="ob-input" id="obInput" type="number" inputmode="decimal" placeholder="70" value="${obDraft.weight||''}">`, !!obDraft.weight);
+  } else if (step === 'activity') {
+    html = obShell(t('obActivityQ'), `
+      <div class="ob-options">
+        ${optCard('activity','low', t('actLow'), t('actLowD'))}
+        ${optCard('activity','mid', t('actMid'), t('actMidD'))}
+        ${optCard('activity','high', t('actHigh'), t('actHighD'))}
+      </div>`, !!obDraft.activity);
+  } else if (step === 'goal') {
+    html = obShell(t('obGoalQ'), `
+      <div class="ob-options">
+        ${optCard('goal','lose', t('goalLose'), t('goalLoseD'))}
+        ${optCard('goal','recomp', t('goalRecomp'), t('goalRecompD'))}
+        ${optCard('goal','muscle', t('goalMuscle'), t('goalMuscleD'))}
+        ${optCard('goal','leanBulk', t('goalLeanBulk'), t('goalLeanBulkD'))}
+        ${optCard('goal','gain', t('goalGain'), t('goalGainD'))}
+      </div>`, !!obDraft.goal);
+  } else if (step === 'focusAreas') {
+    const fa = obDraft.focusAreas || [];
+    html = obShell(t('obFocusQ'), `
+      <div class="bodymap-wrap">
+        ${bodyMapSVG(fa)}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${t('focusAreasNote')}</div>
+      ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}`,
+      true);
+  } else if (step === 'targetWeight') {
+    html = obShell(t('obTargetWeightQ'), `
+      <input class="ob-input" id="obInput" type="number" inputmode="decimal" placeholder="${t('targetWeightPlaceholder')}" value="${obDraft.targetWeight||''}">
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${t('targetWeightNote')}</div>`,
+      obDraft.targetWeight == null || obDraft.targetWeight > 0);
+  } else if (step === 'restDays') {
+    // UI-wise the user picks which days they WILL train (trainDays) --
+    // easier to reason about than picking rest days. We invert it to
+    // restDays only when saving the profile (see computeProfile).
+    const td = obDraft.trainDays || [];
+    html = obShell(t('obRestDaysQ'), `
+      <div class="ob-options">
+        ${DAY_LABELS[lang].full.map((d,i) => `<div class="ob-opt ${td.includes(i)?'selected':''}" data-restday="${i}"><div class="t">${d}</div></div>`).join('')}
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${td.length} ${t('selectedCount')} (${lang==='tr'?'opsiyonel':'optional'})</div>`,
+      true);
+  } else if (step === 'result') {
+    const p = computeProfile(obDraft);
+    html = `
+      <div class="ob-result">
+        <div class="emoji">🎉</div>
+        <div class="ob-q">${t('resultTitle')}</div>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:20px;">${t('resultSub')}</div>
+        <div class="card" style="text-align:left;">
+          <h3>${t('kcalTarget')}</h3>
+          <div class="big-stat">${p.target}<span class="unit">kcal</span></div>
+          <div class="row-sub">${calorieContextText(p.target, p.tdee)}</div>
+          <div class="stat-grid">
+            <div class="stat-box"><div class="val">${p.proteinG}g</div><div class="lbl">${t('protein')}</div></div>
+            <div class="stat-box"><div class="val">${p.carbG}g</div><div class="lbl">${t('carb')}</div></div>
+            <div class="stat-box"><div class="val">${p.fatG}g</div><div class="lbl">${t('fat')}</div></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">${t('calorieNote')}</div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-btn next" id="obFinishBtn">${t('finish')}</button>
+      </div>`;
+    wrap.innerHTML = html;
+    document.getElementById('obFinishBtn').addEventListener('click', finishOnboarding);
+    attachOnboardingHandlers();
+    return;
+  }
+
+  wrap.innerHTML = html;
+  attachOnboardingHandlers();
+}
+
+// Zone shapes were traced from the actual mannequin photos (measured the
+// body silhouette's left/right edges row by row), so each highlight hugs
+// the real body part instead of spilling onto the background as a plain
+// rectangle would.
+// Coordinates measured directly against the actual mannequin photos (pixel
+// silhouette scan of images/front-view-mannequin.jpg and
+// back-view-mannequin.jpg) rather than guessed, so the colored overlay lines
+// up with the garment edges instead of leaving gray gaps at the collar and
+// shoulder/arm seams.
+const BODY_ZONE_SHAPES = {
+  shoulders: "polygon(45% 11%, 55% 11%, 63% 25%, 36% 25%)",
+  chest:     "polygon(39% 25%, 60% 25%, 58% 44%, 41% 44%)",
+  abs:       "polygon(41% 44%, 58% 44%, 59% 56%, 40% 56%)",
+  back:      "polygon(39% 25%, 60% 25%, 58% 46%, 41% 46%)",
+  glutes:    "polygon(39% 50%, 60% 50%, 60% 60%, 39% 60%)",
+  bicepsL:   "polygon(36% 25%, 41% 25%, 35% 54%, 31% 54%)",
+  bicepsR:   "polygon(59% 25%, 64% 25%, 69% 54%, 65% 54%)",
+  legL:      "polygon(38% 55%, 49% 55%, 41% 90%, 37% 90%)",
+  legR:      "polygon(51% 55%, 62% 55%, 61% 90%, 59% 90%)"
+};
+function bodyMapSVG(selected){
+  // Real front/back reference photos with invisible clickable zone overlays
+  // clipped to the actual body-part outline. Keeps the same .bz + data-zone
+  // contract the existing click-delegation code expects.
+  const zoneCls = (id) => 'bz photo-zone' + (selected.includes(id) ? ' sel' : '');
+  const chipCls = (id) => 'bz zone-chip' + (selected.includes(id) ? ' sel' : '');
+  const zoneDiv = (id, shapeKey) => `<div class="${zoneCls(id)}" data-zone="${id}" style="clip-path:${BODY_ZONE_SHAPES[shapeKey]};"></div>`;
+
+  const frontZones = zoneDiv('shoulders','shoulders') + zoneDiv('chest','chest') + zoneDiv('abs','abs')
+    + zoneDiv('biceps','bicepsL') + zoneDiv('biceps','bicepsR')
+    + zoneDiv('legs','legL') + zoneDiv('legs','legR');
+  const backZones = zoneDiv('shoulders','shoulders') + zoneDiv('back','back') + zoneDiv('glutes','glutes')
+    + zoneDiv('triceps','bicepsL') + zoneDiv('triceps','bicepsR')
+    + zoneDiv('legs','legL') + zoneDiv('legs','legR');
+
+  const frontHasSel = ['shoulders','chest','abs','biceps','legs'].some(z => selected.includes(z));
+  const backHasSel = ['shoulders','back','glutes','triceps','legs'].some(z => selected.includes(z));
+  const frontFig = `<div class="bodymap-photo${frontHasSel ? ' has-sel' : ''}"><img src="images/front-view-mannequin.jpg" alt="">${frontZones}</div>`;
+  const backFig = `<div class="bodymap-photo${backHasSel ? ' has-sel' : ''}"><img src="images/back-view-mannequin.jpg" alt="">${backZones}</div>`;
+
+  // Clickable name chips: same zone ids/click contract as the highlights on
+  // the photo, so tapping a name toggles (and lights up) the same region --
+  // useful since the highlight areas themselves are small on a phone screen.
+  // A small dot next to each label lights up (and the row grows a checkmark)
+  // when selected, so the list reads like a legend rather than a plain
+  // button grid; hovering a name also previews the highlight on the photo
+  // (see the mouseover/mouseout delegation in attachOnboardingHandlers).
+  const chip = (id, label) => `<div class="${chipCls(id)}" data-zone="${id}"><span class="zone-chip-dot"></span>${label}</div>`;
+  const chipLabel = (tr, en) => lang === 'tr' ? tr : en;
+  const frontChips = `<div class="zone-chip-row">
+      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
+      ${chip('chest', chipLabel('Göğüs','Chest'))}
+      ${chip('abs', chipLabel('Karın','Abs'))}
+      ${chip('biceps', chipLabel('Biceps','Biceps'))}
+      ${chip('legs', chipLabel('Bacak','Legs'))}
+    </div>`;
+  const backChips = `<div class="zone-chip-row">
+      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
+      ${chip('back', chipLabel('Sırt','Back'))}
+      ${chip('glutes', chipLabel('Kalça','Glutes'))}
+      ${chip('triceps', chipLabel('Triceps','Triceps'))}
+      ${chip('legs', chipLabel('Bacak','Legs'))}
+    </div>`;
+
+  const countLabel = selected.length
+    ? (lang === 'tr' ? `${selected.length} bölge seçili` : `${selected.length} area(s) selected`)
+    : (lang === 'tr' ? 'Henüz seçim yok' : 'Nothing selected yet');
+
+  return `<div class="bodymap-card">
+    <div class="bodymap-header">
+      <div class="bodymap-title">${lang==='tr'?'Vücut Haritası':'Body Map'}</div>
+      <div class="bodymap-count-pill${selected.length ? ' active' : ''}">${countLabel}</div>
+    </div>
+    <div class="bodymap-row">
+      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Ön':'Front'}</div>${frontFig}${frontChips}</div>
+      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Arka':'Back'}</div>${backFig}${backChips}</div>
+    </div>
+    <div class="bodymap-legend">${lang==='tr'?'Çalıştırmak istediğin bölgelere dokun (ya da isme tıkla)':'Tap the areas you want to work on (or tap a name)'}</div>
+  </div>`;
+}
+function toggleFocusZone(zone){
+  let fa = obDraft.focusAreas || [];
+  if (fa.includes(zone)) {
+    fa = fa.filter(z => z !== zone);
+  } else {
+    fa = [...fa, zone];
+  }
+  obDraft.focusAreas = fa;
+  renderOnboarding();
+}
+
+function obShell(question, body, canProceed){
+  return `
+    <div class="ob-eyebrow">${t('obEyebrow')} ${obStepIdx+1}/${OB_STEPS.length-1}</div>
+    <div class="ob-q">${question}</div>
+    ${body}
+    <div class="ob-nav">
+      ${obStepIdx>0 ? `<button class="ob-btn back" id="obBackBtn">←</button>` : ''}
+      <button class="ob-btn next" id="obNextBtn" ${canProceed?'':'disabled'}>${t('next')}</button>
+    </div>`;
+}
+function optCard(field, val, title, desc){
+  const selected = obDraft[field] === val ? 'selected' : '';
+  return `<div class="ob-opt ${selected}" data-set="${field}" data-val="${val}"><div class="t">${title}</div><div class="d">${desc}</div></div>`;
+}
+
+function attachOnboardingHandlers(){
+  document.querySelectorAll('#obSteps .ob-opt[data-set]').forEach(el => {
+    el.addEventListener('click', () => {
+      const field = el.dataset.set, val = el.dataset.val;
+      obDraft[field] = val;
+      renderOnboarding();
+    });
+  });
+  document.querySelectorAll('#obSteps .bz[data-zone]').forEach(el => {
+    el.addEventListener('click', () => toggleFocusZone(el.dataset.zone));
+  });
+  // Hovering (or touch-pressing) either a name chip or the highlight area on
+  // the photo previews that muscle everywhere it appears -- both photo
+  // overlays for that zone AND its name chip(s) light up together, so the
+  // body map feels like one connected, responsive thing instead of two
+  // separate pictures with an unrelated button list underneath.
+  document.querySelectorAll('#obSteps .bz[data-zone]').forEach(el => {
+    const zone = el.dataset.zone;
+    const setHint = (on) => {
+      document.querySelectorAll(`#obSteps .bz[data-zone="${zone}"]`).forEach(match => {
+        match.classList.toggle('hint', on);
+      });
+    };
+    el.addEventListener('mouseenter', () => setHint(true));
+    el.addEventListener('mouseleave', () => setHint(false));
+    el.addEventListener('touchstart', () => setHint(true), { passive: true });
+    el.addEventListener('touchend', () => setHint(false));
+  });
+  document.querySelectorAll('#obSteps .ob-opt[data-restday]').forEach(el => {
+    el.addEventListener('click', () => {
+      const day = parseInt(el.dataset.restday, 10);
+      let td = obDraft.trainDays || [];
+      if (td.includes(day)) {
+        td = td.filter(d => d !== day);
+      } else {
+        td = [...td, day];
+      }
+      obDraft.trainDays = td;
+      renderOnboarding();
+    });
+  });
+  const input = document.getElementById('obInput');
+  if (input) {
+    input.addEventListener('input', () => {
+      const step = OB_STEPS[obStepIdx];
+      const val = parseFloat(input.value);
+      obDraft[step] = isNaN(val) ? null : val;
+      const nextBtn = document.getElementById('obNextBtn');
+      if (nextBtn) {
+        if (step === 'targetWeight') {
+          // optional field: empty is fine, but a typed value must be positive
+          nextBtn.disabled = obDraft[step] != null && obDraft[step] <= 0;
+        } else {
+          nextBtn.disabled = !obDraft[step] || obDraft[step] <= 0;
+        }
+      }
+    });
+    setTimeout(() => input.focus(), 50);
+  }
+  const backBtn = document.getElementById('obBackBtn');
+  if (backBtn) backBtn.addEventListener('click', () => { obStepIdx--; renderOnboarding(); });
+  const nextBtn = document.getElementById('obNextBtn');
+  if (nextBtn) nextBtn.addEventListener('click', () => { obStepIdx++; renderOnboarding(); });
+}
+
+function finishOnboarding(){
+  profile = computeProfile(obDraft);
+  // Baseline for the weekly auto-adjustment: the weight/date we last measured
+  // progress from. Reset whenever the profile is (re)created.
+  profile.calBaseline = { date: dateKey(0), weight: profile.weight };
+  saveProfile();
+  weightLog[dateKey(0)] = profile.weight;
+  saveWeightLog();
+  document.getElementById('onboarding').style.display = 'none';
+  showMainUI();
+}
+
+function startOnboarding(){
+  obDraft = {}; obStepIdx = 0;
+  document.getElementById('onboarding').style.display = 'flex';
+  document.getElementById('mainTabs').style.display = 'none';
+  document.getElementById('contentScroll').style.display = 'none';
+  renderOnboarding();
+}
+
+/* =========================================================
+   MAIN UI
+========================================================= */
+function showMainUI(){
+  document.getElementById('mainTabs').style.display = 'flex';
+  document.getElementById('contentScroll').style.display = 'block';
+  renderToday();
+  renderWeek();
+  renderNutrition();
+  renderProfileTab();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+function getDayProgress(key){
+  return progress[key] || {};
+}
+function isDayFullyDone(dayIdx, key){
+  const list = exercisesForDay(profile, dayIdx);
+  if (list.length === 0) return true; // rest day
+  const dp = getDayProgress(key);
+  return list.every(id => dp[id]);
+}
+
+function renderToday(){
+  const panel = document.getElementById('panel-today');
+  const idx = todayIndex();
+  const key = dateKey(0);
+  const list = exercisesForDay(profile, idx);
+  const dp = getDayProgress(key);
+  const doneCount = list.filter(id => dp[id]).length;
+  const pct = list.length ? Math.round((doneCount/list.length)*100) : 100;
+
+  let body = '';
+  if (list.length === 0) {
+    body = `<div class="card rest-card"><div class="emoji">😴</div><div>${t('restDayMsg')}</div></div>`;
+  } else {
+    body = `<div class="card">
+      ${isFocusDay(profile, idx) ? `<div class="focus-day-badge">${t('focusDayBadge')}</div>` : ''}
+      <div class="day-label">${DAY_LABELS[lang].full[idx]}</div>
+      <div class="day-sub">${doneCount}/${list.length} ${t('reps')}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>` +
+    list.map(id => exerciseRow(id, dp[id], list)).join('') +
+    `<button class="complete-day-btn" id="completeDayBtn" ${pct===100?'':'disabled'}>${pct===100? t('dayCompleted') : t('completeDay')}</button>`;
+  }
+  panel.innerHTML = `<h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('todaysWorkout')}</h3>` + body;
+
+  panel.querySelectorAll('.ex-row').forEach(row => {
+    row.addEventListener('click', () => openExerciseModal(row.dataset.id, key, list));
+  });
+  panel.querySelectorAll('.ex-alt-line').forEach(line => {
+    line.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openExerciseModal(line.dataset.previewId, key, list);
+      applyModalPreview(line.dataset.previewId, parseVariant(line.dataset.previewVariant));
+    });
+  });
+  panel.querySelectorAll('.use-alt-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setExerciseVariant(btn.dataset.swapId, parseVariant(btn.dataset.swapVariant));
+      renderToday();
+    });
+  });
+}
+
+function exerciseRow(id, done, dayList){
+  const ex = EX[id];
+  const durUnit = ex.durationUnit === 'min' ? t('min') : t('sec');
+  const goalSR = goalAdjustedNumbers(ex, profile && profile.goal);
+  const meta = ex.type === 'reps' ? `${goalSR.sets} ${t('set')} × ${goalSR.reps} ${t('reps')}` : (goalSR.sets > 1 ? `${goalSR.sets} ${t('set')} × ${goalSR.duration} ${durUnit}` : `${goalSR.duration} ${durUnit}`);
+  const active = activeVariant(id);
+  const opts = swapOptions(id, dayList);
+  const badgeHtml = active.variant !== 0 ? `<div class="ex-swapped-badge">🔁 ${t('usingAltBadge')}</div>` : '';
+  const optsHtml = opts.map(o => `<div class="ex-alt-line" data-preview-id="${id}" data-preview-variant="${o.variant}">
+      <div class="ex-alt">🔁 ${o.variant===0 ? t('backToMainLabel') : (t('alternativeLabel')+': '+o.name)}</div>
+      <button class="use-alt-btn" data-swap-id="${id}" data-swap-variant="${o.variant}">${t('useThisLabel')}</button>
+    </div>`).join('');
+  return `<div class="ex-row ${done?'done':''}" data-id="${id}">
+    <div class="ex-thumb">${exerciseThumb(id, done ? '#7A2E33' : '#E0293D')}</div>
+    <div class="ex-info">
+      <div class="ex-name">${active.name}</div>
+      <div class="ex-meta">${meta} · ${ex.muscle[lang]}</div>
+      ${badgeHtml}
+      ${optsHtml}
+    </div>
+    <div class="ex-check">✓</div>
+  </div>`;
+}
+
+function renderWeek(){
+  const panel = document.getElementById('panel-week');
+  const idx = todayIndex();
+  let chips = '<div class="week-strip">';
+  for (let i=0;i<7;i++){
+    const key = dateKeyForWeekdayThisWeek(i);
+    const list = exercisesForDay(profile, i);
+    const isRest = list.length === 0;
+    const done = isDayFullyDone(i, key) && !isRest;
+    chips += `<div class="week-chip ${isRest?'rest':''} ${done?'done':''} ${i===idx?'active':''}" data-idx="${i}">
+      <div class="wd">${DAY_LABELS[lang].short[i]}</div>
+      <div class="wt">${isRest ? '😴' : (done?'✓':'•')}</div>
+    </div>`;
+  }
+  chips += '</div>';
+  panel.innerHTML = `<h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('weeklyProgram')}</h3>` + chips + `<div id="weekDayDetail"></div>`;
+  panel.querySelectorAll('.week-chip').forEach(chip => {
+    chip.addEventListener('click', () => renderWeekDayDetail(parseInt(chip.dataset.idx,10)));
+  });
+  renderWeekDayDetail(idx);
+}
+
+let currentWeekDayIdx = null;
+function renderWeekDayDetail(i){
+  currentWeekDayIdx = i;
+  const detail = document.getElementById('weekDayDetail');
+  const key = dateKeyForWeekdayThisWeek(i);
+  const list = exercisesForDay(profile, i);
+  const dp = getDayProgress(key);
+  let html = (isFocusDay(profile, i) ? `<div class="focus-day-badge" style="margin-top:14px;">${t('focusDayBadge')}</div>` : '') +
+    `<div class="day-label" ${isFocusDay(profile, i) ? '' : 'style="margin-top:14px;"'}>${DAY_LABELS[lang].full[i]}</div>`;
+  if (list.length === 0) {
+    html += `<div class="card rest-card"><div class="emoji">😴</div><div>${t('restDayMsg')}</div></div>`;
+  } else {
+    html += list.map(id => exerciseRow(id, dp[id], list)).join('');
+  }
+  detail.innerHTML = html;
+  detail.querySelectorAll('.ex-row').forEach(row => {
+    row.addEventListener('click', () => openExerciseModal(row.dataset.id, key, list));
+  });
+  detail.querySelectorAll('.ex-alt-line').forEach(line => {
+    line.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openExerciseModal(line.dataset.previewId, key, list);
+      applyModalPreview(line.dataset.previewId, parseVariant(line.dataset.previewVariant));
+    });
+  });
+  detail.querySelectorAll('.use-alt-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setExerciseVariant(btn.dataset.swapId, parseVariant(btn.dataset.swapVariant));
+      renderWeekDayDetail(i);
+    });
+  });
+}
+
+/* =========================================================
+   NUTRITION / CALORIE CALCULATOR
+========================================================= */
+function foodName(food){ return food[lang]; }
+let nutritionSearchQuery = '';
+
+function getMealLog(key){ return nutritionLog[key] || []; }
+function mealTotals(key){
+  return getMealLog(key).reduce((acc, m) => {
+    acc.kcal += m.kcal; acc.p += m.p; acc.c += m.c; acc.f += m.f;
+    return acc;
+  }, { kcal:0, p:0, c:0, f:0 });
+}
+
+// Traffic-light status for a consumed/target ratio. `allowLowWarn` gates the
+// "too little so far" nudge behind the time of day, since we have no way to
+// know whether the day is "over" otherwise.
+function macroStatus(consumed, target, allowLowWarn){
+  const pct = target > 0 ? (consumed / target) * 100 : 0;
+  const hour = new Date().getHours();
+  let color = 'var(--accent)', warn = null;
+  if (pct > 115) { color = 'var(--danger)'; warn = 'over'; }
+  else if (allowLowWarn && hour >= 18 && pct < 50) { color = 'var(--warn)'; warn = 'low'; }
+  return { pct: Math.min(100, Math.round(pct)), rawPct: pct, color, warn };
+}
+function macroCardHtml(title, consumed, target, unit, allowLowWarn){
+  const st = macroStatus(consumed, target, allowLowWarn);
+  const remaining = Math.max(0, Math.round(target - consumed));
+  const warnHtml = st.warn === 'over'
+    ? `<div class="macro-warn over">⚠ ${t('macroOverWarn')}</div>`
+    : st.warn === 'low'
+      ? `<div class="macro-warn low">⚠ ${t('macroLowWarn')}</div>`
+      : '';
+  return `<div class="macro-card">
+    <div class="macro-head">
+      <span class="mtitle">${title}</span>
+      <span class="mnums"><b>${Math.round(consumed)}</b> / ${Math.round(target)}${unit} · ${t('remaining')} ${remaining}${unit}</span>
+    </div>
+    <div class="macro-bar"><div class="fill" style="width:${st.pct}%;background:${st.color};"></div></div>
+    ${warnHtml}
+  </div>`;
+}
+
+function renderNutrition(){
+  const panel = document.getElementById('panel-nutrition');
+  const key = dateKey(0);
+  const totals = mealTotals(key);
+  const log = getMealLog(key);
+
+  panel.innerHTML = `
+    <h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('nutritionTitle')}</h3>
+    <div class="card">
+      ${macroCardHtml(t('calorieWord'), totals.kcal, profile.target, ' kcal', true)}
+      ${macroCardHtml(t('protein'), totals.p, profile.proteinG, 'g', true)}
+      ${macroCardHtml(t('carb'), totals.c, profile.carbG, 'g', false)}
+      ${macroCardHtml(t('fat'), totals.f, profile.fatG, 'g', false)}
+    </div>
+    <button class="complete-day-btn" id="openAddMealBtn" style="margin-bottom:14px;">+ ${t('whatDidYouEat')}</button>
+    <div id="addMealSection" style="display:none;">
+      <input class="food-search" id="foodSearchInput" placeholder="${t('searchFoodPlaceholder')}" value="${nutritionSearchQuery}">
+      <div id="foodListWrap"></div>
+    </div>
+    <h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:16px 0 8px;">${t('todaysMeals')}</h3>
+    <div id="mealListWrap">${renderMealListHtml(log)}</div>
+  `;
+
+  renderFoodList();
+  document.getElementById('foodSearchInput').addEventListener('input', (e) => {
+    nutritionSearchQuery = e.target.value;
+    renderFoodList();
+  });
+  const openBtn = document.getElementById('openAddMealBtn');
+  const section = document.getElementById('addMealSection');
+  openBtn.addEventListener('click', () => {
+    const showing = section.style.display !== 'none';
+    section.style.display = showing ? 'none' : 'block';
+    openBtn.style.display = showing ? 'block' : 'none';
+    if (!showing) document.getElementById('foodSearchInput').focus();
+  });
+  attachMealRemoveHandlers();
+}
+
+function renderFoodList(){
+  const wrap = document.getElementById('foodListWrap');
+  if (!wrap) return;
+  const q = nutritionSearchQuery.trim().toLocaleLowerCase('tr');
+  const pool = allFoods();
+  const filtered = q ? pool.filter(f => foodName(f).toLocaleLowerCase('tr').includes(q)) : pool.slice(0, 8);
+  let html = '';
+  if (filtered.length === 0) {
+    html = `<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px 0 10px;">${t('noFoodFound')}</div>`;
+  } else {
+    html = filtered.map(f => `
+      <div class="food-row" data-food="${f.id}">
+        <div>
+          <div class="fname">${foodName(f)}</div>
+          <div class="fkcal">${f.kcal} kcal / ${t('per100g')}</div>
+        </div>
+        <div class="fadd">+</div>
+      </div>`).join('');
+  }
+  if (q) {
+    html += `<button class="btn-secondary" id="addCustomFoodBtn">+ ${t('addCustomFood')}</button>`;
+  }
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('.food-row').forEach(row => {
+    row.addEventListener('click', () => openFoodModal(row.dataset.food));
+  });
+  const customBtn = document.getElementById('addCustomFoodBtn');
+  if (customBtn) customBtn.addEventListener('click', () => openCustomFoodModal(nutritionSearchQuery));
+}
+
+function renderMealListHtml(log){
+  if (log.length === 0) return `<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">${t('noMealsYet')}</div>`;
+  return log.map((m, i) => {
+    const food = allFoods().find(f => f.id === m.foodId);
+    return `<div class="meal-row">
+      <div>
+        <div class="mname">${food ? foodName(food) : m.foodId}</div>
+        <div class="mmeta">${m.grams} g</div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="mkcal">${Math.round(m.kcal)} kcal</div>
+        <button class="mrm" data-idx="${i}">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function attachMealRemoveHandlers(){
+  const wrap = document.getElementById('mealListWrap');
+  if (!wrap) return;
+  wrap.querySelectorAll('.mrm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = dateKey(0);
+      const idx = parseInt(btn.dataset.idx, 10);
+      nutritionLog[key].splice(idx, 1);
+      saveNutritionLog();
+      renderNutrition();
+    });
+  });
+}
+
+let currentFoodId = null;
+const foodModal = document.getElementById('foodModal');
+const foodGramsInput = document.getElementById('foodGramsInput');
+
+function openFoodModal(foodId){
+  currentFoodId = foodId;
+  const food = allFoods().find(f => f.id === foodId);
+  document.getElementById('foodModalName').textContent = foodName(food);
+  document.getElementById('foodModalPer100').textContent = `${food.kcal} kcal · P ${food.p}g · C ${food.c}g · F ${food.f}g (${t('per100g')})`;
+  foodGramsInput.value = 100;
+  updateFoodCalc();
+  foodModal.classList.add('open');
+}
+function updateFoodCalc(){
+  const food = allFoods().find(f => f.id === currentFoodId);
+  if (!food) return;
+  const grams = parseFloat(foodGramsInput.value) || 0;
+  const ratio = grams / 100;
+  const kcal = Math.round(food.kcal * ratio);
+  const p = Math.round(food.p * ratio * 10) / 10;
+  const c = Math.round(food.c * ratio * 10) / 10;
+  const f = Math.round(food.f * ratio * 10) / 10;
+  document.getElementById('foodModalCalc').innerHTML = `
+    <div class="box"><div class="v">${kcal}</div><div class="l">kcal</div></div>
+    <div class="box"><div class="v">${p}g</div><div class="l">${t('protein')}</div></div>
+    <div class="box"><div class="v">${c}g</div><div class="l">${t('carb')}</div></div>`;
+}
+foodGramsInput.addEventListener('input', updateFoodCalc);
+document.getElementById('foodModalCloseBtn').addEventListener('click', () => foodModal.classList.remove('open'));
+foodModal.addEventListener('click', (e) => { if (e.target === foodModal) foodModal.classList.remove('open'); });
+document.getElementById('foodAddBtn').addEventListener('click', () => {
+  const food = allFoods().find(f => f.id === currentFoodId);
+  if (!food) return;
+  const grams = parseFloat(foodGramsInput.value) || 0;
+  if (grams <= 0) return;
+  const ratio = grams / 100;
+  const key = dateKey(0);
+  if (!nutritionLog[key]) nutritionLog[key] = [];
+  nutritionLog[key].push({
+    foodId: food.id, grams,
+    kcal: food.kcal * ratio, p: food.p * ratio, c: food.c * ratio, f: food.f * ratio
+  });
+  saveNutritionLog();
+  foodModal.classList.remove('open');
+  renderNutrition();
+});
+
+/* --- Custom (user-added) food modal --- */
+const customFoodModal = document.getElementById('customFoodModal');
+const customFoodNameInput = document.getElementById('customFoodNameInput');
+const customFoodKcalInput = document.getElementById('customFoodKcalInput');
+
+function openCustomFoodModal(prefillName){
+  document.getElementById('customFoodTitleText').textContent = t('customFoodTitle');
+  document.getElementById('customFoodNameLabel').textContent = t('customFoodName');
+  document.getElementById('customFoodKcalLabel').textContent = t('customFoodKcal');
+  document.getElementById('customFoodSaveBtn').textContent = t('saveAndAdd');
+  customFoodNameInput.value = prefillName || '';
+  customFoodKcalInput.value = '';
+  customFoodModal.classList.add('open');
+  setTimeout(() => customFoodKcalInput.focus(), 50);
+}
+document.getElementById('customFoodCloseBtn').addEventListener('click', () => customFoodModal.classList.remove('open'));
+customFoodModal.addEventListener('click', (e) => { if (e.target === customFoodModal) customFoodModal.classList.remove('open'); });
+document.getElementById('customFoodSaveBtn').addEventListener('click', () => {
+  const name = customFoodNameInput.value.trim();
+  const kcal = parseFloat(customFoodKcalInput.value);
+  if (!name || !kcal || kcal <= 0) return;
+  const id = 'custom_' + Date.now();
+  const food = { id, tr: name, en: name, kcal, p: 0, c: 0, f: 0 };
+  customFoods.push(food);
+  saveCustomFoods();
+  customFoodModal.classList.remove('open');
+  openFoodModal(id);
+});
+
+function renderProfileTab(){
+  const panel = document.getElementById('panel-profile');
+  const lastEntry = lastWeightEntryKey();
+  const daysSince = lastEntry ? daysBetweenKeys(lastEntry[0], dateKey(0)) : null;
+  const due = isCheckinDue();
+  const goalReached = checkGoalReached();
+  const wp = weightProgress();
+  const achievedLabel = (profile.goal === 'lose' || profile.goal === 'recomp') ? t('lostLabel') : t('gainedLabel');
+
+  const dismissedAt = parseInt(localStorage.getItem(MEASURE_DISMISS_KEY) || '0', 10);
+  const showMeasureReminder = Object.keys(measureLog).length === 0 && (Date.now() - dismissedAt > 14*24*3600*1000);
+
+  panel.innerHTML = `
+    <h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('yourProfile')}</h3>
+    <div class="card">
+      <div class="big-stat">${profile.target}<span class="unit">kcal / ${lang==='tr'?'gün':'day'}</span></div>
+      <div class="row-sub">${calorieContextText(profile.target, profile.tdee)}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="val">${profile.proteinG}g</div><div class="lbl">${t('protein')}</div></div>
+        <div class="stat-box"><div class="val">${profile.carbG}g</div><div class="lbl">${t('carb')}</div></div>
+        <div class="stat-box"><div class="val">${profile.fatG}g</div><div class="lbl">${t('fat')}</div></div>
+      </div>
+    </div>
+    <div class="card weight-card">
+      <h3>${t('weightTracking')}</h3>
+      <div class="big-stat">${profile.weight}<span class="unit">kg</span></div>
+      ${wp ? `
+        <div class="row-sub">${t('startWeightLabel')} ${wp.startWeight}kg → ${t('targetWeightLabel')} ${profile.targetWeight}kg ${goalReached ? '· ' + t('goalReachedShort') : ''}</div>
+        <div class="progress-bar" style="margin-top:6px;"><div class="progress-fill" style="width:${wp.pct}%"></div></div>
+        <div class="stat-grid" style="margin-top:10px;">
+          <div class="stat-box"><div class="val" style="color:var(--accent);">${wp.achievedKg}kg</div><div class="lbl">${achievedLabel}</div></div>
+          <div class="stat-box"><div class="val">${wp.remainingKg}kg</div><div class="lbl">${t('remainingLabel')}</div></div>
+          <div class="stat-box"><div class="val">%${wp.pct}</div><div class="lbl">${t('percentCompleteLabel')}</div></div>
+        </div>
+      ` : ''}
+      <div class="row-sub" style="margin-top:10px;">${t('lastWeighIn')}: ${daysSince === null ? '—' : (daysSince === 0 ? t('today2') : daysSince + ' ' + t('daysAgo'))}</div>
+      <div class="row-sub">${t('weeklyRecommendedNote')}</div>
+      ${due ? `<div class="weight-due-banner">⏰ ${t('checkinDueBadge')}</div>` : ''}
+      <button class="complete-day-btn ${due ? 'checkin-due-btn' : ''}" id="openCheckinBtn" style="margin-top:12px;">${t('weighInBtn')}</button>
+    </div>
+    ${showMeasureReminder ? `
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;line-height:1.4;margin-bottom:12px;">${t('measureReminderTitle')}</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-secondary" id="measureLaterBtn" style="margin-top:0;flex:1;">${t('measureReminderLater')}</button>
+        <button class="complete-day-btn" id="measureNowBtn" style="margin-top:0;flex:1;">${t('measureReminderNow')}</button>
+      </div>
+    </div>` : ''}
+    <div class="card">
+      <div class="profile-row"><span class="k">${t('gender')}</span><span class="v">${profile.gender==='male'?t('male'):t('female')}</span></div>
+      <div class="profile-row"><span class="k">${t('age')}</span><span class="v">${profile.age}</span></div>
+      <div class="profile-row"><span class="k">${t('height')}</span><span class="v">${profile.height} cm</span></div>
+      <div class="profile-row"><span class="k">${t('weight')}</span><span class="v">${profile.weight} kg</span></div>
+      <div class="profile-row"><span class="k">${t('activity')}</span><span class="v">${ACTIVITY_LABELS[profile.activity][lang]}</span></div>
+      <div class="profile-row"><span class="k">${t('goal')}</span><span class="v">${GOAL_LABELS[profile.goal][lang]}</span></div>
+      <div class="profile-row"><span class="k">${t('bmi')}</span><span class="v">${profile.bmi}</span></div>
+    </div>
+    <button class="btn-secondary" id="editProfileBtn">${t('editProfile')}</button>
+  `;
+  document.getElementById('editProfileBtn').addEventListener('click', startOnboarding);
+  document.getElementById('openCheckinBtn').addEventListener('click', () => openCheckinModal(false));
+  const measureNowBtn = document.getElementById('measureNowBtn');
+  if (measureNowBtn) measureNowBtn.addEventListener('click', () => openCheckinModal(true));
+  const measureLaterBtn = document.getElementById('measureLaterBtn');
+  if (measureLaterBtn) measureLaterBtn.addEventListener('click', () => {
+    localStorage.setItem(MEASURE_DISMISS_KEY, String(Date.now()));
+    renderProfileTab();
+  });
+}
+
+/* =========================================================
+   EXERCISE MODAL
+========================================================= */
+let currentModalExId = null, currentModalKey = null;
+const exerciseModal = document.getElementById('exerciseModal');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const modalDoneBtn = document.getElementById('modalDoneBtn');
+
+// Splits the exercise's single-sentence "how" description into short,
+// numbered steps for the modal's step list (matching the checklist style
+// of apps like Strong/Hevy), instead of a single dense paragraph.
+function howSteps(text){
+  return text.split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+    .map(s => /[.!?]$/.test(s) ? s : s + '.');
+}
+
+function openExerciseModal(id, key, dayList){
+  currentModalExId = id; currentModalKey = key;
+  const ex = EX[id];
+  const active = activeVariant(id);
+  document.getElementById('figureMuscleMini').innerHTML = muscleMiniWidget(id);
+  const photoWrap = document.getElementById('modalExPhotoWrap');
+  const photoInfo = imageInfoForOptionVariant(id, exerciseSwaps[id] || 0);
+  const noPhotoNote = document.getElementById('modalNoPhotoNote');
+  if (photoInfo.src) {
+    document.getElementById('modalExPhoto').src = photoInfo.src;
+    photoWrap.style.display = 'block';
+    noPhotoNote.style.display = photoInfo.isFallback ? 'block' : 'none';
+    noPhotoNote.textContent = photoInfo.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
+  } else {
+    photoWrap.style.display = 'none';
+  }
+  document.getElementById('modalExName').textContent = active.name;
+  document.getElementById('modalExMuscle').textContent = ex.muscle[lang];
+  document.getElementById('modalExHow').innerHTML = howSteps(ex.how[lang])
+    .map((step, i) => `<li><span class="step-num">${i + 1}</span><span>${step}</span></li>`)
+    .join('');
+  const altEl = document.getElementById('modalExAlt');
+  const opts = swapOptions(id, dayList);
+  if (opts.length > 0) {
+    altEl.style.display = 'block';
+    const swappedNote = active.variant !== 0 ? `<div class="modal-swapped-note">🔁 ${t('usingAltBadge')}</div>` : '';
+    const rows = opts.map((o, i) => `<div class="modal-alt-row" data-preview-id="${id}" data-preview-variant="${o.variant}">
+        <span class="alt-name-text">${o.variant===0 ? t('backToMainLabel') : (t('alternativeLabel')+': '+o.name)}</span>
+        <button class="use-alt-btn" data-swap-id="${id}" data-swap-variant="${o.variant}">${t('useThisLabel')}</button>
+      </div>`).join('');
+    altEl.innerHTML = swappedNote + rows;
+    // Clicking a row (name) just PREVIEWS that alternative's photo + name --
+    // it does not change the actual exercise choice. Only "Kullan" commits
+    // the swap, so the user can check the equipment/photo of a few
+    // alternatives before deciding which one they can actually do.
+    altEl.querySelectorAll('.modal-alt-row').forEach(row => {
+      row.addEventListener('click', () => {
+        applyModalPreview(row.dataset.previewId, parseVariant(row.dataset.previewVariant));
+      });
+    });
+    altEl.querySelectorAll('.use-alt-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setExerciseVariant(btn.dataset.swapId, parseVariant(btn.dataset.swapVariant));
+        openExerciseModal(id, key, dayList);
+        renderToday();
+        if (currentWeekDayIdx !== null) renderWeekDayDetail(currentWeekDayIdx);
+      });
+    });
+  } else {
+    altEl.style.display = 'none';
+  }
+  const modalDurUnit = ex.durationUnit === 'min' ? t('min') : t('sec');
+  const modalGoalSR = goalAdjustedNumbers(ex, profile && profile.goal);
+  const setsHtml = ex.type === 'reps'
+    ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.reps}</div><div class="l">${t('reps')}</div></div>`
+    : (modalGoalSR.sets > 1
+      ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`
+      : `<div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`);
+  document.getElementById('modalExSets').innerHTML = setsHtml;
+  const done = !!getDayProgress(key)[id];
+  updateModalDoneBtn(done);
+  exerciseModal.classList.add('open');
+}
+function updateModalDoneBtn(done){
+  modalDoneBtn.textContent = done ? t('alreadyDone') : t('markDone');
+  modalDoneBtn.classList.toggle('done', done);
+}
+function closeExerciseModal(){ exerciseModal.classList.remove('open'); }
+modalCloseBtn.addEventListener('click', closeExerciseModal);
+exerciseModal.addEventListener('click', (e) => { if (e.target === exerciseModal) closeExerciseModal(); });
+
+modalDoneBtn.addEventListener('click', () => {
+  if (!currentModalExId) return;
+  if (!progress[currentModalKey]) progress[currentModalKey] = {};
+  const dp = progress[currentModalKey];
+  dp[currentModalExId] = !dp[currentModalExId];
+  saveProgress();
+  updateModalDoneBtn(dp[currentModalExId]);
+  renderToday();
+  renderWeek();
+});
+
+/* Complete-day button (delegated since it's re-rendered) */
+document.getElementById('panel-today').addEventListener('click', (e) => {
+  if (e.target && e.target.id === 'completeDayBtn') {
+    const key = dateKey(0);
+    if (!progress[key]) progress[key] = {};
+    progress[key].dayDone = true;
+    saveProgress();
+  }
+});
+
+/* =========================================================
+   WEEKLY CHECK-IN MODAL
+========================================================= */
+const checkinModal = document.getElementById('checkinModal');
+const MEASURE_FIELDS = ['waist','hip','chest','arm','thigh'];
+
+function applyCheckinLabels(){
+  document.getElementById('checkinTitleText').textContent = t('checkinTitle');
+  document.getElementById('checkinWeightLabelText').textContent = t('checkinWeightLabel');
+  document.getElementById('measurementsToggleMain').textContent = t('measurementsToggle');
+  document.getElementById('measurementsToggleSubText').textContent = t('measurementsToggleSub');
+  document.getElementById('measurementsNoteText').textContent = t('measurementsNote');
+  document.getElementById('waistLabelText').textContent = t('waistLabel');
+  document.getElementById('hipLabelText').textContent = t('hipLabel');
+  document.getElementById('chestLabelText').textContent = t('chestLabel');
+  document.getElementById('armLabelText').textContent = t('armLabel');
+  document.getElementById('thighLabelText').textContent = t('thighLabel');
+  document.getElementById('checkinSaveBtn').textContent = t('saveCheckin');
+}
+
+function openCheckinModal(expandMeasurements){
+  applyCheckinLabels();
+  document.getElementById('checkinWeightInput').value = profile.weight || '';
+  MEASURE_FIELDS.forEach(k => { document.getElementById('measure_' + k).value = ''; });
+  document.getElementById('measurementsSection').style.display = expandMeasurements ? 'block' : 'none';
+  checkinModal.classList.add('open');
+  setTimeout(() => document.getElementById('checkinWeightInput').focus(), 50);
+}
+function closeCheckinModal(){ checkinModal.classList.remove('open'); }
+document.getElementById('checkinCloseBtn').addEventListener('click', closeCheckinModal);
+checkinModal.addEventListener('click', (e) => { if (e.target === checkinModal) closeCheckinModal(); });
+document.getElementById('measurementsToggleBtn').addEventListener('click', () => {
+  const sec = document.getElementById('measurementsSection');
+  sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+});
+document.getElementById('checkinSaveBtn').addEventListener('click', () => {
+  const w = parseFloat(document.getElementById('checkinWeightInput').value);
+  if (!w || w <= 0) return;
+  const measurements = {};
+  MEASURE_FIELDS.forEach(k => {
+    const v = parseFloat(document.getElementById('measure_' + k).value);
+    measurements[k] = isNaN(v) ? null : v;
+  });
+  const res = performCheckin(w, measurements);
+  closeCheckinModal();
+  renderProfileTab(); renderNutrition(); renderToday();
+
+  let msg;
+  if (checkGoalReached()) msg = t('goalReachedMsg');
+  else if (res.type === 'fast') msg = t('adjustFastMsg').replace('{from}', res.from).replace('{to}', res.to);
+  else if (res.type === 'slow') msg = t('adjustSlowMsg').replace('{from}', res.from).replace('{to}', res.to);
+  else if (res.type === 'ontrack') msg = t('onTrackMsg');
+  else msg = t('tooSoonMsg');
+  showToast(msg);
+});
+
+/* =========================================================
+   LANGUAGE SWITCH
+========================================================= */
+const langSelect = document.getElementById('langSelect');
+['tr','en'].forEach(code => {
+  const opt = document.createElement('option');
+  opt.value = code; opt.textContent = code === 'tr' ? 'Türkçe' : 'English';
+  langSelect.appendChild(opt);
+});
+langSelect.value = 'tr';
+langSelect.addEventListener('change', (e) => {
+  lang = e.target.value;
+  applyStaticLabels();
+  if (profile) { renderToday(); renderWeek(); renderNutrition(); renderProfileTab(); }
+  else renderOnboarding();
+});
+
+function applyStaticLabels(){
+  document.getElementById('pageTitle').textContent = t('pageTitle');
+  document.getElementById('tabTodayLabel').textContent = t('tabToday');
+  document.getElementById('tabWeekLabel').textContent = t('tabWeek');
+  document.getElementById('tabNutritionLabel').textContent = t('tabNutrition');
+  document.getElementById('tabProfileLabel').textContent = t('tabProfile');
+  document.getElementById('modalHowLabel').textContent = t('howToLabel');
+  document.documentElement.lang = lang;
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+loadState();
+loadCustomFoods();
+applyStaticLabels();
+if (profile) {
+  document.getElementById('onboarding').style.display = 'none';
+  showMainUI();
+} else {
+  startOnboarding();
+}
+
+// Servis çalışanı: sadece bir web sunucusundan (https:// ya da localhost)
+// açıldığında kaydolur -- telefonda dosya olarak (file://) açıldığında
+// tarayıcılar buna izin vermez, bu normaldir ve uygulamanın çalışmasını
+// engellemez. Bir sunucudan açıldığında ise dosyaları önbelleğe alarak
+// internetsiz açılabilmeyi ve daha hızlı yüklenmeyi sağlar.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
