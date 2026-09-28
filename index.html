@@ -524,9 +524,6 @@
       <img id="modalExPhoto" alt="">
       <div class="no-photo-note" id="modalNoPhotoNote" style="display:none;"></div>
     </div>
-    <div class="figure-stage">
-      <div id="figureMuscleMini"></div>
-    </div>
     <div class="modal-title" id="modalExName"></div>
     <div class="modal-muscle" id="modalExMuscle"></div>
     <div class="modal-how-label" id="modalHowLabel">Nasıl Yapılır</div>
@@ -2341,12 +2338,20 @@ let obDraft = {};
 let obStepIdx = 0;
 const OB_STEPS = ['gender','age','height','weight','activity','goal','focusAreas','targetWeight','restDays','result'];
 
+let lastRenderedObStepIdx = -1;
 function renderOnboarding(){
   const wrap = document.getElementById('obSteps');
   const progWrap = document.getElementById('obProgress');
   progWrap.innerHTML = OB_STEPS.slice(0,-1).map((_,i) =>
     `<span class="${i <= obStepIdx ? 'on' : ''}"></span>`).join('');
-  document.getElementById('onboarding').scrollTop = 0;
+  // Sadece GERÇEKTEN yeni bir adıma geçildiğinde en üste kaydır. Aynı adım
+  // içinde (ör. vücut haritasında bir bölge seçince) renderOnboarding tekrar
+  // çağrılıyor -- eskiden bu da sayfayı en üste sıfırlıyordu, kullanıcı her
+  // seçimden sonra tekrar aşağı kaydırmak zorunda kalıyordu.
+  if (obStepIdx !== lastRenderedObStepIdx) {
+    document.getElementById('onboarding').scrollTop = 0;
+    lastRenderedObStepIdx = obStepIdx;
+  }
 
   const step = OB_STEPS[obStepIdx];
   let html = '';
@@ -3115,7 +3120,6 @@ function openExerciseModal(id, key, dayList){
   currentModalExId = id; currentModalKey = key;
   const ex = EX[id];
   const active = activeVariant(id);
-  document.getElementById('figureMuscleMini').innerHTML = muscleMiniWidget(id);
   const photoWrap = document.getElementById('modalExPhotoWrap');
   const photoInfo = imageInfoForOptionVariant(id, exerciseSwaps[id] || 0);
   const noPhotoNote = document.getElementById('modalNoPhotoNote');
@@ -3334,6 +3338,15 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 let fpModalHistoryOpen = false;
 let fpExitArmed = false;
 let fpExitGuardTimer = null;
+// X butonuna, karartılmış arka plana veya "Tamamladım/Kaydet" gibi bir
+// butona basarak pencereyi UYGULAMA İÇİNDEN kapatınca da kod arka planda
+// history.back() çağırıyor (geçmişi dengede tutmak için). Bu da bir
+// popstate olayı tetikliyor -- ama bu, telefonun GERÇEK geri tuşuna basmak
+// değil. Bu bayrak olmadan popstate işleyicisi bunu "ana ekranda geri
+// tuşuna basıldı" sanıp yanlışlıkla "çıkmak için tekrar bas" uyarısını
+// gösteriyordu. Bayrak, bu programatik kapatmaları gerçek geri tuşu
+// basışlarından ayırt etmemizi sağlıyor.
+let fpProgrammaticClose = false;
 
 function fpOpenModal(el){
   el.classList.add('open');
@@ -3345,10 +3358,17 @@ function fpCloseModal(el){
   el.classList.remove('open');
   if (fpModalHistoryOpen) {
     fpModalHistoryOpen = false;
+    fpProgrammaticClose = true;
     history.back();
   }
 }
 window.addEventListener('popstate', () => {
+  if (fpProgrammaticClose) {
+    // Pencere zaten uygulama içinden (X, arka plan veya bir buton ile)
+    // kapatıldı -- bu popstate sadece onun yan etkisi, hiçbir şey yapma.
+    fpProgrammaticClose = false;
+    return;
+  }
   const openModal = document.querySelector('.modal-overlay.open');
   if (openModal) {
     // Geri tuşu bir pencere açıkken basıldı -> sadece pencereyi kapat, uygulamadan çıkma.

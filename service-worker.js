@@ -3,7 +3,7 @@
 // girer; dosyaları önbelleğe alır, böylece internet olmadan da açılır ve daha
 // hızlı yüklenir. Telefonda dosya olarak (file://) açıldığında tarayıcılar
 // servis çalışanına izin vermez -- bu normaldir, uygulama yine de çalışır.
-const CACHE_NAME = 'fitplan-cache-v2';
+const CACHE_NAME = 'fitplan-cache-v3';
 const CORE_ASSETS = [
   './',
   './index.html',
