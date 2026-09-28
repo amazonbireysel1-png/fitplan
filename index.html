@@ -597,6 +597,8 @@ const T = {
     obFocusQ: "Özellikle hangi bölgeleri çalıştırmak istiyorsun?",
     focusAreasNote: "İstersen boş bırakabilirsin, o zaman program dengeli kalır. Seçtiğin bölgeler haftanda daha sık yer alır.",
     focusFatLossCaveat: "Not: Egzersizle sadece o bölgeden yağ eritemezsin — kilo verirken yağ tüm vücuttan orantılı olarak azalır. Buradaki seçim o bölgenin kasını daha çok çalıştırıp şekillendirmen içindir.",
+    focusOnlyToggleLabel: "Sadece seçtiğim bölgelerle ilgili program oluştur",
+    focusOnlyToggleNote: "Açarsan haftanın her antrenman günü sadece seçtiğin bölgelere yönelik olur, diğer bölgeler programa hiç girmez.",
     focusDayBadge: "🎯 Odak Günü",
     worksHereLabel: "Burası çalışıyor",
     howToLabel: "Nasıl Yapılır",
@@ -606,7 +608,8 @@ const T = {
     next: "Devam", back: "Geri", finish: "Programımı Oluştur",
     resultTitle: "Programın hazır!", resultSub: "Günlük kalori hedefin ve haftalık antrenman planın oluşturuldu.",
     kcalTarget: "Günlük Kalori Hedefi", protein: "Protein", carb: "Karbonhidrat", fat: "Yağ",
-    todaysWorkout: "Bugünün Antrenmanı", restDay: "Dinlenme Günü", restDayMsg: "Bugün dinlenme günü — vücudun toparlanıyor. Yarın devam!",
+    todaysWorkout: "Bugünün Antrenmanı", restDay: "Dinlenme Günü", restDayMsg: "Bugün dinlenme günü — vücudun toparlanıyor. Bir sonraki antrenmanında devam edeceksin!",
+    exitConfirmToast: "Çıkmak için tekrar geri tuşuna basın",
     completeDay: "Günü Tamamla", dayCompleted: "Gün Tamamlandı ✓",
     set: "set", reps: "tekrar", sec: "sn", min: "dk",
     weeklyProgram: "Haftalık Program", markDone: "Tamamladım", alreadyDone: "Tamamlandı ✓",
@@ -639,7 +642,15 @@ const T = {
     onTrackMsg: "Harika gidiyorsun, ilerlemen hedefine uygun. Kalori hedefin aynı kaldı.",
     tooSoonMsg: "Kilon kaydedildi. Kalori hedefini otomatik güncellemek için en az 6 gün sonra tekrar tartıl.",
     goalReachedMsg: "Tebrikler, hedef kilona ulaştın! 🎉 İstersen yeni bir hedefle devam edebilirsin.",
-    weightSaved: "Kilon kaydedildi."
+    weightSaved: "Kilon kaydedildi.",
+    noPhotoNote: "Bu hareketin görseli henüz yok, ana hareket gösteriliyor",
+    muscleWorkingLabel: "{muscle} çalışıyor",
+    zoneShoulders: "Omuz", zoneChest: "Göğüs", zoneAbs: "Karın", zoneBiceps: "Biceps",
+    zoneLegs: "Bacak", zoneBack: "Sırt", zoneGlutes: "Kalça", zoneTriceps: "Triceps",
+    areasSelectedCount: "{n} bölge seçili", noAreasSelected: "Henüz seçim yok",
+    bodyMapTitle: "Vücut Haritası", frontLabel: "Ön", bodyBackLabel: "Arka",
+    bodyMapLegend: "Çalıştırmak istediğin bölgelere dokun (ya da isme tıkla)",
+    perDayWord: "gün", durationLabel: "Süre"
   },
   en: {
     pageTitle: "FitPlan — Personal Workout Program",
@@ -667,6 +678,8 @@ const T = {
     obFocusQ: "Which areas do you especially want to work on?",
     focusAreasNote: "You can leave this empty to keep a balanced program. Whatever you pick shows up more often in your week.",
     focusFatLossCaveat: "Note: exercise can't burn fat from just one area — when you lose weight, fat comes off the whole body proportionally. This selection is for building and toning that area's muscle, not spot fat loss.",
+    focusOnlyToggleLabel: "Only build the program from the zones I selected",
+    focusOnlyToggleNote: "If you turn this on, every training day for the week will target only your selected zones — no other areas will be included.",
     focusDayBadge: "🎯 Focus Day",
     worksHereLabel: "Works here",
     howToLabel: "How To",
@@ -676,7 +689,8 @@ const T = {
     next: "Continue", back: "Back", finish: "Build My Program",
     resultTitle: "Your program is ready!", resultSub: "Your daily calorie target and weekly workout plan have been created.",
     kcalTarget: "Daily Calorie Target", protein: "Protein", carb: "Carbs", fat: "Fat",
-    todaysWorkout: "Today's Workout", restDay: "Rest Day", restDayMsg: "Today is a rest day — your body is recovering. See you tomorrow!",
+    todaysWorkout: "Today's Workout", restDay: "Rest Day", restDayMsg: "Today is a rest day — your body is recovering. You'll continue at your next workout!",
+    exitConfirmToast: "Press back again to exit",
     completeDay: "Complete Day", dayCompleted: "Day Completed ✓",
     set: "sets", reps: "reps", sec: "sec", min: "min",
     weeklyProgram: "Weekly Program", markDone: "Mark Done", alreadyDone: "Completed ✓",
@@ -709,23 +723,355 @@ const T = {
     onTrackMsg: "You're right on track! Your calorie target stays the same.",
     tooSoonMsg: "Weight saved. Weigh in again after at least 6 days to auto-update your calorie target.",
     goalReachedMsg: "Congrats, you've reached your target weight! 🎉 You can set a new goal if you'd like.",
-    weightSaved: "Weight saved."
+    weightSaved: "Weight saved.",
+    noPhotoNote: "No photo for this one yet — showing the main exercise",
+    muscleWorkingLabel: "{muscle} is working",
+    zoneShoulders: "Shoulders", zoneChest: "Chest", zoneAbs: "Abs", zoneBiceps: "Biceps",
+    zoneLegs: "Legs", zoneBack: "Back", zoneGlutes: "Glutes", zoneTriceps: "Triceps",
+    areasSelectedCount: "{n} area(s) selected", noAreasSelected: "Nothing selected yet",
+    bodyMapTitle: "Body Map", frontLabel: "Front", bodyBackLabel: "Back",
+    bodyMapLegend: "Tap the areas you want to work on (or tap a name)",
+    perDayWord: "day", durationLabel: "Duration"
+  },
+  de: {
+    pageTitle: "FitPlan — Persönliches Trainingsprogramm",
+    tabToday: "Heute", tabWeek: "Programm", tabNutrition: "Ernährung", tabProfile: "Profil",
+    nutritionTitle: "Kalorienrechner", searchFoodPlaceholder: "Lebensmittel suchen (z. B. Huhn, Reis)…",
+    todaysMeals: "Heute Gegessen", noMealsYet: "Noch nichts hinzugefügt.", consumed: "Aufgenommen", remaining: "Verbleibend",
+    addToMeal: "Zur Mahlzeit hinzufügen", gramsLabel: "GRAMM", per100g: "pro 100g", noFoodFound: "Keine Ergebnisse gefunden.",
+    addCustomFood: "Nicht in der Liste, ich füge es selbst hinzu", customFoodTitle: "Eigenes Lebensmittel hinzufügen",
+    customFoodName: "LEBENSMITTELNAME", customFoodKcal: "KALORIEN PRO 100g", saveAndAdd: "Speichern & Hinzufügen",
+    whatDidYouEat: "Was hast du gegessen? Hinzufügen",
+    targetLabel: "Ziel", macroOverWarn: "Du hast dein Ziel überschritten", macroLowWarn: "Bisher recht wenig für heute", calorieWord: "Kalorien",
+    obEyebrow: "SCHRITT", obGenderQ: "Was ist dein Geschlecht?", male: "Männlich", female: "Weiblich",
+    obAgeQ: "Wie alt bist du?", obHeightQ: "Wie groß bist du (cm)?", obWeightQ: "Wie viel wiegst du (kg)?",
+    obActivityQ: "Dein tägliches Aktivitätsniveau?",
+    actLow: "Wenig aktiv", actLowD: "Bürojob, wenig Bewegung",
+    actMid: "Mäßig aktiv", actMidD: "Ein paar Mal pro Woche aktiv",
+    actHigh: "Sehr aktiv", actHighD: "Körperliche Arbeit oder häufiges Training",
+    obGoalQ: "Was ist dein Ziel?",
+    goalLose: "Abnehmen", goalLoseD: "Fettabbau, Kaloriendefizit",
+    goalGain: "Zunehmen", goalGainD: "Größerer Überschuss, allgemeine Gewichtszunahme für Untergewichtige",
+    goalMuscle: "Muskeln aufbauen", goalMuscleD: "Leichter Überschuss, auf Hypertrophie ausgerichtetes Training",
+    goalLeanBulk: "Zunehmen und Muskeln aufbauen", goalLeanBulkD: "Moderater Überschuss + Kraft-/Hypertrophietraining (Lean Bulk)",
+    goalRecomp: "Abnehmen und Muskeln aufbauen", goalRecompD: "Leichtes Defizit + Krafttraining",
+    obRestDaysQ: "An welchen Tagen möchtest du trainieren?", selectedCount: "Tage ausgewählt",
+    obFocusQ: "Welche Bereiche möchtest du besonders trainieren?",
+    focusAreasNote: "Du kannst dies leer lassen, dann bleibt das Programm ausgewogen. Ausgewählte Bereiche kommen in deiner Woche häufiger vor.",
+    focusFatLossCaveat: "Hinweis: Durch Training kannst du nicht gezielt an einer Stelle Fett verbrennen — beim Abnehmen wird Fett proportional am ganzen Körper reduziert. Diese Auswahl dient dazu, den Muskel dieser Region gezielter zu trainieren und zu formen.",
+    focusOnlyToggleLabel: "Programm nur aus den von mir gewählten Bereichen erstellen",
+    focusOnlyToggleNote: "Wenn du dies aktivierst, zielt jeder Trainingstag der Woche nur auf deine gewählten Bereiche ab — andere Bereiche kommen gar nicht vor.",
+    focusDayBadge: "🎯 Fokustag",
+    worksHereLabel: "Wirkt hier",
+    howToLabel: "Ausführung",
+    obTargetWeightQ: "Was ist dein Zielgewicht (kg)?",
+    targetWeightNote: "Wenn du dir nicht sicher bist, lass es leer — du kannst es später im Profil hinzufügen.",
+    targetWeightPlaceholder: "optional",
+    next: "Weiter", back: "Zurück", finish: "Mein Programm erstellen",
+    resultTitle: "Dein Programm ist fertig!", resultSub: "Dein tägliches Kalorienziel und dein wöchentlicher Trainingsplan wurden erstellt.",
+    kcalTarget: "Tägliches Kalorienziel", protein: "Eiweiß", carb: "Kohlenhydrate", fat: "Fett",
+    todaysWorkout: "Heutiges Training", restDay: "Ruhetag", restDayMsg: "Heute ist Ruhetag — dein Körper erholt sich. Es geht bei deinem nächsten Training weiter!",
+    exitConfirmToast: "Zum Beenden noch einmal Zurück drücken",
+    completeDay: "Tag Abschließen", dayCompleted: "Tag Abgeschlossen ✓",
+    set: "Sätze", reps: "Wdh.", sec: "Sek.", min: "Min.",
+    weeklyProgram: "Wochenprogramm", markDone: "Erledigt", alreadyDone: "Erledigt ✓",
+    yourProfile: "Dein Profil", height: "Größe", weight: "Gewicht", age: "Alter", gender: "Geschlecht",
+    activity: "Aktivität", goal: "Ziel", bmi: "BMI", streak: "Serie", days: "Tage",
+    editProfile: "Meine Daten Aktualisieren", resetConfirm: "Möchtest du dein Profil wirklich zurücksetzen?",
+    calorieNote: "Dieses Kalorienziel ist eine allgemeine Schätzung; bei gesundheitlichen Problemen wende dich an eine Fachperson.",
+    alternativeLabel: "Alternative",
+    useThisLabel: "Diese nutzen",
+    usingAltBadge: "Alternative wird verwendet",
+    backToMainLabel: "Zurück zur Hauptübung",
+    calorieDeficitNote: "📉 Iss täglich etwa so viel. Das ist etwas weniger als normal, damit du abnimmst.",
+    calorieSurplusNote: "📈 Iss täglich etwa so viel. Das ist etwas mehr als normal, damit du zunimmst.",
+    calorieMaintainNote: "⚖️ Iss täglich etwa so viel. Das entspricht in etwa deinem normalen Bedarf, um dein Gewicht zu halten.",
+    weightTracking: "Gewichtsverlauf", targetWeightLabel: "Zielgewicht", lastWeighIn: "Letztes Wiegen",
+    daysAgo: "Tage her", today2: "Heute", checkinDueBadge: "Zeit zum Wiegen!", weighInBtn: "Gewicht Eintragen",
+    kgToGo: "kg verbleibend", goalReachedShort: "Ziel erreicht 🎉",
+    startWeightLabel: "Start", remainingLabel: "Verbleibend", percentCompleteLabel: "Geschafft",
+    lostLabel: "Abgenommen", gainedLabel: "Zugenommen",
+    weeklyRecommendedNote: "Am besten trägst du dein Gewicht einmal pro Woche ein.",
+    checkinTitle: "Wöchentliches Wiegen", checkinWeightLabel: "AKTUELLES GEWICHT (KG)",
+    measurementsToggle: "📏 Körpermaße Hinzufügen", measurementsToggleSub: "optional, aber für eine detailliertere Verfolgung empfohlen",
+    measurementsNote: "Kein Maßband zur Hand? Einfach leer lassen, das Gewicht allein reicht.",
+    waistLabel: "Taille (cm)", hipLabel: "Hüfte (cm)", chestLabel: "Brust (cm)", armLabel: "Arm (cm)", thighLabel: "Oberschenkel (cm)",
+    saveCheckin: "Speichern",
+    measureReminderTitle: "Für eine gesündere, genauere Verfolgung empfehlen wir, auch Körpermaße einzutragen 📏",
+    measureReminderLater: "Später", measureReminderNow: "Jetzt Eintragen",
+    adjustSlowMsg: "Dein Fortschritt ist langsamer als erwartet — dein Kalorienziel wurde von {from} auf {to} kcal aktualisiert.",
+    adjustFastMsg: "Dein Fortschritt ist schneller als erwartet — dein Kalorienziel wurde von {from} auf {to} kcal aktualisiert.",
+    onTrackMsg: "Du bist genau im Plan! Dein Kalorienziel bleibt gleich.",
+    tooSoonMsg: "Gewicht gespeichert. Wiege dich frühestens in 6 Tagen erneut, um dein Kalorienziel automatisch zu aktualisieren.",
+    goalReachedMsg: "Glückwunsch, du hast dein Zielgewicht erreicht! 🎉 Du kannst bei Bedarf ein neues Ziel setzen.",
+    weightSaved: "Gewicht gespeichert.",
+    noPhotoNote: "Für diese Variante gibt es noch kein Foto — die Hauptübung wird angezeigt",
+    muscleWorkingLabel: "{muscle} wird beansprucht",
+    zoneShoulders: "Schultern", zoneChest: "Brust", zoneAbs: "Bauch", zoneBiceps: "Bizeps",
+    zoneLegs: "Beine", zoneBack: "Rücken", zoneGlutes: "Gesäß", zoneTriceps: "Trizeps",
+    areasSelectedCount: "{n} Bereich(e) ausgewählt", noAreasSelected: "Noch nichts ausgewählt",
+    bodyMapTitle: "Körperkarte", frontLabel: "Vorderseite", bodyBackLabel: "Rückseite",
+    bodyMapLegend: "Tippe auf die Bereiche, die du trainieren möchtest (oder auf einen Namen)",
+    perDayWord: "Tag", durationLabel: "Dauer"
+  },
+  es: {
+    pageTitle: "FitPlan — Programa de Entrenamiento Personal",
+    tabToday: "Hoy", tabWeek: "Programa", tabNutrition: "Nutrición", tabProfile: "Perfil",
+    nutritionTitle: "Calculadora de Calorías", searchFoodPlaceholder: "Buscar alimento (ej. pollo, arroz)…",
+    todaysMeals: "Lo Que Comiste Hoy", noMealsYet: "Aún no has añadido nada.", consumed: "Consumido", remaining: "Restante",
+    addToMeal: "Añadir a la Comida", gramsLabel: "GRAMOS", per100g: "por 100g", noFoodFound: "No se encontraron resultados.",
+    addCustomFood: "No está en la lista, lo añadiré yo mismo", customFoodTitle: "Añadir Alimento Personalizado",
+    customFoodName: "NOMBRE DEL ALIMENTO", customFoodKcal: "CALORÍAS POR 100g", saveAndAdd: "Guardar y Añadir",
+    whatDidYouEat: "¿Qué Comiste? Añadir",
+    targetLabel: "Objetivo", macroOverWarn: "Has superado tu objetivo", macroLowWarn: "Muy poco por ahora hoy", calorieWord: "Calorías",
+    obEyebrow: "PASO", obGenderQ: "¿Cuál es tu sexo?", male: "Hombre", female: "Mujer",
+    obAgeQ: "¿Cuántos años tienes?", obHeightQ: "¿Cuál es tu estatura (cm)?", obWeightQ: "¿Cuál es tu peso (kg)?",
+    obActivityQ: "¿Tu nivel de actividad diaria?",
+    actLow: "Poco activo", actLowD: "Trabajo de oficina, poco ejercicio",
+    actMid: "Moderadamente activo", actMidD: "Activo varias veces por semana",
+    actHigh: "Muy activo", actHighD: "Trabajo físico o entrenamiento frecuente",
+    obGoalQ: "¿Cuál es tu objetivo?",
+    goalLose: "Perder peso", goalLoseD: "Pérdida de grasa, déficit calórico",
+    goalGain: "Ganar peso", goalGainD: "Mayor superávit, aumento general de peso para personas con bajo peso",
+    goalMuscle: "Ganar músculo", goalMuscleD: "Pequeño superávit, entrenamiento enfocado en hipertrofia",
+    goalLeanBulk: "Ganar peso y músculo", goalLeanBulkD: "Superávit moderado + entrenamiento de fuerza/hipertrofia (lean bulk)",
+    goalRecomp: "Perder grasa y ganar músculo", goalRecompD: "Ligero déficit + entrenamiento de fuerza",
+    obRestDaysQ: "¿Qué días entrenarás cada semana?", selectedCount: "días seleccionados",
+    obFocusQ: "¿Qué zonas quieres trabajar especialmente?",
+    focusAreasNote: "Puedes dejarlo vacío para mantener un programa equilibrado. Las zonas que elijas aparecerán con más frecuencia en tu semana.",
+    focusFatLossCaveat: "Nota: el ejercicio no puede quemar grasa solo de una zona — al perder peso, la grasa se reduce de forma proporcional en todo el cuerpo. Esta selección sirve para trabajar y tonificar el músculo de esa zona, no para eliminar grasa localizada.",
+    focusOnlyToggleLabel: "Crear el programa solo con las zonas que elegí",
+    focusOnlyToggleNote: "Si activas esto, cada día de entrenamiento de la semana se enfocará solo en tus zonas elegidas — ninguna otra zona se incluirá.",
+    focusDayBadge: "🎯 Día de Enfoque",
+    worksHereLabel: "Trabaja aquí",
+    howToLabel: "Cómo Hacerlo",
+    obTargetWeightQ: "¿Cuál es tu peso objetivo (kg)?",
+    targetWeightNote: "Si no estás seguro, puedes dejarlo en blanco — podrás añadirlo más tarde desde tu perfil.",
+    targetWeightPlaceholder: "opcional",
+    next: "Continuar", back: "Atrás", finish: "Crear Mi Programa",
+    resultTitle: "¡Tu programa está listo!", resultSub: "Se han creado tu objetivo diario de calorías y tu plan semanal de entrenamiento.",
+    kcalTarget: "Objetivo Diario de Calorías", protein: "Proteína", carb: "Carbohidratos", fat: "Grasa",
+    todaysWorkout: "Entrenamiento de Hoy", restDay: "Día de Descanso", restDayMsg: "Hoy es día de descanso — tu cuerpo se está recuperando. ¡Continuarás en tu próximo entrenamiento!",
+    exitConfirmToast: "Pulsa atrás de nuevo para salir",
+    completeDay: "Completar Día", dayCompleted: "Día Completado ✓",
+    set: "series", reps: "reps", sec: "seg", min: "min",
+    weeklyProgram: "Programa Semanal", markDone: "Marcar Hecho", alreadyDone: "Completado ✓",
+    yourProfile: "Tu Perfil", height: "Estatura", weight: "Peso", age: "Edad", gender: "Sexo",
+    activity: "Actividad", goal: "Objetivo", bmi: "IMC", streak: "Racha", days: "días",
+    editProfile: "Actualizar Mis Datos", resetConfirm: "¿Seguro que quieres reiniciar tu perfil?",
+    calorieNote: "Este objetivo de calorías es una estimación general; consulta a un profesional si tienes alguna condición de salud.",
+    alternativeLabel: "Alternativa",
+    useThisLabel: "Usar esta",
+    usingAltBadge: "Usando alternativa",
+    backToMainLabel: "Volver al ejercicio principal",
+    calorieDeficitNote: "📉 Come aproximadamente esto cada día. Es un poco menos de lo normal, para ayudarte a perder peso.",
+    calorieSurplusNote: "📈 Come aproximadamente esto cada día. Es un poco más de lo normal, para ayudarte a ganar peso.",
+    calorieMaintainNote: "⚖️ Come aproximadamente esto cada día. Está cerca de tu necesidad normal, para ayudarte a mantener tu peso.",
+    weightTracking: "Seguimiento de Peso", targetWeightLabel: "Peso Objetivo", lastWeighIn: "Último Pesaje",
+    daysAgo: "hace días", today2: "Hoy", checkinDueBadge: "¡Hora de pesarte!", weighInBtn: "Registrar Peso",
+    kgToGo: "kg restantes", goalReachedShort: "Objetivo alcanzado 🎉",
+    startWeightLabel: "Inicio", remainingLabel: "Restante", percentCompleteLabel: "Completado",
+    lostLabel: "Perdido", gainedLabel: "Ganado",
+    weeklyRecommendedNote: "Lo más saludable es registrar tu peso una vez por semana.",
+    checkinTitle: "Pesaje Semanal", checkinWeightLabel: "PESO ACTUAL (KG)",
+    measurementsToggle: "📏 Añadir Medidas Corporales", measurementsToggleSub: "opcional, pero recomendado para un seguimiento más detallado",
+    measurementsNote: "¿No tienes cinta métrica? Déjalo en blanco, solo con el peso es suficiente.",
+    waistLabel: "Cintura (cm)", hipLabel: "Cadera (cm)", chestLabel: "Pecho (cm)", armLabel: "Brazo (cm)", thighLabel: "Muslo (cm)",
+    saveCheckin: "Guardar",
+    measureReminderTitle: "Para un seguimiento más saludable y preciso, te recomendamos añadir también tus medidas corporales 📏",
+    measureReminderLater: "Más Tarde", measureReminderNow: "Añadir Ahora",
+    adjustSlowMsg: "Tu progreso es más lento de lo esperado — tu objetivo de calorías se actualizó de {from} a {to} kcal.",
+    adjustFastMsg: "Tu progreso es más rápido de lo esperado — tu objetivo de calorías se actualizó de {from} a {to} kcal.",
+    onTrackMsg: "¡Vas muy bien! Tu progreso está en línea con tu objetivo. Tu objetivo de calorías se mantiene igual.",
+    tooSoonMsg: "Peso guardado. Vuelve a pesarte después de al menos 6 días para actualizar automáticamente tu objetivo de calorías.",
+    goalReachedMsg: "¡Felicidades, has alcanzado tu peso objetivo! 🎉 Si quieres, puedes establecer una nueva meta.",
+    weightSaved: "Peso guardado.",
+    noPhotoNote: "Aún no hay foto para esta variante — se muestra el ejercicio principal",
+    muscleWorkingLabel: "{muscle} está trabajando",
+    zoneShoulders: "Hombros", zoneChest: "Pecho", zoneAbs: "Abdomen", zoneBiceps: "Bíceps",
+    zoneLegs: "Piernas", zoneBack: "Espalda", zoneGlutes: "Glúteos", zoneTriceps: "Tríceps",
+    areasSelectedCount: "{n} zona(s) seleccionada(s)", noAreasSelected: "Aún no hay selección",
+    bodyMapTitle: "Mapa Corporal", frontLabel: "Frontal", bodyBackLabel: "Posterior",
+    bodyMapLegend: "Toca las zonas que quieres trabajar (o toca un nombre)",
+    perDayWord: "día", durationLabel: "Duración"
+  },
+  ru: {
+    pageTitle: "FitPlan — Персональная Программа Тренировок",
+    tabToday: "Сегодня", tabWeek: "Программа", tabNutrition: "Питание", tabProfile: "Профиль",
+    nutritionTitle: "Калькулятор Калорий", searchFoodPlaceholder: "Поиск продукта (напр. курица, рис)…",
+    todaysMeals: "Съедено Сегодня", noMealsYet: "Пока ничего не добавлено.", consumed: "Получено", remaining: "Осталось",
+    addToMeal: "Добавить в Приём Пищи", gramsLabel: "ГРАММ", per100g: "на 100г", noFoodFound: "Ничего не найдено.",
+    addCustomFood: "Нет в списке, добавлю сам", customFoodTitle: "Добавить Свой Продукт",
+    customFoodName: "НАЗВАНИЕ ПРОДУКТА", customFoodKcal: "КАЛОРИЙ НА 100г", saveAndAdd: "Сохранить и Добавить",
+    whatDidYouEat: "Что Ты Съел? Добавить",
+    targetLabel: "Цель", macroOverWarn: "Ты превысил свою цель", macroLowWarn: "Пока маловато на сегодня", calorieWord: "Калории",
+    obEyebrow: "ШАГ", obGenderQ: "Твой пол?", male: "Мужской", female: "Женский",
+    obAgeQ: "Сколько тебе лет?", obHeightQ: "Какой у тебя рост (см)?", obWeightQ: "Какой у тебя вес (кг)?",
+    obActivityQ: "Твой уровень дневной активности?",
+    actLow: "Малоподвижный", actLowD: "Сидячая работа, мало упражнений",
+    actMid: "Средняя активность", actMidD: "Активность несколько раз в неделю",
+    actHigh: "Очень активный", actHighD: "Физическая работа или частые тренировки",
+    obGoalQ: "Какая у тебя цель?",
+    goalLose: "Похудеть", goalLoseD: "Потеря жира, дефицит калорий",
+    goalGain: "Набрать вес", goalGainD: "Больший профицит, общий набор веса при недостаточной массе тела",
+    goalMuscle: "Набрать мышечную массу", goalMuscleD: "Небольшой профицит, тренировки с упором на гипертрофию",
+    goalLeanBulk: "Набрать вес и мышцы", goalLeanBulkD: "Умеренный профицит + силовые/гипертрофические тренировки (lean bulk)",
+    goalRecomp: "Похудеть и набрать мышцы", goalRecompD: "Небольшой дефицит + силовые тренировки",
+    obRestDaysQ: "В какие дни недели ты будешь тренироваться?", selectedCount: "дней выбрано",
+    obFocusQ: "Какие зоны ты особенно хочешь проработать?",
+    focusAreasNote: "Можешь оставить пустым, тогда программа останется сбалансированной. Выбранные зоны будут чаще встречаться в течение недели.",
+    focusFatLossCaveat: "Примечание: упражнения не сжигают жир только в одной зоне — при похудении жир уходит пропорционально со всего тела. Этот выбор нужен для проработки и формирования мышц именно этой зоны, а не для локального жиросжигания.",
+    focusOnlyToggleLabel: "Составить программу только из выбранных мной зон",
+    focusOnlyToggleNote: "Если включишь это, каждый тренировочный день недели будет посвящён только выбранным зонам — остальные зоны не войдут в программу вообще.",
+    focusDayBadge: "🎯 Фокус-день",
+    worksHereLabel: "Работает здесь",
+    howToLabel: "Как Выполнять",
+    obTargetWeightQ: "Какой у тебя целевой вес (кг)?",
+    targetWeightNote: "Если не уверен, можешь оставить пустым — добавишь позже в профиле.",
+    targetWeightPlaceholder: "необязательно",
+    next: "Далее", back: "Назад", finish: "Создать Мою Программу",
+    resultTitle: "Твоя программа готова!", resultSub: "Твоя дневная норма калорий и недельный план тренировок созданы.",
+    kcalTarget: "Дневная Норма Калорий", protein: "Белки", carb: "Углеводы", fat: "Жиры",
+    todaysWorkout: "Сегодняшняя Тренировка", restDay: "День Отдыха", restDayMsg: "Сегодня день отдыха — твоё тело восстанавливается. Продолжишь на следующей тренировке!",
+    exitConfirmToast: "Нажми назад ещё раз, чтобы выйти",
+    completeDay: "Завершить День", dayCompleted: "День Завершён ✓",
+    set: "подх.", reps: "повт.", sec: "сек", min: "мин",
+    weeklyProgram: "Недельная Программа", markDone: "Отметить Выполненным", alreadyDone: "Выполнено ✓",
+    yourProfile: "Твой Профиль", height: "Рост", weight: "Вес", age: "Возраст", gender: "Пол",
+    activity: "Активность", goal: "Цель", bmi: "ИМТ", streak: "Серия", days: "дней",
+    editProfile: "Обновить Данные", resetConfirm: "Ты уверен, что хочешь сбросить профиль?",
+    calorieNote: "Эта норма калорий является общей оценкой; при серьёзных проблемах со здоровьем проконсультируйся со специалистом.",
+    alternativeLabel: "Альтернатива",
+    useThisLabel: "Использовать",
+    usingAltBadge: "Используется альтернатива",
+    backToMainLabel: "Вернуться к основному упражнению",
+    calorieDeficitNote: "📉 Ешь примерно столько каждый день. Это немного меньше нормы, чтобы помочь тебе похудеть.",
+    calorieSurplusNote: "📈 Ешь примерно столько каждый день. Это немного больше нормы, чтобы помочь тебе набрать вес.",
+    calorieMaintainNote: "⚖️ Ешь примерно столько каждый день. Это близко к твоей обычной норме, чтобы поддерживать вес.",
+    weightTracking: "Отслеживание Веса", targetWeightLabel: "Целевой Вес", lastWeighIn: "Последнее Взвешивание",
+    daysAgo: "дней назад", today2: "Сегодня", checkinDueBadge: "Пора взвеситься!", weighInBtn: "Записать Вес",
+    kgToGo: "кг осталось", goalReachedShort: "Цель достигнута 🎉",
+    startWeightLabel: "Начальный", remainingLabel: "Осталось", percentCompleteLabel: "Выполнено",
+    lostLabel: "Сброшено", gainedLabel: "Набрано",
+    weeklyRecommendedNote: "Лучше всего записывать вес раз в неделю.",
+    checkinTitle: "Еженедельное Взвешивание", checkinWeightLabel: "ТЕКУЩИЙ ВЕС (КГ)",
+    measurementsToggle: "📏 Добавить Замеры Тела", measurementsToggleSub: "необязательно, но рекомендуется для более детального отслеживания",
+    measurementsNote: "Нет сантиметровой ленты? Оставь пустым, веса достаточно.",
+    waistLabel: "Талия (см)", hipLabel: "Бёдра (см)", chestLabel: "Грудь (см)", armLabel: "Рука (см)", thighLabel: "Бедро (см)",
+    saveCheckin: "Сохранить",
+    measureReminderTitle: "Для более здорового и точного отслеживания рекомендуем также добавлять замеры тела 📏",
+    measureReminderLater: "Позже", measureReminderNow: "Добавить Сейчас",
+    adjustSlowMsg: "Твой прогресс медленнее ожидаемого — норма калорий обновлена с {from} до {to} ккал.",
+    adjustFastMsg: "Твой прогресс быстрее ожидаемого — норма калорий обновлена с {from} до {to} ккал.",
+    onTrackMsg: "Отличный прогресс! Твоя норма калорий осталась прежней.",
+    tooSoonMsg: "Вес сохранён. Взвесься снова минимум через 6 дней, чтобы автоматически обновить норму калорий.",
+    goalReachedMsg: "Поздравляем, ты достиг целевого веса! 🎉 При желании можешь установить новую цель.",
+    weightSaved: "Вес сохранён.",
+    noPhotoNote: "Для этого варианта пока нет фото — показано основное упражнение",
+    muscleWorkingLabel: "Работает: {muscle}",
+    zoneShoulders: "Плечи", zoneChest: "Грудь", zoneAbs: "Пресс", zoneBiceps: "Бицепс",
+    zoneLegs: "Ноги", zoneBack: "Спина", zoneGlutes: "Ягодицы", zoneTriceps: "Трицепс",
+    areasSelectedCount: "Выбрано зон: {n}", noAreasSelected: "Пока ничего не выбрано",
+    bodyMapTitle: "Карта Тела", frontLabel: "Спереди", bodyBackLabel: "Сзади",
+    bodyMapLegend: "Нажми на зоны, которые хочешь проработать (или нажми на название)",
+    perDayWord: "день", durationLabel: "Длительность"
+  },
+  ar: {
+    pageTitle: "FitPlan — برنامج تمرين شخصي",
+    tabToday: "اليوم", tabWeek: "البرنامج", tabNutrition: "التغذية", tabProfile: "الملف الشخصي",
+    nutritionTitle: "حاسبة السعرات الحرارية", searchFoodPlaceholder: "ابحث عن طعام (مثال: دجاج، أرز)…",
+    todaysMeals: "ما أكلته اليوم", noMealsYet: "لم تُضِف شيئًا بعد.", consumed: "المستهلك", remaining: "المتبقي",
+    addToMeal: "أضف إلى الوجبة", gramsLabel: "غرام", per100g: "لكل 100غ", noFoodFound: "لم يتم العثور على نتائج.",
+    addCustomFood: "غير موجود في القائمة، سأضيفه بنفسي", customFoodTitle: "إضافة طعام مخصص",
+    customFoodName: "اسم الطعام", customFoodKcal: "السعرات لكل 100غ", saveAndAdd: "حفظ وإضافة",
+    whatDidYouEat: "ماذا أكلت؟ أضف",
+    targetLabel: "الهدف", macroOverWarn: "تجاوزت هدفك", macroLowWarn: "قليل جدًا حتى الآن اليوم", calorieWord: "السعرات الحرارية",
+    obEyebrow: "خطوة", obGenderQ: "ما هو جنسك؟", male: "ذكر", female: "أنثى",
+    obAgeQ: "كم عمرك؟", obHeightQ: "ما هو طولك (سم)؟", obWeightQ: "ما هو وزنك (كغ)؟",
+    obActivityQ: "مستوى نشاطك اليومي؟",
+    actLow: "نشاط قليل", actLowD: "عمل مكتبي، قليل من الرياضة",
+    actMid: "نشاط متوسط", actMidD: "نشاط عدة مرات في الأسبوع",
+    actHigh: "نشاط عالٍ", actHighD: "عمل بدني أو تدريب متكرر",
+    obGoalQ: "ما هو هدفك؟",
+    goalLose: "خسارة الوزن", goalLoseD: "خسارة الدهون، عجز في السعرات",
+    goalGain: "زيادة الوزن", goalGainD: "فائض أكبر، زيادة وزن عامة لمن يعانون نقص الوزن",
+    goalMuscle: "بناء العضلات", goalMuscleD: "فائض بسيط، تدريب يركز على تضخيم العضلات",
+    goalLeanBulk: "زيادة الوزن مع بناء العضلات", goalLeanBulkD: "فائض معتدل + تدريب قوة/تضخيم (lean bulk)",
+    goalRecomp: "خسارة الدهون مع بناء العضلات", goalRecompD: "عجز بسيط + تدريب قوة",
+    obRestDaysQ: "في أي أيام ستتدرب كل أسبوع؟", selectedCount: "أيام محددة",
+    obFocusQ: "ما هي المناطق التي تريد التركيز عليها بشكل خاص؟",
+    focusAreasNote: "يمكنك تركها فارغة للحفاظ على برنامج متوازن. المناطق التي تختارها ستظهر بشكل أكثر تكرارًا في أسبوعك.",
+    focusFatLossCaveat: "ملاحظة: لا يمكن للتمارين حرق الدهون من منطقة واحدة فقط — عند خسارة الوزن، تنخفض الدهون بشكل متناسب من كل الجسم. هذا الاختيار مخصص لتقوية وتشكيل عضلات تلك المنطقة، وليس لحرق الدهون الموضعي.",
+    focusOnlyToggleLabel: "أنشئ البرنامج فقط من المناطق التي اخترتها",
+    focusOnlyToggleNote: "إذا فعّلت هذا، سيركّز كل يوم تمرين في الأسبوع فقط على المناطق التي اخترتها — لن تُدرج أي مناطق أخرى في البرنامج.",
+    focusDayBadge: "🎯 يوم التركيز",
+    worksHereLabel: "يعمل هنا",
+    howToLabel: "طريقة الأداء",
+    obTargetWeightQ: "ما هو وزنك المستهدف (كغ)؟",
+    targetWeightNote: "إذا لم تكن متأكدًا، يمكنك تركه فارغًا — يمكنك إضافته لاحقًا من ملفك الشخصي.",
+    targetWeightPlaceholder: "اختياري",
+    next: "متابعة", back: "رجوع", finish: "إنشاء برنامجي",
+    resultTitle: "برنامجك جاهز!", resultSub: "تم إنشاء هدفك اليومي من السعرات وخطة تمرينك الأسبوعية.",
+    kcalTarget: "الهدف اليومي من السعرات", protein: "بروتين", carb: "كربوهيدرات", fat: "دهون",
+    todaysWorkout: "تمرين اليوم", restDay: "يوم راحة", restDayMsg: "اليوم يوم راحة — جسمك يتعافى. ستُكمل في تمرينك القادم!",
+    exitConfirmToast: "اضغط رجوع مرة أخرى للخروج",
+    completeDay: "إنهاء اليوم", dayCompleted: "تم إنهاء اليوم ✓",
+    set: "مجموعات", reps: "تكرارات", sec: "ث", min: "د",
+    weeklyProgram: "البرنامج الأسبوعي", markDone: "تم الإنجاز", alreadyDone: "منجز ✓",
+    yourProfile: "ملفك الشخصي", height: "الطول", weight: "الوزن", age: "العمر", gender: "الجنس",
+    activity: "النشاط", goal: "الهدف", bmi: "مؤشر كتلة الجسم", streak: "التتابع", days: "أيام",
+    editProfile: "تحديث بياناتي", resetConfirm: "هل أنت متأكد من رغبتك في إعادة تعيين ملفك الشخصي؟",
+    calorieNote: "هذا الهدف من السعرات هو تقدير عام؛ استشر مختصًا إذا كانت لديك حالة صحية معينة.",
+    alternativeLabel: "بديل",
+    useThisLabel: "استخدم هذا",
+    usingAltBadge: "يتم استخدام البديل",
+    backToMainLabel: "العودة إلى التمرين الأساسي",
+    calorieDeficitNote: "📉 تناول هذا المقدار تقريبًا كل يوم. وهو أقل قليلًا من المعتاد ليساعدك على خسارة الوزن.",
+    calorieSurplusNote: "📈 تناول هذا المقدار تقريبًا كل يوم. وهو أكثر قليلًا من المعتاد ليساعدك على زيادة الوزن.",
+    calorieMaintainNote: "⚖️ تناول هذا المقدار تقريبًا كل يوم. وهو قريب من احتياجك الطبيعي للحفاظ على وزنك.",
+    weightTracking: "تتبع الوزن", targetWeightLabel: "الوزن المستهدف", lastWeighIn: "آخر وزن",
+    daysAgo: "منذ أيام", today2: "اليوم", checkinDueBadge: "حان وقت الوزن!", weighInBtn: "تسجيل الوزن",
+    kgToGo: "كغ متبقية", goalReachedShort: "تم الوصول للهدف 🎉",
+    startWeightLabel: "البداية", remainingLabel: "المتبقي", percentCompleteLabel: "الإنجاز",
+    lostLabel: "المفقود", gainedLabel: "المكتسب",
+    weeklyRecommendedNote: "الأفضل تسجيل وزنك مرة واحدة في الأسبوع.",
+    checkinTitle: "الوزن الأسبوعي", checkinWeightLabel: "الوزن الحالي (كغ)",
+    measurementsToggle: "📏 إضافة قياسات الجسم", measurementsToggleSub: "اختياري، لكن يُنصح به لتتبع أكثر تفصيلًا",
+    measurementsNote: "ليس لديك شريط قياس؟ اتركه فارغًا، الوزن وحده كافٍ.",
+    waistLabel: "الخصر (سم)", hipLabel: "الورك (سم)", chestLabel: "الصدر (سم)", armLabel: "الذراع (سم)", thighLabel: "الفخذ (سم)",
+    saveCheckin: "حفظ",
+    measureReminderTitle: "لتتبع أكثر صحة ودقة، نوصي أيضًا بإضافة قياسات جسمك 📏",
+    measureReminderLater: "لاحقًا", measureReminderNow: "أضف الآن",
+    adjustSlowMsg: "تقدمك أبطأ من المتوقع — تم تحديث هدف السعرات من {from} إلى {to} سعرة.",
+    adjustFastMsg: "تقدمك أسرع من المتوقع — تم تحديث هدف السعرات من {from} إلى {to} سعرة.",
+    onTrackMsg: "أنت تسير بشكل رائع! هدفك من السعرات بقي كما هو.",
+    tooSoonMsg: "تم حفظ وزنك. زِن نفسك مرة أخرى بعد 6 أيام على الأقل لتحديث هدف السعرات تلقائيًا.",
+    goalReachedMsg: "تهانينا، لقد وصلت إلى وزنك المستهدف! 🎉 يمكنك تحديد هدف جديد إذا أردت.",
+    weightSaved: "تم حفظ الوزن.",
+    noPhotoNote: "لا توجد صورة لهذا البديل بعد — يتم عرض التمرين الأساسي",
+    muscleWorkingLabel: "{muscle} يعمل",
+    zoneShoulders: "الأكتاف", zoneChest: "الصدر", zoneAbs: "البطن", zoneBiceps: "البايسبس",
+    zoneLegs: "الأرجل", zoneBack: "الظهر", zoneGlutes: "الأرداف", zoneTriceps: "الترايسبس",
+    areasSelectedCount: "تم اختيار {n} منطقة", noAreasSelected: "لم يتم الاختيار بعد",
+    bodyMapTitle: "خريطة الجسم", frontLabel: "أمامي", bodyBackLabel: "خلفي",
+    bodyMapLegend: "اضغط على المناطق التي تريد تدريبها (أو اضغط على اسم)",
+    perDayWord: "يوم", durationLabel: "المدة"
   }
 };
 let lang = "tr";
-function t(key){ return T[lang][key]; }
+function t(key){ return (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key]; }
 
 const GOAL_LABELS = {
-  lose: {tr:"Zayıflamak", en:"Lose weight"},
-  gain: {tr:"Kilo almak", en:"Gain weight"},
-  muscle: {tr:"Kas yapmak", en:"Build muscle"},
-  leanBulk: {tr:"Kilo alırken kas yapmak", en:"Lean bulk"},
-  recomp: {tr:"Zayıflarken kas yapmak", en:"Recomp"}
+  lose: {tr:"Zayıflamak", en:"Lose weight", de:"Abnehmen", es:"Perder peso", ru:"Похудеть", ar:"خسارة الوزن"},
+  gain: {tr:"Kilo almak", en:"Gain weight", de:"Zunehmen", es:"Ganar peso", ru:"Набрать вес", ar:"زيادة الوزن"},
+  muscle: {tr:"Kas yapmak", en:"Build muscle", de:"Muskeln aufbauen", es:"Ganar músculo", ru:"Набрать мышечную массу", ar:"بناء العضلات"},
+  leanBulk: {tr:"Kilo alırken kas yapmak", en:"Lean bulk", de:"Lean Bulk", es:"Lean bulk", ru:"Lean bulk", ar:"Lean bulk"},
+  recomp: {tr:"Zayıflarken kas yapmak", en:"Recomp", de:"Recomp", es:"Recomp", ru:"Recomp", ar:"Recomp"}
 };
 const ACTIVITY_LABELS = {
-  low: {tr:"Az hareketli", en:"Low activity"},
-  mid: {tr:"Orta hareketli", en:"Moderate"},
-  high: {tr:"Çok hareketli", en:"Very active"}
+  low: {tr:"Az hareketli", en:"Low activity", de:"Wenig aktiv", es:"Poco activo", ru:"Малоподвижный", ar:"نشاط قليل"},
+  mid: {tr:"Orta hareketli", en:"Moderate", de:"Mäßig aktiv", es:"Moderadamente activo", ru:"Средняя активность", ar:"نشاط متوسط"},
+  high: {tr:"Çok hareketli", en:"Very active", de:"Sehr aktiv", es:"Muy activo", ru:"Очень активный", ar:"نشاط عالٍ"}
 };
 const ACTIVITY_MULT = { low: 1.25, mid: 1.5, high: 1.8 };
 // Daily calorie offset from TDEE used when the plan is first created, and the
@@ -740,7 +1086,11 @@ const KCAL_PER_KG = 7700;
 ========================================================= */
 const DAY_LABELS = {
   tr: { full: ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"], short: ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"] },
-  en: { full: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], short: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] }
+  en: { full: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], short: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
+  de: { full: ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"], short: ["Mo","Di","Mi","Do","Fr","Sa","So"] },
+  es: { full: ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"], short: ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"] },
+  ru: { full: ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"], short: ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"] },
+  ar: { full: ["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"], short: ["إثن","ثلا","أرب","خمي","جمع","سبت","أحد"] }
 };
 function todayIndex(){ return (new Date().getDay() + 6) % 7; } // 0=Mon..6=Sun
 function dateKey(offsetDays){
@@ -757,103 +1107,103 @@ function dateKeyForWeekdayThisWeek(idx){
    EXERCISE LIBRARY (original stick-figure poses, no copyrighted media)
 ========================================================= */
 const EX = {
-  squat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Squat',en:'Squat'},
-    how:{tr:'Ayaklarını omuz genişliğinde aç, sırtın düz kalsın, kalçanı geriye ve aşağı it, dizlerin ayak ucunu geçmesin, sonra kalk.',en:'Feet shoulder-width apart, keep your back straight, push your hips back and down, knees behind your toes, then stand back up.'},
+  squat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes',de:'Beine / Gesäß',es:'Piernas / Glúteos',ru:'Ноги / Ягодицы',ar:'الأرجل / الأرداف'}, name:{tr:'Squat',en:'Squat',de:'Squat',es:'Squat',ru:'Squat',ar:'Squat'},
+    how:{tr:'Ayaklarını omuz genişliğinde aç, sırtın düz kalsın, kalçanı geriye ve aşağı it, dizlerin ayak ucunu geçmesin, sonra kalk.',en:'Feet shoulder-width apart, keep your back straight, push your hips back and down, knees behind your toes, then stand back up.',de:'Füße schulterbreit, Rücken gerade halten, Hüfte nach hinten und unten schieben, Knie nicht über die Zehenspitzen, dann wieder aufstehen.',es:'Pies al ancho de los hombros, mantén la espalda recta, empuja las caderas hacia atrás y abajo, las rodillas no deben pasar las puntas de los pies, luego ponte de pie.',ru:'Ноги на ширине плеч, спина прямая, отведи таз назад и вниз, колени не выходят за носки, затем вернись в исходное положение.',ar:'باعد بين قدميك بعرض الكتفين، حافظ على استقامة ظهرك، ادفع وركيك للخلف وللأسفل، لا تتجاوز ركبتاك أصابع قدميك، ثم قف مجددًا.'},
     type:'reps', sets:3, reps:15,
     poseA:{head:[50,14],neck:[50,24],hip:[50,52],handL:[38,42],handR:[62,42],footL:[43,90],footR:[57,90]},
     poseB:{head:[50,32],neck:[50,42],hip:[50,66],handL:[30,50],handR:[70,50],footL:[38,90],footR:[62,90]} },
-  lunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Lunge',en:'Lunge'},
-    how:{tr:'Bir adım öne çık, arka diz yere yaklaşsın, ön diz 90 derece bükülsün, sonra başlangıca dön. Bacakları değiştirerek tekrarla.',en:'Step forward, lower your back knee toward the floor, front knee bent at 90°, then return. Alternate legs.'},
+  lunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes',de:'Beine / Gesäß',es:'Piernas / Glúteos',ru:'Ноги / Ягодицы',ar:'الأرجل / الأرداف'}, name:{tr:'Lunge',en:'Lunge',de:'Lunge',es:'Lunge',ru:'Lunge',ar:'Lunge'},
+    how:{tr:'Bir adım öne çık, arka diz yere yaklaşsın, ön diz 90 derece bükülsün, sonra başlangıca dön. Bacakları değiştirerek tekrarla.',en:'Step forward, lower your back knee toward the floor, front knee bent at 90°, then return. Alternate legs.',de:'Einen Schritt nach vorne, das hintere Knie Richtung Boden senken, vorderes Knie im 90°-Winkel, dann zurückkehren. Beine abwechseln.',es:'Da un paso adelante, baja la rodilla trasera hacia el suelo, con la rodilla delantera doblada a 90°, luego vuelve. Alterna las piernas.',ru:'Сделай шаг вперёд, опусти заднее колено к полу, переднее колено согнуто под 90°, затем вернись. Чередуй ноги.',ar:'تقدم بخطوة، أنزل ركبتك الخلفية نحو الأرض مع ثني الركبة الأمامية بزاوية 90 درجة، ثم عد. بدّل بين الساقين.'},
     type:'reps', sets:3, reps:12,
     poseA:{head:[50,14],neck:[50,24],hip:[50,52],handL:[42,45],handR:[58,45],footL:[45,90],footR:[55,90]},
     poseB:{head:[48,30],neck:[48,40],hip:[48,60],handL:[38,50],handR:[58,50],footL:[25,88],footR:[75,82]} },
-  pushup: { muscle:{tr:'Göğüs / Kol',en:'Chest / Arms'}, name:{tr:'Push-up',en:'Push-up'},
-    how:{tr:'Plank pozisyonunda ellerini omuz hizasına koy, dirseklerini bükerek göğsünü yere yaklaştır, sonra it kaldır.',en:'From a plank position, hands under shoulders, bend your elbows to lower your chest, then push back up.'},
+  pushup: { muscle:{tr:'Göğüs / Kol',en:'Chest / Arms',de:'Brust / Arme',es:'Pecho / Brazos',ru:'Грудь / Руки',ar:'الصدر / الذراعين'}, name:{tr:'Push-up',en:'Push-up',de:'Push-up',es:'Push-up',ru:'Push-up',ar:'Push-up'},
+    how:{tr:'Plank pozisyonunda ellerini omuz hizasına koy, dirseklerini bükerek göğsünü yere yaklaştır, sonra it kaldır.',en:'From a plank position, hands under shoulders, bend your elbows to lower your chest, then push back up.',de:'In der Plankposition, Hände unter den Schultern, Ellbogen beugen, um die Brust zu senken, dann wieder nach oben drücken.',es:'Desde posición de plancha, manos bajo los hombros, dobla los codos para bajar el pecho, luego empuja hacia arriba.',ru:'Из положения планки, руки под плечами, согни локти, опуская грудь, затем вернись вверх.',ar:'من وضعية البلانك، اليدان تحت الكتفين، اثنِ مرفقيك لخفض صدرك، ثم ادفع للأعلى مجددًا.'},
     type:'reps', sets:3, reps:12,
     poseA:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[90,44],footR:[96,51]},
     poseB:{head:[12,42],neck:[23,46],hip:[60,50],handL:[25,62],handR:[21,64],footL:[90,55],footR:[96,60]} },
-  plank: { muscle:{tr:'Karın / Core',en:'Core'}, name:{tr:'Plank',en:'Plank'},
-    how:{tr:'Ön kolların ve ayak uçların üzerinde, vücudun baştan ayağa düz bir çizgi oluştursun, karnını sık ve pozisyonu koru.',en:'Hold your body in a straight line on your forearms and toes, keep your core tight.'},
+  plank: { muscle:{tr:'Karın / Core',en:'Core',de:'Rumpf',es:'Core',ru:'Кор',ar:'الجذع'}, name:{tr:'Plank',en:'Plank',de:'Plank',es:'Plank',ru:'Plank',ar:'Plank'},
+    how:{tr:'Ön kolların ve ayak uçların üzerinde, vücudun baştan ayağa düz bir çizgi oluştursun, karnını sık ve pozisyonu koru.',en:'Hold your body in a straight line on your forearms and toes, keep your core tight.',de:'Halte deinen Körper auf Unterarmen und Zehen in einer geraden Linie, Rumpf angespannt.',es:'Mantén tu cuerpo en línea recta sobre antebrazos y puntas de los pies, con el core apretado.',ru:'Держи тело прямой линией на предплечьях и носках, напряги пресс.',ar:'حافظ على استقامة جسمك على الساعدين وأطراف القدمين، مع شد عضلات الجذع.'},
     type:'duration', sets:3, duration:30,
     poseA:{head:[12,40],neck:[23,44],hip:[60,47],handL:[25,64],handR:[21,66],footL:[90,52],footR:[96,57]},
     poseB:{head:[12,41],neck:[23,45],hip:[60,48],handL:[25,64],handR:[21,66],footL:[90,53],footR:[96,58]} },
-  situp: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Sit-up',en:'Sit-up'},
-    how:{tr:'Sırt üstü yat, dizlerini bük, ellerini göğsünde çaprazla, üst gövdeni dizlerine doğru kaldır, sonra yavaşça in.',en:'Lie on your back, knees bent, curl your upper body toward your knees, then lower slowly.'},
+  situp: { muscle:{tr:'Karın',en:'Abs',de:'Bauch',es:'Abdomen',ru:'Пресс',ar:'البطن'}, name:{tr:'Sit-up',en:'Sit-up',de:'Sit-up',es:'Sit-up',ru:'Sit-up',ar:'Sit-up'},
+    how:{tr:'Sırt üstü yat, dizlerini bük, ellerini göğsünde çaprazla, üst gövdeni dizlerine doğru kaldır, sonra yavaşça in.',en:'Lie on your back, knees bent, curl your upper body toward your knees, then lower slowly.',de:'Auf dem Rücken liegen, Knie gebeugt, Oberkörper Richtung Knie aufrollen, dann langsam absenken.',es:'Túmbate boca arriba, rodillas dobladas, eleva el torso hacia las rodillas, luego baja lentamente.',ru:'Лёжа на спине, колени согнуты, подними корпус к коленям, затем медленно опустись.',ar:'استلقِ على ظهرك مع ثني الركبتين، ارفع الجزء العلوي من جسمك نحو ركبتيك، ثم انزل ببطء.'},
     type:'reps', sets:3, reps:15,
     poseA:{head:[15,60],neck:[26,60],hip:[65,60],handL:[30,48],handR:[30,72],footL:[92,52],footR:[92,68]},
     poseB:{head:[45,35],neck:[52,40],hip:[65,60],handL:[48,32],handR:[48,44],footL:[92,52],footR:[92,68]} },
-  gluteBridge: { muscle:{tr:'Kalça',en:'Glutes'}, name:{tr:'Glute Bridge',en:'Glute Bridge'},
-    how:{tr:'Sırt üstü yat, dizlerini bük, ayak tabanların yerde, kalçanı yukarı it, tepede sık, sonra yavaşça in.',en:'Lie on your back, knees bent, feet flat, lift your hips up, squeeze at the top, then lower slowly.'},
+  gluteBridge: { muscle:{tr:'Kalça',en:'Glutes',de:'Gesäß',es:'Glúteos',ru:'Ягодицы',ar:'الأرداف'}, name:{tr:'Glute Bridge',en:'Glute Bridge',de:'Glute Bridge',es:'Glute Bridge',ru:'Glute Bridge',ar:'Glute Bridge'},
+    how:{tr:'Sırt üstü yat, dizlerini bük, ayak tabanların yerde, kalçanı yukarı it, tepede sık, sonra yavaşça in.',en:'Lie on your back, knees bent, feet flat, lift your hips up, squeeze at the top, then lower slowly.',de:'Auf dem Rücken liegen, Knie gebeugt, Füße flach, Hüfte anheben, oben anspannen, dann langsam absenken.',es:'Túmbate boca arriba, rodillas dobladas, pies apoyados, eleva las caderas, aprieta arriba, luego baja lentamente.',ru:'Лёжа на спине, колени согнуты, стопы на полу, подними таз, сожми ягодицы вверху, затем медленно опустись.',ar:'استلقِ على ظهرك مع ثني الركبتين وتثبيت القدمين، ارفع وركيك للأعلى، اشدّ العضلات في الأعلى، ثم انزل ببطء.'},
     type:'reps', sets:3, reps:15,
     poseA:{head:[12,62],neck:[24,61],hip:[58,61],handL:[12,52],handR:[16,68],footL:[78,61],footR:[83,63]},
     poseB:{head:[12,62],neck:[24,59],hip:[58,46],handL:[12,52],handR:[16,68],footL:[78,61],footR:[83,63]} },
-  superman: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Superman',en:'Superman'},
-    how:{tr:'Yüzükoyun yat, kollarını öne uzat, kollarını, göğsünü ve bacaklarını aynı anda yerden kaldır, 2 saniye tut, sonra in.',en:'Lie face down, arms extended, lift your arms, chest and legs off the floor together, hold, then lower.'},
+  superman: { muscle:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'}, name:{tr:'Superman',en:'Superman',de:'Superman',es:'Superman',ru:'Superman',ar:'Superman'},
+    how:{tr:'Yüzükoyun yat, kollarını öne uzat, kollarını, göğsünü ve bacaklarını aynı anda yerden kaldır, 2 saniye tut, sonra in.',en:'Lie face down, arms extended, lift your arms, chest and legs off the floor together, hold, then lower.',de:'Bauchlage, Arme ausgestreckt, hebe Arme, Brust und Beine gleichzeitig vom Boden ab, halte kurz, dann senke ab.',es:'Boca abajo, brazos extendidos, levanta brazos, pecho y piernas del suelo a la vez, mantén, luego baja.',ru:'Лёжа на животе, руки вытянуты, одновременно подними руки, грудь и ноги от пола, задержись, затем опустись.',ar:'استلقِ على بطنك مع مد ذراعيك، ارفع ذراعيك وصدرك وساقيك عن الأرض معًا، اثبت لحظة، ثم انزل.'},
     type:'reps', sets:3, reps:15,
     poseA:{head:[12,55],neck:[24,55],hip:[62,55],handL:[6,52],handR:[10,58],footL:[92,53],footR:[92,58]},
     poseB:{head:[12,40],neck:[24,44],hip:[62,55],handL:[2,28],handR:[6,34],footL:[92,38],footR:[92,43]} },
-  wallSit: { muscle:{tr:'Bacak',en:'Legs'}, name:{tr:'Wall Sit',en:'Wall Sit'},
-    how:{tr:'Sırtını duvara yasla, dizlerin 90 derece olacak şekilde çömel ve süre boyunca pozisyonu koru.',en:'Lean your back against a wall, slide down until your knees are at 90°, and hold the position.'},
+  wallSit: { muscle:{tr:'Bacak',en:'Legs',de:'Beine',es:'Piernas',ru:'Ноги',ar:'الأرجل'}, name:{tr:'Wall Sit',en:'Wall Sit',de:'Wall Sit',es:'Wall Sit',ru:'Wall Sit',ar:'Wall Sit'},
+    how:{tr:'Sırtını duvara yasla, dizlerin 90 derece olacak şekilde çömel ve süre boyunca pozisyonu koru.',en:'Lean your back against a wall, slide down until your knees are at 90°, and hold the position.',de:'Lehne deinen Rücken an eine Wand, rutsche hinunter, bis die Knie im 90°-Winkel sind, und halte die Position.',es:'Apoya la espalda en una pared, deslízate hacia abajo hasta que las rodillas formen 90°, y mantén la posición.',ru:'Прислонись спиной к стене, соскользни вниз, пока колени не окажутся под углом 90°, и удерживай позицию.',ar:'أسند ظهرك إلى الحائط، انزلق للأسفل حتى تصل ركبتاك إلى زاوية 90 درجة، وثبّت الوضعية.'},
     type:'duration', sets:3, duration:40,
     poseA:{head:[50,34],neck:[50,44],hip:[50,66],handL:[38,55],handR:[62,55],footL:[40,90],footR:[60,90]},
     poseB:{head:[50,35],neck:[50,45],hip:[50,67],handL:[38,56],handR:[62,56],footL:[40,90],footR:[60,90]} },
-  highKnees: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'High Knees',en:'High Knees'},
-    how:{tr:'Yerinde koşar gibi dizlerini olabildiğince yukarı kaldırarak hızlı adımlarla koş.',en:'Run in place, driving your knees up as high as you can, at a fast pace.'},
+  highKnees: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'High Knees',en:'High Knees',de:'High Knees',es:'High Knees',ru:'High Knees',ar:'High Knees'},
+    how:{tr:'Yerinde koşar gibi dizlerini olabildiğince yukarı kaldırarak hızlı adımlarla koş.',en:'Run in place, driving your knees up as high as you can, at a fast pace.',de:'Laufe auf der Stelle und ziehe die Knie so hoch wie möglich, in schnellem Tempo.',es:'Corre en el sitio, llevando las rodillas lo más alto posible, a ritmo rápido.',ru:'Бег на месте, поднимая колени как можно выше, в быстром темпе.',ar:'اركض في مكانك، ارفع ركبتيك لأعلى ما تستطيع، بوتيرة سريعة.'},
     type:'duration', sets:3, duration:30,
     poseA:{head:[50,14],neck:[50,24],hip:[50,54],handL:[36,45],handR:[64,35],footL:[46,90],footR:[54,60]},
     poseB:{head:[50,14],neck:[50,24],hip:[50,54],handL:[64,45],handR:[36,35],footL:[46,60],footR:[54,90]} },
-  mountainClimber: { muscle:{tr:'Kardiyo / Core',en:'Cardio / Core'}, name:{tr:'Mountain Climber',en:'Mountain Climber'},
-    how:{tr:'Plank pozisyonunda dizlerini sırayla göğsüne doğru hızlıca çek.',en:'From a plank position, quickly alternate driving your knees toward your chest.'},
+  mountainClimber: { muscle:{tr:'Kardiyo / Core',en:'Cardio / Core',de:'Cardio / Rumpf',es:'Cardio / Core',ru:'Кардио / Кор',ar:'كارديو / الجذع'}, name:{tr:'Mountain Climber',en:'Mountain Climber',de:'Mountain Climber',es:'Mountain Climber',ru:'Mountain Climber',ar:'Mountain Climber'},
+    how:{tr:'Plank pozisyonunda dizlerini sırayla göğsüne doğru hızlıca çek.',en:'From a plank position, quickly alternate driving your knees toward your chest.',de:'In der Plankposition abwechselnd schnell die Knie Richtung Brust ziehen.',es:'Desde posición de plancha, alterna rápidamente llevando las rodillas hacia el pecho.',ru:'Из положения планки быстро чередуй подтягивание коленей к груди.',ar:'من وضعية البلانك، بدّل بسرعة بين دفع ركبتيك نحو صدرك.'},
     type:'duration', sets:3, duration:30,
     poseA:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[90,44],footR:[96,51]},
     poseB:{head:[12,28],neck:[23,33],hip:[60,38],handL:[25,62],handR:[21,64],footL:[45,42],footR:[96,51]} },
-  bicycleCrunch: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Bicycle Crunch',en:'Bicycle Crunch'},
-    how:{tr:'Sırt üstü yat, bir dirseğini karşı dizine değdirirken diğer bacağını uzat, bisiklet çevirir gibi değiştir.',en:'Lying on your back, touch elbow to opposite knee while extending the other leg, alternate like pedaling.'},
+  bicycleCrunch: { muscle:{tr:'Karın',en:'Abs',de:'Bauch',es:'Abdomen',ru:'Пресс',ar:'البطن'}, name:{tr:'Bicycle Crunch',en:'Bicycle Crunch',de:'Bicycle Crunch',es:'Bicycle Crunch',ru:'Bicycle Crunch',ar:'Bicycle Crunch'},
+    how:{tr:'Sırt üstü yat, bir dirseğini karşı dizine değdirirken diğer bacağını uzat, bisiklet çevirir gibi değiştir.',en:'Lying on your back, touch elbow to opposite knee while extending the other leg, alternate like pedaling.',de:'Auf dem Rücken liegend den Ellbogen zum gegenüberliegenden Knie führen, während das andere Bein gestreckt wird, wie beim Radfahren abwechseln.',es:'Túmbate boca arriba, toca el codo con la rodilla opuesta mientras extiendes la otra pierna, alterna como pedaleando.',ru:'Лёжа на спине, коснись локтем противоположного колена, вытягивая другую ногу, чередуй как при езде на велосипеде.',ar:'استلقِ على ظهرك، المس مرفقك بركبتك المقابلة مع مد الساق الأخرى، بدّل كأنك تدوس دراجة.'},
     type:'reps', sets:3, reps:20,
     poseA:{head:[24,42],neck:[34,45],hip:[65,58],handL:[45,40],handR:[18,50],footL:[42,45],footR:[92,60]},
     poseB:{head:[24,42],neck:[34,45],hip:[65,58],handL:[18,50],handR:[45,40],footL:[92,60],footR:[42,45]} },
-  tricepDips: { muscle:{tr:'Kol (Triceps)',en:'Arms (Triceps)'}, name:{tr:'Tricep Dips',en:'Tricep Dips'},
-    how:{tr:'Sandalye kenarına otur, ellerini yanlara koy, kalçanı öne kaydır, dirseklerini bükerek in, sonra it kaldır.',en:'Sit on a chair edge, hands beside you, slide your hips forward, bend elbows to lower, then push back up.'},
+  tricepDips: { muscle:{tr:'Kol (Triceps)',en:'Arms (Triceps)',de:'Arme (Trizeps)',es:'Brazos (Tríceps)',ru:'Руки (трицепс)',ar:'الذراعين (الترايسبس)'}, name:{tr:'Tricep Dips',en:'Tricep Dips',de:'Tricep Dips',es:'Tricep Dips',ru:'Tricep Dips',ar:'Tricep Dips'},
+    how:{tr:'Sandalye kenarına otur, ellerini yanlara koy, kalçanı öne kaydır, dirseklerini bükerek in, sonra it kaldır.',en:'Sit on a chair edge, hands beside you, slide your hips forward, bend elbows to lower, then push back up.',de:'Setze dich an den Rand eines Stuhls, Hände neben dir, schiebe die Hüfte nach vorne, beuge die Ellbogen zum Absenken, dann wieder hochdrücken.',es:'Siéntate en el borde de una silla, manos a los lados, desliza las caderas hacia adelante, dobla los codos para bajar, luego empuja hacia arriba.',ru:'Сядь на край стула, руки рядом с собой, сдвинь таз вперёд, согни локти, опускаясь, затем вернись вверх.',ar:'اجلس على حافة كرسي، ضع يديك بجانبك، حرّك وركيك للأمام، اثنِ مرفقيك للنزول، ثم ادفع للأعلى مجددًا.'},
     type:'reps', sets:3, reps:12,
     poseA:{head:[60,28],neck:[58,34],hip:[52,54],handL:[74,50],handR:[78,54],footL:[28,78],footR:[34,84]},
     poseB:{head:[60,38],neck:[58,44],hip:[52,66],handL:[74,52],handR:[78,56],footL:[28,78],footR:[34,84]} },
-  calfRaise: { muscle:{tr:'Baldır',en:'Calves'}, name:{tr:'Calf Raise',en:'Calf Raise'},
-    how:{tr:'Ayakta dur, topuklarını yerden kaldırarak parmak uçlarında yüksel, sonra yavaşça in.',en:'Stand up, rise onto your toes lifting your heels, then lower slowly.'},
+  calfRaise: { muscle:{tr:'Baldır',en:'Calves',de:'Waden',es:'Pantorrillas',ru:'Икры',ar:'السمانة'}, name:{tr:'Calf Raise',en:'Calf Raise',de:'Calf Raise',es:'Calf Raise',ru:'Calf Raise',ar:'Calf Raise'},
+    how:{tr:'Ayakta dur, topuklarını yerden kaldırarak parmak uçlarında yüksel, sonra yavaşça in.',en:'Stand up, rise onto your toes lifting your heels, then lower slowly.',de:'Stehe aufrecht, hebe dich auf die Zehenspitzen, indem du die Fersen anhebst, dann langsam absenken.',es:'Ponte de pie, elévate sobre las puntas de los pies levantando los talones, luego baja lentamente.',ru:'Встань прямо, поднимись на носки, отрывая пятки от пола, затем медленно опустись.',ar:'قف مستقيمًا، ارتفع على أطراف أصابع قدميك برفع كعبيك، ثم انزل ببطء.'},
     type:'reps', sets:3, reps:20,
     poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[42,45],handR:[58,45],footL:[45,90],footR:[55,90]},
     poseB:{head:[50,12],neck:[50,22],hip:[50,50],handL:[42,42],handR:[58,42],footL:[46,88],footR:[54,88]} },
-  armCircles: { muscle:{tr:'Isınma',en:'Warm-up'}, name:{tr:'Arm Circles',en:'Arm Circles'},
-    how:{tr:'Kollarını yanlara aç ve küçük daireler çizerek ısınma hareketi yap.',en:'Extend your arms to the sides and make small circles as a warm-up.'},
+  armCircles: { muscle:{tr:'Isınma',en:'Warm-up',de:'Aufwärmen',es:'Calentamiento',ru:'Разминка',ar:'إحماء'}, name:{tr:'Arm Circles',en:'Arm Circles',de:'Arm Circles',es:'Arm Circles',ru:'Arm Circles',ar:'Arm Circles'},
+    how:{tr:'Kollarını yanlara aç ve küçük daireler çizerek ısınma hareketi yap.',en:'Extend your arms to the sides and make small circles as a warm-up.',de:'Strecke die Arme zur Seite aus und mache kleine Kreise zum Aufwärmen.',es:'Extiende los brazos a los lados y haz pequeños círculos como calentamiento.',ru:'Вытяни руки в стороны и делай небольшие круговые движения для разминки.',ar:'مدّ ذراعيك للجانبين وقم بعمل دوائر صغيرة كإحماء.'},
     type:'duration', sets:2, duration:30,
     poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[25,18],handR:[75,18],footL:[45,90],footR:[55,90]},
     poseB:{head:[50,16],neck:[50,26],hip:[50,54],handL:[22,45],handR:[78,45],footL:[45,90],footR:[55,90]} },
-  sidePlank: { muscle:{tr:'Karın / Core',en:'Core'}, name:{tr:'Side Plank',en:'Side Plank'},
-    how:{tr:'Yan yat, tek kolunun üzerine dayan, vücudunu düz bir çizgi haline getir ve pozisyonu koru.',en:'Lie on your side, prop up on one forearm, keep your body in a straight line and hold.'},
+  sidePlank: { muscle:{tr:'Karın / Core',en:'Core',de:'Rumpf',es:'Core',ru:'Кор',ar:'الجذع'}, name:{tr:'Side Plank',en:'Side Plank',de:'Side Plank',es:'Side Plank',ru:'Side Plank',ar:'Side Plank'},
+    how:{tr:'Yan yat, tek kolunun üzerine dayan, vücudunu düz bir çizgi haline getir ve pozisyonu koru.',en:'Lie on your side, prop up on one forearm, keep your body in a straight line and hold.',de:'Lege dich auf die Seite, stütze dich auf einen Unterarm, halte den Körper in einer geraden Linie.',es:'Túmbate de lado, apóyate en un antebrazo, mantén el cuerpo en línea recta y sostén la posición.',ru:'Ляг на бок, обопрись на одно предплечье, держи тело прямой линией и удерживай позицию.',ar:'استلقِ على جانبك، اعتمد على ساعد واحد، حافظ على استقامة جسمك وثبّت الوضعية.'},
     type:'duration', sets:2, duration:30,
     poseA:{head:[14,32],neck:[25,37],hip:[62,40],handL:[27,58],handR:[27,14],footL:[90,46],footR:[95,50]},
     poseB:{head:[14,33],neck:[25,38],hip:[62,41],handL:[27,58],handR:[27,16],footL:[90,46],footR:[95,50]} },
-  russianTwist: { muscle:{tr:'Karın (Oblik)',en:'Abs (Obliques)'}, name:{tr:'Russian Twist',en:'Russian Twist'},
-    how:{tr:'Yerde otur, dizlerini bük, gövdeni hafif geriye yasla, ellerini birleştirip gövdeni sağa sola çevir.',en:'Sit on the floor, knees bent, lean back slightly, clasp your hands and twist your torso side to side.'},
+  russianTwist: { muscle:{tr:'Karın (Oblik)',en:'Abs (Obliques)',de:'Bauch (Schräge)',es:'Abdomen (Oblicuos)',ru:'Пресс (косые)',ar:'البطن (المائلة)'}, name:{tr:'Russian Twist',en:'Russian Twist',de:'Russian Twist',es:'Russian Twist',ru:'Russian Twist',ar:'Russian Twist'},
+    how:{tr:'Yerde otur, dizlerini bük, gövdeni hafif geriye yasla, ellerini birleştirip gövdeni sağa sola çevir.',en:'Sit on the floor, knees bent, lean back slightly, clasp your hands and twist your torso side to side.',de:'Setz dich auf den Boden, Knie gebeugt, lehne dich leicht zurück, falte die Hände und drehe den Oberkörper von Seite zu Seite.',es:'Siéntate en el suelo, rodillas dobladas, inclínate ligeramente hacia atrás, junta las manos y gira el torso de un lado a otro.',ru:'Сядь на пол, колени согнуты, слегка откинься назад, сцепи руки и поворачивай корпус из стороны в сторону.',ar:'اجلس على الأرض مع ثني الركبتين، انحنِ للخلف قليلًا، اربط يديك ولفّ جذعك من جانب إلى آخر.'},
     type:'reps', sets:3, reps:20,
     poseA:{head:[45,35],neck:[50,42],hip:[58,58],handL:[28,48],handR:[34,48],footL:[75,68],footR:[80,66]},
     poseB:{head:[55,35],neck:[52,42],hip:[58,58],handL:[70,48],handR:[76,48],footL:[75,68],footR:[80,66]} },
-  jumpingJack: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Jumping Jack',en:'Jumping Jack'},
-    how:{tr:'Ayakta başla, zıplayarak kollarını başının üzerinde birleştir ve bacaklarını aç, sonra başlangıca dön.',en:'Start standing, jump while raising your arms overhead and spreading your legs, then return.'},
+  jumpingJack: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Jumping Jack',en:'Jumping Jack',de:'Jumping Jack',es:'Jumping Jack',ru:'Jumping Jack',ar:'Jumping Jack'},
+    how:{tr:'Ayakta başla, zıplayarak kollarını başının üzerinde birleştir ve bacaklarını aç, sonra başlangıca dön.',en:'Start standing, jump while raising your arms overhead and spreading your legs, then return.',de:'Stehend beginnen, springen und dabei die Arme über den Kopf heben und die Beine spreizen, dann zurück.',es:'Comienza de pie, salta mientras levantas los brazos por encima de la cabeza y separas las piernas, luego vuelve.',ru:'Начни стоя, прыгай, поднимая руки над головой и разводя ноги в стороны, затем вернись.',ar:'ابدأ واقفًا، اقفز مع رفع ذراعيك فوق رأسك وفتح ساقيك، ثم عد.'},
     type:'duration', sets:3, duration:30,
     poseA:{head:[50,16],neck:[50,26],hip:[50,54],handL:[44,42],handR:[56,42],footL:[47,90],footR:[53,90]},
     poseB:{head:[50,10],neck:[50,20],hip:[50,50],handL:[18,10],handR:[82,10],footL:[24,90],footR:[76,90]} },
-  starJump: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Star Jump',en:'Star Jump'},
-    how:{tr:'Çömel, sonra patlayıcı bir şekilde zıplayarak kollarını ve bacaklarını yıldız şeklinde aç.',en:'Crouch down, then explosively jump up spreading your arms and legs into a star shape.'},
+  starJump: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Star Jump',en:'Star Jump',de:'Star Jump',es:'Star Jump',ru:'Star Jump',ar:'Star Jump'},
+    how:{tr:'Çömel, sonra patlayıcı bir şekilde zıplayarak kollarını ve bacaklarını yıldız şeklinde aç.',en:'Crouch down, then explosively jump up spreading your arms and legs into a star shape.',de:'In die Hocke gehen, dann explosiv nach oben springen und Arme und Beine zu einer Sternform spreizen.',es:'Agáchate, luego salta explosivamente hacia arriba abriendo brazos y piernas en forma de estrella.',ru:'Присядь, затем взрывным движением подпрыгни, разводя руки и ноги в форме звезды.',ar:'انحنِ للأسفل، ثم اقفز بقوة للأعلى مع فتح ذراعيك وساقيك على شكل نجمة.'},
     type:'reps', sets:3, reps:12,
     poseA:{head:[50,34],neck:[50,44],hip:[50,64],handL:[38,54],handR:[62,54],footL:[40,90],footR:[60,90]},
     poseB:{head:[50,8],neck:[50,18],hip:[50,46],handL:[15,6],handR:[85,6],footL:[20,88],footR:[80,88]} },
-  jumpSquat: { muscle:{tr:'Bacak / Kardiyo',en:'Legs / Cardio'}, name:{tr:'Jump Squat',en:'Jump Squat'},
-    how:{tr:'Squat pozisyonuna in, sonra patlayıcı bir şekilde yukarı zıpla, yumuşak bir inişle tekrar çömel.',en:'Lower into a squat, then explosively jump up, landing softly back into the squat.'},
+  jumpSquat: { muscle:{tr:'Bacak / Kardiyo',en:'Legs / Cardio',de:'Beine / Cardio',es:'Piernas / Cardio',ru:'Ноги / Кардио',ar:'الأرجل / كارديو'}, name:{tr:'Jump Squat',en:'Jump Squat',de:'Jump Squat',es:'Jump Squat',ru:'Jump Squat',ar:'Jump Squat'},
+    how:{tr:'Squat pozisyonuna in, sonra patlayıcı bir şekilde yukarı zıpla, yumuşak bir inişle tekrar çömel.',en:'Lower into a squat, then explosively jump up, landing softly back into the squat.',de:'In die Kniebeuge absenken, dann explosiv nach oben springen und weich zurück in die Kniebeuge landen.',es:'Baja a una sentadilla, luego salta explosivamente hacia arriba, aterrizando suavemente de vuelta en la sentadilla.',ru:'Опустись в присед, затем взрывным движением подпрыгни, мягко приземляясь обратно в присед.',ar:'انزل إلى وضعية القرفصاء، ثم اقفز بقوة للأعلى، واهبط برفق مجددًا في وضعية القرفصاء.'},
     type:'reps', sets:3, reps:12,
     poseA:{head:[50,32],neck:[50,42],hip:[50,66],handL:[32,52],handR:[68,52],footL:[38,90],footR:[62,90]},
     poseB:{head:[50,6],neck:[50,16],hip:[50,40],handL:[30,6],handR:[70,6],footL:[42,62],footR:[58,62]} },
-  burpee: { muscle:{tr:'Tüm Vücut',en:'Full Body'}, name:{tr:'Burpee',en:'Burpee'},
-    how:{tr:'Ayaktan çömel, ellerini yere koy, bacaklarını geriye at ve plank yap, geri çek ve yukarı zıpla.',en:'From standing, squat down, place hands on the floor, kick legs back into a plank, return, and jump up.'},
+  burpee: { muscle:{tr:'Tüm Vücut',en:'Full Body',de:'Ganzkörper',es:'Cuerpo Completo',ru:'Всё тело',ar:'الجسم كامل'}, name:{tr:'Burpee',en:'Burpee',de:'Burpee',es:'Burpee',ru:'Burpee',ar:'Burpee'},
+    how:{tr:'Ayaktan çömel, ellerini yere koy, bacaklarını geriye at ve plank yap, geri çek ve yukarı zıpla.',en:'From standing, squat down, place hands on the floor, kick legs back into a plank, return, and jump up.',de:'Aus dem Stand in die Hocke gehen, Hände auf den Boden legen, Beine zurück in die Plankposition schnellen, zurückkehren und hochspringen.',es:'De pie, agáchate, coloca las manos en el suelo, lanza las piernas hacia atrás a una plancha, vuelve y salta hacia arriba.',ru:'Из положения стоя присядь, положи руки на пол, откинь ноги назад в планку, вернись и подпрыгни вверх.',ar:'من الوقوف، اقرفص، ضع يديك على الأرض، ارمِ ساقيك للخلف إلى وضعية البلانك، عد، ثم اقفز للأعلى.'},
     type:'reps', sets:3, reps:10,
     poseA:{head:[50,8],neck:[50,18],hip:[50,42],handL:[35,4],handR:[65,4],footL:[45,88],footR:[55,88]},
     poseB:{head:[12,42],neck:[23,46],hip:[60,50],handL:[25,62],handR:[21,64],footL:[90,55],footR:[96,60]} },
@@ -862,130 +1212,130 @@ const EX = {
      No custom pose art yet (equipment:true renders a generic barbell icon
      until real photos/AI images replace it). `alt` is a plain-text bodyweight
      substitute shown inline for whenever that machine isn't available. */
-  benchPress: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Bench Press',en:'Bench Press'}, equipment:true,
-    how:{tr:'Sırt üstü bench\'e uzan, barı göğüs hizasında tut, kontrollü indir ve yukarı it.',en:'Lie on a bench, hold the bar at chest level, lower it under control, then press up.'},
-    alt:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Incline Bench Press',en:'Incline Bench Press'}, type:'reps', sets:4, reps:10 },
-  inclineBenchPress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest'}, name:{tr:'Incline Bench Press',en:'Incline Bench Press'}, equipment:true,
-    how:{tr:'Eğimli bench üzerinde barı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press the bar from your upper chest, then lower under control.'},
-    alt:{tr:'Dumbbell Eğimli Press',en:'Dumbbell Incline Press'}, alt2:{tr:'Yükseğe Şınav',en:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:10 },
-  chestFly: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Chest Fly',en:'Chest Fly'}, equipment:true,
-    how:{tr:'Kollarını hafif bükerek yanlara aç, göğsünde birleştirir gibi kapat.',en:'With a slight elbow bend, open your arms wide then bring them together in front of your chest.'},
-    alt:{tr:'Cable Crossover',en:'Cable Crossover'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, type:'reps', sets:3, reps:12 },
-  latPulldown: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Lat Pulldown',en:'Lat Pulldown'}, equipment:true,
-    how:{tr:'Barı omuz genişliğinde tut, göğsüne doğru çek, yavaşça geri bırak.',en:'Grip the bar shoulder-width, pull it down to your chest, then release slowly.'},
-    alt:{tr:'Seated Cable Row',en:'Seated Cable Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row'}, alt3:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover'}, type:'reps', sets:4, reps:12 },
-  seatedCableRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Seated Cable Row',en:'Seated Cable Row'}, equipment:true,
-    how:{tr:'Kabloyu tut, dirseklerini geri çekerek gövdene doğru çek, kürek kemiklerini sıkıştır.',en:'Grip the cable, pull it toward your torso by driving your elbows back, squeeze your shoulder blades.'},
-    alt:{tr:'Barbell Row',en:'Barbell Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row'}, alt3:{tr:'Lat Pulldown',en:'Lat Pulldown'}, type:'reps', sets:4, reps:12 },
-  barbellRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Barbell Row',en:'Barbell Row'}, equipment:true,
-    how:{tr:'Öne eğil, sırtın düz kalsın, barı karnına doğru çek, kontrollü indir.',en:'Hinge forward with a flat back, pull the bar toward your stomach, then lower under control.'},
-    alt:{tr:'Dumbbell Row',en:'Dumbbell Row'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Seated Cable Row',en:'Seated Cable Row'}, type:'reps', sets:4, reps:10 },
-  deadlift: { muscle:{tr:'Sırt / Bacak',en:'Back / Legs'}, name:{tr:'Deadlift',en:'Deadlift'}, equipment:true,
-    how:{tr:'Barı yerden sırtın düz kalacak şekilde kaldır, kalçanı ileri iterek dik pozisyona gel.',en:'Lift the bar from the floor keeping your back flat, drive your hips forward to stand tall.'},
-    alt:{tr:'Hip Thrust (Makine)',en:'Hip Thrust Machine'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:8 },
-  legPress: { muscle:{tr:'Bacak',en:'Legs'}, name:{tr:'Leg Press',en:'Leg Press'}, equipment:true,
-    how:{tr:'Ayaklarını platforma omuz genişliğinde yerleştir, dizlerini bükerek platformu it.',en:'Place your feet shoulder-width on the platform, bend your knees, then press it away.'},
-    alt:{tr:'Smith Machine Squat',en:'Smith Machine Squat'}, alt2:{tr:'Squat (Vücut Ağırlığı)',en:'Bodyweight Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:4, reps:12 },
-  legExtension: { muscle:{tr:'Quadriceps',en:'Quadriceps'}, name:{tr:'Leg Extension',en:'Leg Extension'}, equipment:true,
-    how:{tr:'Makinede otur, dizlerin düz olana kadar bacaklarını kaldır, kontrollü indir.',en:'Sit in the machine, extend your legs until straight, then lower under control.'},
-    alt:{tr:'Leg Press',en:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:3, reps:15 },
-  legCurl: { muscle:{tr:'Hamstring',en:'Hamstrings'}, name:{tr:'Leg Curl',en:'Leg Curl'}, equipment:true,
-    how:{tr:'Makinede yüzükoyun uzan, topuklarını kalçana doğru çek, yavaşça indir.',en:'Lie face down in the machine, curl your heels toward your hips, then lower slowly.'},
-    alt:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Deadlift',en:'Deadlift'}, type:'reps', sets:3, reps:15 },
-  hipThrust: { muscle:{tr:'Kalça',en:'Glutes'}, name:{tr:'Hip Thrust',en:'Hip Thrust'}, equipment:true,
-    how:{tr:'Sırtını bench\'e yasla, barı kalçana yerleştir, kalçanı yukarı it, tepede sık.',en:'Rest your back on a bench, place the bar on your hips, drive your hips up, squeeze at the top.'},
-    alt:{tr:'Deadlift',en:'Deadlift'}, alt2:{tr:'Bodyweight Glute Bridge',en:'Bodyweight Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:12 },
-  shoulderPress: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Shoulder Press',en:'Shoulder Press'}, equipment:true,
-    how:{tr:'Dumbell veya makineyle omuz hizasından yukarı doğru it, kontrollü indir.',en:'Press dumbbells or the machine handles up from shoulder height, then lower under control.'},
-    alt:{tr:'Arnold Press',en:'Arnold Press'}, alt2:{tr:'Pike Şınav',en:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:12 },
-  lateralRaise: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Lateral Raise',en:'Lateral Raise'}, equipment:true,
-    how:{tr:'Dumbellleri yanlara doğru omuz hizasına kadar kaldır, yavaşça indir.',en:'Raise dumbbells out to the sides up to shoulder height, then lower slowly.'},
-    alt:{tr:'Cable Lateral Raise',en:'Cable Lateral Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Rear Delt Fly',en:'Rear Delt Fly'}, type:'reps', sets:3, reps:15 },
-  frontRaise: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Front Raise',en:'Front Raise'}, equipment:true,
-    how:{tr:'Dumbellleri öne doğru omuz hizasına kadar kaldır, kontrollü indir.',en:'Raise dumbbells forward up to shoulder height, then lower under control.'},
-    alt:{tr:'Cable Front Raise',en:'Cable Front Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Shoulder Press',en:'Shoulder Press'}, type:'reps', sets:3, reps:12 },
-  bicepCurl: { muscle:{tr:'Biceps',en:'Biceps'}, name:{tr:'Bicep Curl',en:'Bicep Curl'}, equipment:true,
-    how:{tr:'Dumbellleri dirseklerini sabit tutarak yukarı kıvır, kontrollü indir.',en:'Curl the dumbbells up keeping your elbows fixed, then lower under control.'},
-    alt:{tr:'EZ Bar Curl',en:'EZ Bar Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
-  hammerCurl: { muscle:{tr:'Biceps / Önkol',en:'Biceps / Forearms'}, name:{tr:'Hammer Curl',en:'Hammer Curl'}, equipment:true,
-    how:{tr:'Dumbellleri çekiç tutuşuyla (avuç içi içe bakacak) yukarı kıvır.',en:'Curl the dumbbells up with a hammer grip (palms facing each other).'},
-    alt:{tr:'Cable Rope Curl',en:'Cable Rope Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
-  tricepPushdown: { muscle:{tr:'Triceps',en:'Triceps'}, name:{tr:'Tricep Pushdown',en:'Tricep Pushdown'}, equipment:true,
-    how:{tr:'Kabloyu tut, dirseklerini sabit tutarak aşağı it, kontrollü geri bırak.',en:'Grip the cable, push it down keeping your elbows fixed, then release under control.'},
-    alt:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)'}, alt2:{tr:'Tricep Dips',en:'Chair Dips'}, alt3:{tr:'Tricep Kickback',en:'Tricep Kickback'}, type:'reps', sets:3, reps:15 },
-  cableCrunch: { muscle:{tr:'Karın',en:'Abs'}, name:{tr:'Cable Crunch',en:'Cable Crunch'}, equipment:true,
-    how:{tr:'Kabloya diz çök, karnını sıkarak gövdeni aşağı kıvır, yavaşça geri dön.',en:'Kneel at the cable, crunch your torso down by squeezing your abs, then return slowly.'},
-    alt:{tr:'Weighted Sit-up',en:'Weighted Sit-up'}, alt2:{tr:'Sit-up',en:'Sit-up'}, alt3:{tr:'Leg Raise',en:'Leg Raise'}, type:'reps', sets:3, reps:15 },
-  legRaise: { muscle:{tr:'Alt Karın',en:'Lower Abs'}, name:{tr:'Leg Raise',en:'Leg Raise'}, equipment:true,
-    how:{tr:'Askıda veya sırt üstü, bacaklarını düz tutarak yukarı kaldır, kontrollü indir.',en:'Hanging or lying down, raise your straight legs up, then lower under control.'},
-    alt:{tr:'Ab Machine Crunch',en:'Ab Machine Crunch'}, alt2:{tr:'Bicycle Crunch',en:'Bicycle Crunch'}, alt3:{tr:'Cable Crunch',en:'Cable Crunch'}, type:'reps', sets:3, reps:15 },
-  treadmill: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Koşu Bandı (Sprint)',en:'Treadmill (Sprint Intervals)'}, equipment:true,
-    how:{tr:'Koşu bandında hızını artır, verilen süre boyunca tempolu koş, sonra yavaşlayarak dinlen.',en:'Increase the treadmill speed, run at pace for the given time, then slow down to recover.'},
-    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, alt2:{tr:'Yerinde Koşu',en:'Running in Place'}, alt3:{tr:'Elliptical',en:'Elliptical'}, type:'duration', sets:5, duration:40 },
-  bike: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, equipment:true,
-    how:{tr:'Bisiklette direnci artır, verilen süre boyunca yüksek tempoda çevir, sonra yavaşla.',en:'Increase the bike resistance, pedal at high intensity for the given time, then slow down.'},
-    alt:{tr:'Eliptik Bisiklet',en:'Elliptical'}, alt2:{tr:'High Knees',en:'High Knees'}, alt3:{tr:'Treadmill',en:'Treadmill'}, type:'duration', sets:5, duration:45 },
-  eliptik: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Eliptik Bisiklet',en:'Elliptical'}, equipment:true,
-    how:{tr:'Eliptikte kollarını da kullanarak tempolu bir şekilde ilerle, verilen süre boyunca hızını koru.',en:'Move at pace on the elliptical using your arms too, keeping your speed for the given time.'},
-    alt:{tr:'Koşu Bandı',en:'Treadmill'}, alt2:{tr:'Jumping Jack',en:'Jumping Jack'}, alt3:{tr:'Stationary Bike',en:'Stationary Bike'}, type:'duration', sets:5, duration:45 },
+  benchPress: { muscle:{tr:'Göğüs',en:'Chest',de:'Brust',es:'Pecho',ru:'Грудь',ar:'الصدر'}, name:{tr:'Bench Press',en:'Bench Press',de:'Bench Press',es:'Bench Press',ru:'Bench Press',ar:'Bench Press'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, barı göğüs hizasında tut, kontrollü indir ve yukarı it.',en:'Lie on a bench, hold the bar at chest level, lower it under control, then press up.',de:'Lege dich auf eine Bank, halte die Stange auf Brusthöhe, senke sie kontrolliert ab, dann drücke sie hoch.',es:'Túmbate en un banco, sostén la barra a la altura del pecho, bájala con control, luego empuja hacia arriba.',ru:'Ляг на скамью, держи гриф на уровне груди, опусти его подконтрольно, затем выжми вверх.',ar:'استلقِ على مقعد، أمسك البار عند مستوى صدرك، أنزله بتحكم، ثم ادفعه للأعلى.'},
+    alt:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press',de:'Dumbbell Bench Press',es:'Dumbbell Bench Press',ru:'Dumbbell Bench Press',ar:'Dumbbell Bench Press'}, alt2:{tr:'Push-up',en:'Push-up',de:'Push-up',es:'Push-up',ru:'Push-up',ar:'Push-up'}, alt3:{tr:'Incline Bench Press',en:'Incline Bench Press',de:'Incline Bench Press',es:'Incline Bench Press',ru:'Incline Bench Press',ar:'Incline Bench Press'}, type:'reps', sets:4, reps:10 },
+  inclineBenchPress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest',de:'Obere Brust',es:'Pecho Superior',ru:'Верх груди',ar:'أعلى الصدر'}, name:{tr:'Incline Bench Press',en:'Incline Bench Press',de:'Incline Bench Press',es:'Incline Bench Press',ru:'Incline Bench Press',ar:'Incline Bench Press'}, equipment:true,
+    how:{tr:'Eğimli bench üzerinde barı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press the bar from your upper chest, then lower under control.',de:'Auf einer Schrägbank die Stange von der oberen Brust aus hochdrücken, dann kontrolliert absenken.',es:'En un banco inclinado, empuja la barra desde la parte superior del pecho, luego baja con control.',ru:'На наклонной скамье выжми гриф от верха груди, затем опусти подконтрольно.',ar:'على مقعد مائل، ادفع البار من أعلى صدرك، ثم أنزله بتحكم.'},
+    alt:{tr:'Dumbbell Eğimli Press',en:'Dumbbell Incline Press',de:'Dumbbell Incline Press',es:'Dumbbell Incline Press',ru:'Dumbbell Incline Press',ar:'Dumbbell Incline Press'}, alt2:{tr:'Yükseğe Şınav',en:'Incline Push-up',de:'Incline Push-up',es:'Incline Push-up',ru:'Incline Push-up',ar:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly',de:'Chest Fly',es:'Chest Fly',ru:'Chest Fly',ar:'Chest Fly'}, type:'reps', sets:3, reps:10 },
+  chestFly: { muscle:{tr:'Göğüs',en:'Chest',de:'Brust',es:'Pecho',ru:'Грудь',ar:'الصدر'}, name:{tr:'Chest Fly',en:'Chest Fly',de:'Chest Fly',es:'Chest Fly',ru:'Chest Fly',ar:'Chest Fly'}, equipment:true,
+    how:{tr:'Kollarını hafif bükerek yanlara aç, göğsünde birleştirir gibi kapat.',en:'With a slight elbow bend, open your arms wide then bring them together in front of your chest.',de:'Mit leicht gebeugten Ellbogen die Arme weit öffnen und dann vor der Brust wieder zusammenführen.',es:'Con una ligera flexión de codos, abre los brazos ampliamente y luego júntalos frente al pecho.',ru:'Слегка согнув локти, широко разведи руки, затем сведи их перед грудью.',ar:'مع ثني بسيط للمرفقين، افتح ذراعيك على اتساعهما ثم اجمعهما أمام صدرك.'},
+    alt:{tr:'Cable Crossover',en:'Cable Crossover',de:'Cable Crossover',es:'Cable Crossover',ru:'Cable Crossover',ar:'Cable Crossover'}, alt2:{tr:'Push-up',en:'Push-up',de:'Push-up',es:'Push-up',ru:'Push-up',ar:'Push-up'}, alt3:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press',de:'Dumbbell Bench Press',es:'Dumbbell Bench Press',ru:'Dumbbell Bench Press',ar:'Dumbbell Bench Press'}, type:'reps', sets:3, reps:12 },
+  latPulldown: { muscle:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'}, name:{tr:'Lat Pulldown',en:'Lat Pulldown',de:'Lat Pulldown',es:'Lat Pulldown',ru:'Lat Pulldown',ar:'Lat Pulldown'}, equipment:true,
+    how:{tr:'Barı omuz genişliğinde tut, göğsüne doğru çek, yavaşça geri bırak.',en:'Grip the bar shoulder-width, pull it down to your chest, then release slowly.',de:'Greife die Stange schulterbreit, ziehe sie zur Brust herunter, dann langsam lösen.',es:'Agarra la barra al ancho de los hombros, tírala hacia tu pecho, luego suelta lentamente.',ru:'Возьмись за гриф на ширине плеч, потяни его к груди, затем медленно отпусти.',ar:'أمسك البار بعرض الكتفين، اسحبه نحو صدرك، ثم حرره ببطء.'},
+    alt:{tr:'Seated Cable Row',en:'Seated Cable Row',de:'Seated Cable Row',es:'Seated Cable Row',ru:'Seated Cable Row',ar:'Seated Cable Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row',de:'Dumbbell Row',es:'Dumbbell Row',ru:'Dumbbell Row',ar:'Dumbbell Row'}, alt3:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover',de:'Dumbbell Pullover',es:'Dumbbell Pullover',ru:'Dumbbell Pullover',ar:'Dumbbell Pullover'}, type:'reps', sets:4, reps:12 },
+  seatedCableRow: { muscle:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'}, name:{tr:'Seated Cable Row',en:'Seated Cable Row',de:'Seated Cable Row',es:'Seated Cable Row',ru:'Seated Cable Row',ar:'Seated Cable Row'}, equipment:true,
+    how:{tr:'Kabloyu tut, dirseklerini geri çekerek gövdene doğru çek, kürek kemiklerini sıkıştır.',en:'Grip the cable, pull it toward your torso by driving your elbows back, squeeze your shoulder blades.',de:'Greife das Kabel, ziehe es zum Oberkörper, indem du die Ellbogen nach hinten führst, Schulterblätter zusammenziehen.',es:'Agarra el cable, tíralo hacia tu torso llevando los codos hacia atrás, aprieta los omóplatos.',ru:'Возьмись за трос, потяни его к корпусу, отводя локти назад, сведи лопатки.',ar:'أمسك الكابل، اسحبه نحو جذعك بدفع مرفقيك للخلف، اضغط لوحي كتفيك معًا.'},
+    alt:{tr:'Barbell Row',en:'Barbell Row',de:'Barbell Row',es:'Barbell Row',ru:'Barbell Row',ar:'Barbell Row'}, alt2:{tr:'Dambılla Tek Kol Kürek',en:'Dumbbell Row',de:'Dumbbell Row',es:'Dumbbell Row',ru:'Dumbbell Row',ar:'Dumbbell Row'}, alt3:{tr:'Lat Pulldown',en:'Lat Pulldown',de:'Lat Pulldown',es:'Lat Pulldown',ru:'Lat Pulldown',ar:'Lat Pulldown'}, type:'reps', sets:4, reps:12 },
+  barbellRow: { muscle:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'}, name:{tr:'Barbell Row',en:'Barbell Row',de:'Barbell Row',es:'Barbell Row',ru:'Barbell Row',ar:'Barbell Row'}, equipment:true,
+    how:{tr:'Öne eğil, sırtın düz kalsın, barı karnına doğru çek, kontrollü indir.',en:'Hinge forward with a flat back, pull the bar toward your stomach, then lower under control.',de:'Beuge dich mit geradem Rücken nach vorne, ziehe die Stange zum Bauch, dann kontrolliert absenken.',es:'Inclínate hacia adelante con la espalda recta, tira de la barra hacia tu estómago, luego baja con control.',ru:'Наклонись вперёд с прямой спиной, потяни гриф к животу, затем опусти подконтрольно.',ar:'انحنِ للأمام مع استقامة الظهر، اسحب البار نحو بطنك، ثم أنزله بتحكم.'},
+    alt:{tr:'Dumbbell Row',en:'Dumbbell Row',de:'Dumbbell Row',es:'Dumbbell Row',ru:'Dumbbell Row',ar:'Dumbbell Row'}, alt2:{tr:'Superman',en:'Superman',de:'Superman',es:'Superman',ru:'Superman',ar:'Superman'}, alt3:{tr:'Seated Cable Row',en:'Seated Cable Row',de:'Seated Cable Row',es:'Seated Cable Row',ru:'Seated Cable Row',ar:'Seated Cable Row'}, type:'reps', sets:4, reps:10 },
+  deadlift: { muscle:{tr:'Sırt / Bacak',en:'Back / Legs',de:'Rücken / Beine',es:'Espalda / Piernas',ru:'Спина / Ноги',ar:'الظهر / الأرجل'}, name:{tr:'Deadlift',en:'Deadlift',de:'Deadlift',es:'Deadlift',ru:'Deadlift',ar:'Deadlift'}, equipment:true,
+    how:{tr:'Barı yerden sırtın düz kalacak şekilde kaldır, kalçanı ileri iterek dik pozisyona gel.',en:'Lift the bar from the floor keeping your back flat, drive your hips forward to stand tall.',de:'Hebe die Stange vom Boden, während der Rücken gerade bleibt, drücke die Hüfte nach vorne, um dich aufzurichten.',es:'Levanta la barra del suelo manteniendo la espalda recta, empuja las caderas hacia adelante para ponerte de pie.',ru:'Подними гриф с пола, сохраняя спину прямой, выведи таз вперёд, чтобы полностью выпрямиться.',ar:'ارفع البار من الأرض مع الحفاظ على استقامة ظهرك، ادفع وركيك للأمام لتقف مستقيمًا.'},
+    alt:{tr:'Hip Thrust (Makine)',en:'Hip Thrust Machine',de:'Hip Thrust Machine',es:'Hip Thrust Machine',ru:'Hip Thrust Machine',ar:'Hip Thrust Machine'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge',de:'Glute Bridge',es:'Glute Bridge',ru:'Glute Bridge',ar:'Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift',de:'Dumbbell Romanian Deadlift',es:'Dumbbell Romanian Deadlift',ru:'Dumbbell Romanian Deadlift',ar:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:8 },
+  legPress: { muscle:{tr:'Bacak',en:'Legs',de:'Beine',es:'Piernas',ru:'Ноги',ar:'الأرجل'}, name:{tr:'Leg Press',en:'Leg Press',de:'Leg Press',es:'Leg Press',ru:'Leg Press',ar:'Leg Press'}, equipment:true,
+    how:{tr:'Ayaklarını platforma omuz genişliğinde yerleştir, dizlerini bükerek platformu it.',en:'Place your feet shoulder-width on the platform, bend your knees, then press it away.',de:'Stelle die Füße schulterbreit auf die Plattform, beuge die Knie, dann drücke sie weg.',es:'Coloca los pies al ancho de los hombros en la plataforma, dobla las rodillas, luego empuja.',ru:'Поставь ноги на платформу на ширине плеч, согни колени, затем оттолкни платформу.',ar:'ضع قدميك بعرض الكتفين على المنصة، اثنِ ركبتيك، ثم ادفعها بعيدًا.'},
+    alt:{tr:'Smith Machine Squat',en:'Smith Machine Squat',de:'Smith Machine Squat',es:'Smith Machine Squat',ru:'Smith Machine Squat',ar:'Smith Machine Squat'}, alt2:{tr:'Squat (Vücut Ağırlığı)',en:'Bodyweight Squat',de:'Bodyweight Squat',es:'Bodyweight Squat',ru:'Bodyweight Squat',ar:'Bodyweight Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat',de:'Goblet Squat',es:'Goblet Squat',ru:'Goblet Squat',ar:'Goblet Squat'}, type:'reps', sets:4, reps:12 },
+  legExtension: { muscle:{tr:'Quadriceps',en:'Quadriceps',de:'Quadrizeps',es:'Cuádriceps',ru:'Квадрицепс',ar:'عضلة الفخذ الرباعية'}, name:{tr:'Leg Extension',en:'Leg Extension',de:'Leg Extension',es:'Leg Extension',ru:'Leg Extension',ar:'Leg Extension'}, equipment:true,
+    how:{tr:'Makinede otur, dizlerin düz olana kadar bacaklarını kaldır, kontrollü indir.',en:'Sit in the machine, extend your legs until straight, then lower under control.',de:'Setz dich in die Maschine, strecke die Beine ganz aus, dann kontrolliert absenken.',es:'Siéntate en la máquina, extiende las piernas hasta que estén rectas, luego baja con control.',ru:'Сядь в тренажёр, выпрями ноги до конца, затем опусти подконтрольно.',ar:'اجلس في الجهاز، مدّ ساقيك حتى تستقيما، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Leg Press',en:'Leg Press',de:'Leg Press',es:'Leg Press',ru:'Leg Press',ar:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge',de:'Lunge',es:'Lunge',ru:'Lunge',ar:'Lunge'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat',de:'Goblet Squat',es:'Goblet Squat',ru:'Goblet Squat',ar:'Goblet Squat'}, type:'reps', sets:3, reps:15 },
+  legCurl: { muscle:{tr:'Hamstring',en:'Hamstrings',de:'Beinbeuger',es:'Isquiotibiales',ru:'Бицепс бедра',ar:'الفخذ الخلفي'}, name:{tr:'Leg Curl',en:'Leg Curl',de:'Leg Curl',es:'Leg Curl',ru:'Leg Curl',ar:'Leg Curl'}, equipment:true,
+    how:{tr:'Makinede yüzükoyun uzan, topuklarını kalçana doğru çek, yavaşça indir.',en:'Lie face down in the machine, curl your heels toward your hips, then lower slowly.',de:'Lege dich bäuchlings in die Maschine, ziehe die Fersen Richtung Gesäß, dann langsam absenken.',es:'Túmbate boca abajo en la máquina, lleva los talones hacia las caderas, luego baja lentamente.',ru:'Ляг лицом вниз в тренажёр, подтяни пятки к ягодицам, затем медленно опусти.',ar:'استلقِ على بطنك في الجهاز، اجذب كعبيك نحو وركيك، ثم أنزلهما ببطء.'},
+    alt:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift',de:'Dumbbell Romanian Deadlift',es:'Dumbbell Romanian Deadlift',ru:'Dumbbell Romanian Deadlift',ar:'Dumbbell Romanian Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge',de:'Glute Bridge',es:'Glute Bridge',ru:'Glute Bridge',ar:'Glute Bridge'}, alt3:{tr:'Deadlift',en:'Deadlift',de:'Deadlift',es:'Deadlift',ru:'Deadlift',ar:'Deadlift'}, type:'reps', sets:3, reps:15 },
+  hipThrust: { muscle:{tr:'Kalça',en:'Glutes',de:'Gesäß',es:'Glúteos',ru:'Ягодицы',ar:'الأرداف'}, name:{tr:'Hip Thrust',en:'Hip Thrust',de:'Hip Thrust',es:'Hip Thrust',ru:'Hip Thrust',ar:'Hip Thrust'}, equipment:true,
+    how:{tr:'Sırtını bench\'e yasla, barı kalçana yerleştir, kalçanı yukarı it, tepede sık.',en:'Rest your back on a bench, place the bar on your hips, drive your hips up, squeeze at the top.',de:'Lehne deinen Rücken an eine Bank, lege die Stange auf die Hüfte, drücke die Hüfte hoch, oben anspannen.',es:'Apoya la espalda en un banco, coloca la barra sobre las caderas, empuja las caderas hacia arriba, aprieta arriba.',ru:'Обопрись спиной о скамью, положи гриф на бёдра, вытолкни таз вверх, сожми вверху.',ar:'أسند ظهرك إلى مقعد، ضع البار على وركيك، ادفع وركيك للأعلى، واشدّ العضلات في الأعلى.'},
+    alt:{tr:'Deadlift',en:'Deadlift',de:'Deadlift',es:'Deadlift',ru:'Deadlift',ar:'Deadlift'}, alt2:{tr:'Bodyweight Glute Bridge',en:'Bodyweight Glute Bridge',de:'Bodyweight Glute Bridge',es:'Bodyweight Glute Bridge',ru:'Bodyweight Glute Bridge',ar:'Bodyweight Glute Bridge'}, alt3:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift',de:'Dumbbell Romanian Deadlift',es:'Dumbbell Romanian Deadlift',ru:'Dumbbell Romanian Deadlift',ar:'Dumbbell Romanian Deadlift'}, type:'reps', sets:4, reps:12 },
+  shoulderPress: { muscle:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'}, name:{tr:'Shoulder Press',en:'Shoulder Press',de:'Shoulder Press',es:'Shoulder Press',ru:'Shoulder Press',ar:'Shoulder Press'}, equipment:true,
+    how:{tr:'Dumbell veya makineyle omuz hizasından yukarı doğru it, kontrollü indir.',en:'Press dumbbells or the machine handles up from shoulder height, then lower under control.',de:'Drücke Kurzhanteln oder die Griffe der Maschine von Schulterhöhe nach oben, dann kontrolliert absenken.',es:'Empuja las mancuernas o las agarraderas de la máquina hacia arriba desde la altura de los hombros, luego baja con control.',ru:'Выжми гантели или рукоятки тренажёра вверх от уровня плеч, затем опусти подконтрольно.',ar:'ادفع الدمبل أو مقابض الجهاز للأعلى من مستوى الكتفين، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Arnold Press',en:'Arnold Press',de:'Arnold Press',es:'Arnold Press',ru:'Arnold Press',ar:'Arnold Press'}, alt2:{tr:'Pike Şınav',en:'Pike Push-up',de:'Pike Push-up',es:'Pike Push-up',ru:'Pike Push-up',ar:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise',de:'Lateral Raise',es:'Lateral Raise',ru:'Lateral Raise',ar:'Lateral Raise'}, type:'reps', sets:3, reps:12 },
+  lateralRaise: { muscle:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'}, name:{tr:'Lateral Raise',en:'Lateral Raise',de:'Lateral Raise',es:'Lateral Raise',ru:'Lateral Raise',ar:'Lateral Raise'}, equipment:true,
+    how:{tr:'Dumbellleri yanlara doğru omuz hizasına kadar kaldır, yavaşça indir.',en:'Raise dumbbells out to the sides up to shoulder height, then lower slowly.',de:'Hebe die Kurzhanteln seitlich bis auf Schulterhöhe, dann langsam absenken.',es:'Eleva las mancuernas hacia los lados hasta la altura de los hombros, luego baja lentamente.',ru:'Подними гантели в стороны до уровня плеч, затем медленно опусти.',ar:'ارفع الدمبل للجانبين حتى مستوى الكتفين، ثم أنزلهما ببطء.'},
+    alt:{tr:'Cable Lateral Raise',en:'Cable Lateral Raise',de:'Cable Lateral Raise',es:'Cable Lateral Raise',ru:'Cable Lateral Raise',ar:'Cable Lateral Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles',de:'Arm Circles',es:'Arm Circles',ru:'Arm Circles',ar:'Arm Circles'}, alt3:{tr:'Rear Delt Fly',en:'Rear Delt Fly',de:'Rear Delt Fly',es:'Rear Delt Fly',ru:'Rear Delt Fly',ar:'Rear Delt Fly'}, type:'reps', sets:3, reps:15 },
+  frontRaise: { muscle:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'}, name:{tr:'Front Raise',en:'Front Raise',de:'Front Raise',es:'Front Raise',ru:'Front Raise',ar:'Front Raise'}, equipment:true,
+    how:{tr:'Dumbellleri öne doğru omuz hizasına kadar kaldır, kontrollü indir.',en:'Raise dumbbells forward up to shoulder height, then lower under control.',de:'Hebe die Kurzhanteln nach vorne bis auf Schulterhöhe, dann kontrolliert absenken.',es:'Eleva las mancuernas hacia adelante hasta la altura de los hombros, luego baja con control.',ru:'Подними гантели вперёд до уровня плеч, затем опусти подконтрольно.',ar:'ارفع الدمبل للأمام حتى مستوى الكتفين، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Cable Front Raise',en:'Cable Front Raise',de:'Cable Front Raise',es:'Cable Front Raise',ru:'Cable Front Raise',ar:'Cable Front Raise'}, alt2:{tr:'Arm Circles',en:'Arm Circles',de:'Arm Circles',es:'Arm Circles',ru:'Arm Circles',ar:'Arm Circles'}, alt3:{tr:'Shoulder Press',en:'Shoulder Press',de:'Shoulder Press',es:'Shoulder Press',ru:'Shoulder Press',ar:'Shoulder Press'}, type:'reps', sets:3, reps:12 },
+  bicepCurl: { muscle:{tr:'Biceps',en:'Biceps',de:'Bizeps',es:'Bíceps',ru:'Бицепс',ar:'البايسبس'}, name:{tr:'Bicep Curl',en:'Bicep Curl',de:'Bicep Curl',es:'Bicep Curl',ru:'Bicep Curl',ar:'Bicep Curl'}, equipment:true,
+    how:{tr:'Dumbellleri dirseklerini sabit tutarak yukarı kıvır, kontrollü indir.',en:'Curl the dumbbells up keeping your elbows fixed, then lower under control.',de:'Curl die Kurzhanteln hoch, während die Ellbogen fixiert bleiben, dann kontrolliert absenken.',es:'Flexiona las mancuernas hacia arriba manteniendo los codos fijos, luego baja con control.',ru:'Согни гантели вверх, удерживая локти неподвижными, затем опусти подконтрольно.',ar:'اثنِ الدمبل للأعلى مع تثبيت مرفقيك، ثم أنزلهما بتحكم.'},
+    alt:{tr:'EZ Bar Curl',en:'EZ Bar Curl',de:'EZ Bar Curl',es:'EZ Bar Curl',ru:'EZ Bar Curl',ar:'EZ Bar Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl',de:'Resistance Band Curl',es:'Resistance Band Curl',ru:'Resistance Band Curl',ar:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl',de:'Concentration Curl',es:'Concentration Curl',ru:'Concentration Curl',ar:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
+  hammerCurl: { muscle:{tr:'Biceps / Önkol',en:'Biceps / Forearms',de:'Bizeps / Unterarme',es:'Bíceps / Antebrazos',ru:'Бицепс / Предплечья',ar:'البايسبس / الساعد'}, name:{tr:'Hammer Curl',en:'Hammer Curl',de:'Hammer Curl',es:'Hammer Curl',ru:'Hammer Curl',ar:'Hammer Curl'}, equipment:true,
+    how:{tr:'Dumbellleri çekiç tutuşuyla (avuç içi içe bakacak) yukarı kıvır.',en:'Curl the dumbbells up with a hammer grip (palms facing each other).',de:'Curl die Kurzhanteln hoch mit Hammergriff (Handflächen zueinander).',es:'Flexiona las mancuernas hacia arriba con agarre martillo (palmas enfrentadas).',ru:'Согни гантели вверх нейтральным хватом (ладони смотрят друг на друга).',ar:'اثنِ الدمبل للأعلى بقبضة المطرقة (الكفان متقابلان).'},
+    alt:{tr:'Cable Rope Curl',en:'Cable Rope Curl',de:'Cable Rope Curl',es:'Cable Rope Curl',ru:'Cable Rope Curl',ar:'Cable Rope Curl'}, alt2:{tr:'Direnç Bandıyla Curl',en:'Resistance Band Curl',de:'Resistance Band Curl',es:'Resistance Band Curl',ru:'Resistance Band Curl',ar:'Resistance Band Curl'}, alt3:{tr:'Concentration Curl',en:'Concentration Curl',de:'Concentration Curl',es:'Concentration Curl',ru:'Concentration Curl',ar:'Concentration Curl'}, type:'reps', sets:3, reps:12 },
+  tricepPushdown: { muscle:{tr:'Triceps',en:'Triceps',de:'Trizeps',es:'Tríceps',ru:'Трицепс',ar:'الترايسبس'}, name:{tr:'Tricep Pushdown',en:'Tricep Pushdown',de:'Tricep Pushdown',es:'Tricep Pushdown',ru:'Tricep Pushdown',ar:'Tricep Pushdown'}, equipment:true,
+    how:{tr:'Kabloyu tut, dirseklerini sabit tutarak aşağı it, kontrollü geri bırak.',en:'Grip the cable, push it down keeping your elbows fixed, then release under control.',de:'Greife das Kabel, drücke es nach unten, während die Ellbogen fixiert bleiben, dann kontrolliert lösen.',es:'Agarra el cable, empújalo hacia abajo manteniendo los codos fijos, luego suelta con control.',ru:'Возьмись за трос, толкни его вниз, удерживая локти неподвижными, затем отпусти подконтрольно.',ar:'أمسك الكابل، ادفعه للأسفل مع تثبيت مرفقيك، ثم حرره بتحكم.'},
+    alt:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)',de:'Skull Crusher (EZ Bar)',es:'Skull Crusher (EZ Bar)',ru:'Skull Crusher (EZ Bar)',ar:'Skull Crusher (EZ Bar)'}, alt2:{tr:'Tricep Dips',en:'Chair Dips',de:'Chair Dips',es:'Chair Dips',ru:'Chair Dips',ar:'Chair Dips'}, alt3:{tr:'Tricep Kickback',en:'Tricep Kickback',de:'Tricep Kickback',es:'Tricep Kickback',ru:'Tricep Kickback',ar:'Tricep Kickback'}, type:'reps', sets:3, reps:15 },
+  cableCrunch: { muscle:{tr:'Karın',en:'Abs',de:'Bauch',es:'Abdomen',ru:'Пресс',ar:'البطن'}, name:{tr:'Cable Crunch',en:'Cable Crunch',de:'Cable Crunch',es:'Cable Crunch',ru:'Cable Crunch',ar:'Cable Crunch'}, equipment:true,
+    how:{tr:'Kabloya diz çök, karnını sıkarak gövdeni aşağı kıvır, yavaşça geri dön.',en:'Kneel at the cable, crunch your torso down by squeezing your abs, then return slowly.',de:'Kniee vor dem Kabelzug, crunche den Oberkörper nach unten, indem du den Bauch anspannst, dann langsam zurück.',es:'Arrodíllate frente al cable, encoge el torso hacia abajo apretando el abdomen, luego vuelve lentamente.',ru:'Встань на колени у блока, скрути корпус вниз, напрягая пресс, затем медленно вернись.',ar:'اركع أمام الكابل، اثنِ جذعك للأسفل بشد عضلات بطنك، ثم عد ببطء.'},
+    alt:{tr:'Weighted Sit-up',en:'Weighted Sit-up',de:'Weighted Sit-up',es:'Weighted Sit-up',ru:'Weighted Sit-up',ar:'Weighted Sit-up'}, alt2:{tr:'Sit-up',en:'Sit-up',de:'Sit-up',es:'Sit-up',ru:'Sit-up',ar:'Sit-up'}, alt3:{tr:'Leg Raise',en:'Leg Raise',de:'Leg Raise',es:'Leg Raise',ru:'Leg Raise',ar:'Leg Raise'}, type:'reps', sets:3, reps:15 },
+  legRaise: { muscle:{tr:'Alt Karın',en:'Lower Abs',de:'Unterer Bauch',es:'Abdomen Inferior',ru:'Низ пресса',ar:'أسفل البطن'}, name:{tr:'Leg Raise',en:'Leg Raise',de:'Leg Raise',es:'Leg Raise',ru:'Leg Raise',ar:'Leg Raise'}, equipment:true,
+    how:{tr:'Askıda veya sırt üstü, bacaklarını düz tutarak yukarı kaldır, kontrollü indir.',en:'Hanging or lying down, raise your straight legs up, then lower under control.',de:'Hängend oder liegend, hebe die gestreckten Beine an, dann kontrolliert absenken.',es:'Colgado o tumbado, eleva las piernas rectas, luego baja con control.',ru:'Вися или лёжа, подними прямые ноги вверх, затем опусти подконтрольно.',ar:'معلقًا أو مستلقيًا، ارفع ساقيك المستقيمتين للأعلى، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Ab Machine Crunch',en:'Ab Machine Crunch',de:'Ab Machine Crunch',es:'Ab Machine Crunch',ru:'Ab Machine Crunch',ar:'Ab Machine Crunch'}, alt2:{tr:'Bicycle Crunch',en:'Bicycle Crunch',de:'Bicycle Crunch',es:'Bicycle Crunch',ru:'Bicycle Crunch',ar:'Bicycle Crunch'}, alt3:{tr:'Cable Crunch',en:'Cable Crunch',de:'Cable Crunch',es:'Cable Crunch',ru:'Cable Crunch',ar:'Cable Crunch'}, type:'reps', sets:3, reps:15 },
+  treadmill: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Koşu Bandı (Sprint)',en:'Treadmill (Sprint Intervals)',de:'Treadmill (Sprint Intervals)',es:'Treadmill (Sprint Intervals)',ru:'Treadmill (Sprint Intervals)',ar:'Treadmill (Sprint Intervals)'}, equipment:true,
+    how:{tr:'Koşu bandında hızını artır, verilen süre boyunca tempolu koş, sonra yavaşlayarak dinlen.',en:'Increase the treadmill speed, run at pace for the given time, then slow down to recover.',de:'Erhöhe die Geschwindigkeit des Laufbands, laufe im angegebenen Tempo für die angegebene Zeit, dann verlangsame zur Erholung.',es:'Aumenta la velocidad de la cinta, corre al ritmo indicado durante el tiempo dado, luego reduce la velocidad para recuperarte.',ru:'Увеличь скорость беговой дорожки, беги в темпе указанное время, затем сбавь скорость для восстановления.',ar:'ارفع سرعة جهاز المشي، اركض بوتيرة ثابتة للمدة المحددة، ثم قلل السرعة للتعافي.'},
+    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike',de:'Stationary Bike',es:'Stationary Bike',ru:'Stationary Bike',ar:'Stationary Bike'}, alt2:{tr:'Yerinde Koşu',en:'Running in Place',de:'Running in Place',es:'Running in Place',ru:'Running in Place',ar:'Running in Place'}, alt3:{tr:'Elliptical',en:'Elliptical',de:'Elliptical',es:'Elliptical',ru:'Elliptical',ar:'Elliptical'}, type:'duration', sets:5, duration:40 },
+  bike: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Sabit Bisiklet',en:'Stationary Bike',de:'Stationary Bike',es:'Stationary Bike',ru:'Stationary Bike',ar:'Stationary Bike'}, equipment:true,
+    how:{tr:'Bisiklette direnci artır, verilen süre boyunca yüksek tempoda çevir, sonra yavaşla.',en:'Increase the bike resistance, pedal at high intensity for the given time, then slow down.',de:'Erhöhe den Widerstand des Fahrrads, tritt mit hoher Intensität für die angegebene Zeit, dann verlangsame.',es:'Aumenta la resistencia de la bicicleta, pedalea con alta intensidad durante el tiempo dado, luego reduce.',ru:'Увеличь сопротивление велотренажёра, крути педали с высокой интенсивностью указанное время, затем сбавь темп.',ar:'ارفع مقاومة الدراجة، ادفع الدواسات بشدة عالية للمدة المحددة، ثم قلل الوتيرة.'},
+    alt:{tr:'Eliptik Bisiklet',en:'Elliptical',de:'Elliptical',es:'Elliptical',ru:'Elliptical',ar:'Elliptical'}, alt2:{tr:'High Knees',en:'High Knees',de:'High Knees',es:'High Knees',ru:'High Knees',ar:'High Knees'}, alt3:{tr:'Treadmill',en:'Treadmill',de:'Treadmill',es:'Treadmill',ru:'Treadmill',ar:'Treadmill'}, type:'duration', sets:5, duration:45 },
+  eliptik: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Eliptik Bisiklet',en:'Elliptical',de:'Elliptical',es:'Elliptical',ru:'Elliptical',ar:'Elliptical'}, equipment:true,
+    how:{tr:'Eliptikte kollarını da kullanarak tempolu bir şekilde ilerle, verilen süre boyunca hızını koru.',en:'Move at pace on the elliptical using your arms too, keeping your speed for the given time.',de:'Bewege dich im Tempo auf dem Crosstrainer und nutze auch die Arme, halte die Geschwindigkeit für die angegebene Zeit.',es:'Muévete a ritmo en la elíptica usando también los brazos, manteniendo la velocidad durante el tiempo indicado.',ru:'Двигайся в темпе на эллиптическом тренажёре, задействуя также руки, сохраняя скорость указанное время.',ar:'تحرك بوتيرة ثابتة على جهاز الإليبتيكال مستخدمًا ذراعيك أيضًا، مع الحفاظ على سرعتك للمدة المحددة.'},
+    alt:{tr:'Koşu Bandı',en:'Treadmill',de:'Treadmill',es:'Treadmill',ru:'Treadmill',ar:'Treadmill'}, alt2:{tr:'Jumping Jack',en:'Jumping Jack',de:'Jumping Jack',es:'Jumping Jack',ru:'Jumping Jack',ar:'Jumping Jack'}, alt3:{tr:'Stationary Bike',en:'Stationary Bike',de:'Stationary Bike',es:'Stationary Bike',ru:'Stationary Bike',ar:'Stationary Bike'}, type:'duration', sets:5, duration:45 },
 
   /* ---- Dumbbell exercises (added to widen equipment variety beyond
      barbell/machine moves) -- same equipment:true rendering, each also
      given a 3rd alternative (alt3) alongside alt/alt2. */
-  dumbbellBenchPress: { muscle:{tr:'Göğüs',en:'Chest'}, name:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press'}, equipment:true,
-    how:{tr:'Sırt üstü bench\'e uzan, iki dambılı göğüs hizasında tut, yukarı it, kontrollü indir.',en:'Lie on a bench, hold two dumbbells at chest level, press up, then lower under control.'},
-    alt:{tr:'Bench Press',en:'Bench Press'}, alt2:{tr:'Push-up',en:'Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:4, reps:10 },
-  dumbbellInclinePress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest'}, name:{tr:'Dumbbell Incline Press',en:'Dumbbell Incline Press'}, equipment:true,
-    how:{tr:'Eğimli bench üzerinde iki dambılı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press two dumbbells from your upper chest, then lower under control.'},
-    alt:{tr:'Incline Bench Press',en:'Incline Bench Press'}, alt2:{tr:'Incline Push-up',en:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:10 },
-  dumbbellPullover: { muscle:{tr:'Göğüs / Sırt',en:'Chest / Back'}, name:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover'}, equipment:true,
-    how:{tr:'Sırt üstü bench\'e uzan, tek dambılı iki elinle başının üzerinden göğsüne doğru getir.',en:'Lying on a bench, lower a single dumbbell from overhead back down to your chest with both hands.'},
-    alt:{tr:'Lat Pulldown',en:'Lat Pulldown'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Chest Fly',en:'Chest Fly'}, type:'reps', sets:3, reps:12 },
-  dumbbellRow: { muscle:{tr:'Sırt',en:'Back'}, name:{tr:'Dumbbell Row',en:'Dumbbell Row'}, equipment:true,
-    how:{tr:'Bir dizini ve elini bench\'e daya, diğer elinle dambılı kalçana doğru çek.',en:'Kneel one hand and knee on a bench, row the dumbbell up toward your hip with the other arm.'},
-    alt:{tr:'Barbell Row',en:'Barbell Row'}, alt2:{tr:'Seated Cable Row',en:'Seated Cable Row'}, alt3:{tr:'Renegade Row',en:'Renegade Row'}, type:'reps', sets:4, reps:12 },
-  renegadeRow: { muscle:{tr:'Sırt / Core',en:'Back / Core'}, name:{tr:'Renegade Row',en:'Renegade Row'}, equipment:true,
-    how:{tr:'Plank pozisyonunda iki elinle dambıl tut, sırayla bir dambılı kalçana doğru çek.',en:'In a plank position holding dumbbells, alternate rowing one dumbbell up toward your hip.'},
-    alt:{tr:'Dumbbell Row',en:'Dumbbell Row'}, alt2:{tr:'Plank',en:'Plank'}, alt3:{tr:'Barbell Row',en:'Barbell Row'}, type:'reps', sets:3, reps:10 },
-  arnoldPress: { muscle:{tr:'Omuz',en:'Shoulders'}, name:{tr:'Arnold Press',en:'Arnold Press'}, equipment:true,
-    how:{tr:'Dambılleri avuç içi sana bakacak şekilde omuz hizasında tut, yukarı iterken bileklerini dışa çevir.',en:'Hold dumbbells at shoulder height palms facing you, press up while rotating your wrists outward.'},
-    alt:{tr:'Shoulder Press',en:'Shoulder Press'}, alt2:{tr:'Pike Push-up',en:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:10 },
-  dumbbellShrug: { muscle:{tr:'Trapez',en:'Traps'}, name:{tr:'Dumbbell Shrug',en:'Dumbbell Shrug'}, equipment:true,
-    how:{tr:'Dambılleri yanlarda tut, omuzlarını kulaklarına doğru kaldır, tepede sık, indir.',en:'Hold dumbbells at your sides, shrug your shoulders up toward your ears, squeeze, then lower.'},
-    alt:{tr:'Barbell Shrug',en:'Barbell Shrug'}, alt2:{tr:'Arm Circles',en:'Arm Circles'}, alt3:{tr:'Deadlift',en:'Deadlift'}, type:'reps', sets:3, reps:15 },
-  rearDeltFly: { muscle:{tr:'Omuz (Arka)',en:'Rear Shoulders'}, name:{tr:'Rear Delt Fly',en:'Rear Delt Fly'}, equipment:true,
-    how:{tr:'Öne eğil, dambılleri yanlara doğru kaldır, kürek kemiklerini sıkıştır, kontrollü indir.',en:'Hinge forward, raise dumbbells out to the sides, squeeze your shoulder blades, then lower under control.'},
-    alt:{tr:'Cable Rear Delt Fly',en:'Cable Rear Delt Fly'}, alt2:{tr:'Superman',en:'Superman'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise'}, type:'reps', sets:3, reps:15 },
-  concentrationCurl: { muscle:{tr:'Biceps',en:'Biceps'}, name:{tr:'Concentration Curl',en:'Concentration Curl'}, equipment:true,
-    how:{tr:'Otur, dirseğini iç uyluğuna daya, dambılı tek kolla yukarı kıvır.',en:'Sit down, brace your elbow against your inner thigh, curl the dumbbell up with one arm.'},
-    alt:{tr:'Bicep Curl',en:'Bicep Curl'}, alt2:{tr:'Hammer Curl',en:'Hammer Curl'}, alt3:{tr:'EZ Bar Curl',en:'EZ Bar Curl'}, type:'reps', sets:3, reps:12 },
-  tricepKickback: { muscle:{tr:'Triceps',en:'Triceps'}, name:{tr:'Tricep Kickback',en:'Tricep Kickback'}, equipment:true,
-    how:{tr:'Öne eğil, üst kolunu sabit tut, dirseğini geriye doğru düz uzat.',en:'Hinge forward, keep your upper arm still, extend your elbow straight back.'},
-    alt:{tr:'Tricep Pushdown',en:'Tricep Pushdown'}, alt2:{tr:'Tricep Dips',en:'Tricep Dips'}, alt3:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)'}, type:'reps', sets:3, reps:15 },
-  gobletSquat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Goblet Squat',en:'Goblet Squat'}, equipment:true,
-    how:{tr:'Dambılı göğsünün önünde iki elinle tut, squat pozisyonuna in, kalk.',en:'Hold a dumbbell at chest height with both hands, squat down, then stand back up.'},
-    alt:{tr:'Squat',en:'Squat'}, alt2:{tr:'Leg Press',en:'Leg Press'}, alt3:{tr:'Jump Squat',en:'Jump Squat'}, type:'reps', sets:4, reps:12 },
-  dumbbellRDL: { muscle:{tr:'Hamstring / Kalça',en:'Hamstrings / Glutes'}, name:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift'}, equipment:true,
-    how:{tr:'Dambılleri tut, kalçandan öne eğil, bacaklar hafif bükülü, sırt düz kalsın, sonra dik ol.',en:'Hold dumbbells, hinge forward from your hips with a slight knee bend, keep your back flat, then stand back up.'},
-    alt:{tr:'Deadlift',en:'Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge'}, alt3:{tr:'Leg Curl',en:'Leg Curl'}, type:'reps', sets:3, reps:12 },
-  dumbbellLunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge'}, equipment:true,
-    how:{tr:'İki elinde dambılla öne adım at, arka diz yere yaklaşsın, geri dön.',en:'Holding dumbbells, step forward into a lunge, lower your back knee toward the floor, then return.'},
-    alt:{tr:'Lunge',en:'Lunge'}, alt2:{tr:'Jump Squat',en:'Jump Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat'}, type:'reps', sets:3, reps:12 },
-  dumbbellStepUp: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes'}, name:{tr:'Dumbbell Step-up',en:'Dumbbell Step-up'}, equipment:true,
-    how:{tr:'Dambılleri tut, bir ayağınla bench/platforma çık, diğerini yukarı getir, kontrollü in.',en:'Holding dumbbells, step up onto a bench or platform with one leg, bring the other up, then step down under control.'},
-    alt:{tr:'Leg Press',en:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge'}, alt3:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge'}, type:'reps', sets:3, reps:12 },
+  dumbbellBenchPress: { muscle:{tr:'Göğüs',en:'Chest',de:'Brust',es:'Pecho',ru:'Грудь',ar:'الصدر'}, name:{tr:'Dumbbell Bench Press',en:'Dumbbell Bench Press',de:'Dumbbell Bench Press',es:'Dumbbell Bench Press',ru:'Dumbbell Bench Press',ar:'Dumbbell Bench Press'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, iki dambılı göğüs hizasında tut, yukarı it, kontrollü indir.',en:'Lie on a bench, hold two dumbbells at chest level, press up, then lower under control.',de:'Lege dich auf eine Bank, halte zwei Kurzhanteln auf Brusthöhe, drücke hoch, dann kontrolliert absenken.',es:'Túmbate en un banco, sostén dos mancuernas a la altura del pecho, empuja hacia arriba, luego baja con control.',ru:'Ляг на скамью, держи две гантели на уровне груди, выжми вверх, затем опусти подконтрольно.',ar:'استلقِ على مقعد، أمسك دمبلين عند مستوى صدرك، ادفعهما للأعلى، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Bench Press',en:'Bench Press',de:'Bench Press',es:'Bench Press',ru:'Bench Press',ar:'Bench Press'}, alt2:{tr:'Push-up',en:'Push-up',de:'Push-up',es:'Push-up',ru:'Push-up',ar:'Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly',de:'Chest Fly',es:'Chest Fly',ru:'Chest Fly',ar:'Chest Fly'}, type:'reps', sets:4, reps:10 },
+  dumbbellInclinePress: { muscle:{tr:'Üst Göğüs',en:'Upper Chest',de:'Obere Brust',es:'Pecho Superior',ru:'Верх груди',ar:'أعلى الصدر'}, name:{tr:'Dumbbell Incline Press',en:'Dumbbell Incline Press',de:'Dumbbell Incline Press',es:'Dumbbell Incline Press',ru:'Dumbbell Incline Press',ar:'Dumbbell Incline Press'}, equipment:true,
+    how:{tr:'Eğimli bench üzerinde iki dambılı üst göğüsten it, kontrollü indir.',en:'On an incline bench, press two dumbbells from your upper chest, then lower under control.',de:'Auf einer Schrägbank zwei Kurzhanteln von der oberen Brust aus hochdrücken, dann kontrolliert absenken.',es:'En un banco inclinado, empuja dos mancuernas desde la parte superior del pecho, luego baja con control.',ru:'На наклонной скамье выжми две гантели от верха груди, затем опусти подконтрольно.',ar:'على مقعد مائل، ادفع دمبلين من أعلى صدرك، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Incline Bench Press',en:'Incline Bench Press',de:'Incline Bench Press',es:'Incline Bench Press',ru:'Incline Bench Press',ar:'Incline Bench Press'}, alt2:{tr:'Incline Push-up',en:'Incline Push-up',de:'Incline Push-up',es:'Incline Push-up',ru:'Incline Push-up',ar:'Incline Push-up'}, alt3:{tr:'Chest Fly',en:'Chest Fly',de:'Chest Fly',es:'Chest Fly',ru:'Chest Fly',ar:'Chest Fly'}, type:'reps', sets:3, reps:10 },
+  dumbbellPullover: { muscle:{tr:'Göğüs / Sırt',en:'Chest / Back',de:'Brust / Rücken',es:'Pecho / Espalda',ru:'Грудь / Спина',ar:'الصدر / الظهر'}, name:{tr:'Dumbbell Pullover',en:'Dumbbell Pullover',de:'Dumbbell Pullover',es:'Dumbbell Pullover',ru:'Dumbbell Pullover',ar:'Dumbbell Pullover'}, equipment:true,
+    how:{tr:'Sırt üstü bench\'e uzan, tek dambılı iki elinle başının üzerinden göğsüne doğru getir.',en:'Lying on a bench, lower a single dumbbell from overhead back down to your chest with both hands.',de:'Auf einer Bank liegend eine einzelne Kurzhantel mit beiden Händen von über dem Kopf zurück zur Brust senken.',es:'Tumbado en un banco, baja una sola mancuerna desde arriba de la cabeza hasta el pecho con ambas manos.',ru:'Лёжа на скамье, опусти одну гантель из-за головы обратно к груди обеими руками.',ar:'استلقِ على مقعد، أنزل دمبل واحد من فوق رأسك إلى صدرك بكلتا يديك.'},
+    alt:{tr:'Lat Pulldown',en:'Lat Pulldown',de:'Lat Pulldown',es:'Lat Pulldown',ru:'Lat Pulldown',ar:'Lat Pulldown'}, alt2:{tr:'Superman',en:'Superman',de:'Superman',es:'Superman',ru:'Superman',ar:'Superman'}, alt3:{tr:'Chest Fly',en:'Chest Fly',de:'Chest Fly',es:'Chest Fly',ru:'Chest Fly',ar:'Chest Fly'}, type:'reps', sets:3, reps:12 },
+  dumbbellRow: { muscle:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'}, name:{tr:'Dumbbell Row',en:'Dumbbell Row',de:'Dumbbell Row',es:'Dumbbell Row',ru:'Dumbbell Row',ar:'Dumbbell Row'}, equipment:true,
+    how:{tr:'Bir dizini ve elini bench\'e daya, diğer elinle dambılı kalçana doğru çek.',en:'Kneel one hand and knee on a bench, row the dumbbell up toward your hip with the other arm.',de:'Knie mit einer Hand und einem Knie auf einer Bank, ziehe die Kurzhantel mit dem anderen Arm zur Hüfte hoch.',es:'Apoya una mano y una rodilla en un banco, rema la mancuerna hacia tu cadera con el otro brazo.',ru:'Обопрись рукой и коленом о скамью, тяни гантель другой рукой к бедру.',ar:'اركع بيد وركبة واحدة على مقعد، اسحب الدمبل نحو وركك بالذراع الأخرى.'},
+    alt:{tr:'Barbell Row',en:'Barbell Row',de:'Barbell Row',es:'Barbell Row',ru:'Barbell Row',ar:'Barbell Row'}, alt2:{tr:'Seated Cable Row',en:'Seated Cable Row',de:'Seated Cable Row',es:'Seated Cable Row',ru:'Seated Cable Row',ar:'Seated Cable Row'}, alt3:{tr:'Renegade Row',en:'Renegade Row',de:'Renegade Row',es:'Renegade Row',ru:'Renegade Row',ar:'Renegade Row'}, type:'reps', sets:4, reps:12 },
+  renegadeRow: { muscle:{tr:'Sırt / Core',en:'Back / Core',de:'Rücken / Rumpf',es:'Espalda / Core',ru:'Спина / Кор',ar:'الظهر / الجذع'}, name:{tr:'Renegade Row',en:'Renegade Row',de:'Renegade Row',es:'Renegade Row',ru:'Renegade Row',ar:'Renegade Row'}, equipment:true,
+    how:{tr:'Plank pozisyonunda iki elinle dambıl tut, sırayla bir dambılı kalçana doğru çek.',en:'In a plank position holding dumbbells, alternate rowing one dumbbell up toward your hip.',de:'In der Plankposition mit Kurzhanteln, abwechselnd eine Hantel zur Hüfte hochziehen.',es:'En posición de plancha sosteniendo mancuernas, alterna remando una mancuerna hacia tu cadera.',ru:'В положении планки с гантелями, поочерёдно подтягивай одну гантель к бедру.',ar:'في وضعية البلانك ممسكًا بالدمبل، بدّل بسحب دمبل واحد نحو وركك.'},
+    alt:{tr:'Dumbbell Row',en:'Dumbbell Row',de:'Dumbbell Row',es:'Dumbbell Row',ru:'Dumbbell Row',ar:'Dumbbell Row'}, alt2:{tr:'Plank',en:'Plank',de:'Plank',es:'Plank',ru:'Plank',ar:'Plank'}, alt3:{tr:'Barbell Row',en:'Barbell Row',de:'Barbell Row',es:'Barbell Row',ru:'Barbell Row',ar:'Barbell Row'}, type:'reps', sets:3, reps:10 },
+  arnoldPress: { muscle:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'}, name:{tr:'Arnold Press',en:'Arnold Press',de:'Arnold Press',es:'Arnold Press',ru:'Arnold Press',ar:'Arnold Press'}, equipment:true,
+    how:{tr:'Dambılleri avuç içi sana bakacak şekilde omuz hizasında tut, yukarı iterken bileklerini dışa çevir.',en:'Hold dumbbells at shoulder height palms facing you, press up while rotating your wrists outward.',de:'Halte Kurzhanteln auf Schulterhöhe, Handflächen zu dir gerichtet, drücke hoch, während du die Handgelenke nach außen drehst.',es:'Sostén las mancuernas a la altura de los hombros con las palmas hacia ti, empuja hacia arriba mientras giras las muñecas hacia afuera.',ru:'Держи гантели на уровне плеч ладонями к себе, выжимай вверх, поворачивая запястья наружу.',ar:'أمسك الدمبل عند مستوى الكتفين والكفان تجاهك، ادفعهما للأعلى مع تدوير معصميك للخارج.'},
+    alt:{tr:'Shoulder Press',en:'Shoulder Press',de:'Shoulder Press',es:'Shoulder Press',ru:'Shoulder Press',ar:'Shoulder Press'}, alt2:{tr:'Pike Push-up',en:'Pike Push-up',de:'Pike Push-up',es:'Pike Push-up',ru:'Pike Push-up',ar:'Pike Push-up'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise',de:'Lateral Raise',es:'Lateral Raise',ru:'Lateral Raise',ar:'Lateral Raise'}, type:'reps', sets:3, reps:10 },
+  dumbbellShrug: { muscle:{tr:'Trapez',en:'Traps',de:'Trapezmuskel',es:'Trapecio',ru:'Трапеции',ar:'العضلة شبه المنحرفة'}, name:{tr:'Dumbbell Shrug',en:'Dumbbell Shrug',de:'Dumbbell Shrug',es:'Dumbbell Shrug',ru:'Dumbbell Shrug',ar:'Dumbbell Shrug'}, equipment:true,
+    how:{tr:'Dambılleri yanlarda tut, omuzlarını kulaklarına doğru kaldır, tepede sık, indir.',en:'Hold dumbbells at your sides, shrug your shoulders up toward your ears, squeeze, then lower.',de:'Halte Kurzhanteln an den Seiten, ziehe die Schultern zu den Ohren hoch, anspannen, dann absenken.',es:'Sostén las mancuernas a los lados, encoge los hombros hacia las orejas, aprieta, luego baja.',ru:'Держи гантели по бокам, подними плечи к ушам, сожми, затем опусти.',ar:'أمسك الدمبل بجانبيك، ارفع كتفيك نحو أذنيك، اشدّهما، ثم أنزلهما.'},
+    alt:{tr:'Barbell Shrug',en:'Barbell Shrug',de:'Barbell Shrug',es:'Barbell Shrug',ru:'Barbell Shrug',ar:'Barbell Shrug'}, alt2:{tr:'Arm Circles',en:'Arm Circles',de:'Arm Circles',es:'Arm Circles',ru:'Arm Circles',ar:'Arm Circles'}, alt3:{tr:'Deadlift',en:'Deadlift',de:'Deadlift',es:'Deadlift',ru:'Deadlift',ar:'Deadlift'}, type:'reps', sets:3, reps:15 },
+  rearDeltFly: { muscle:{tr:'Omuz (Arka)',en:'Rear Shoulders',de:'Hintere Schulter',es:'Hombro Posterior',ru:'Задние дельты',ar:'الكتف الخلفي'}, name:{tr:'Rear Delt Fly',en:'Rear Delt Fly',de:'Rear Delt Fly',es:'Rear Delt Fly',ru:'Rear Delt Fly',ar:'Rear Delt Fly'}, equipment:true,
+    how:{tr:'Öne eğil, dambılleri yanlara doğru kaldır, kürek kemiklerini sıkıştır, kontrollü indir.',en:'Hinge forward, raise dumbbells out to the sides, squeeze your shoulder blades, then lower under control.',de:'Beuge dich nach vorne, hebe die Kurzhanteln seitlich an, ziehe die Schulterblätter zusammen, dann kontrolliert absenken.',es:'Inclínate hacia adelante, eleva las mancuernas hacia los lados, aprieta los omóplatos, luego baja con control.',ru:'Наклонись вперёд, подними гантели в стороны, сведи лопатки, затем опусти подконтрольно.',ar:'انحنِ للأمام، ارفع الدمبل للجانبين، اضغط لوحي كتفيك، ثم أنزلهما بتحكم.'},
+    alt:{tr:'Cable Rear Delt Fly',en:'Cable Rear Delt Fly',de:'Cable Rear Delt Fly',es:'Cable Rear Delt Fly',ru:'Cable Rear Delt Fly',ar:'Cable Rear Delt Fly'}, alt2:{tr:'Superman',en:'Superman',de:'Superman',es:'Superman',ru:'Superman',ar:'Superman'}, alt3:{tr:'Lateral Raise',en:'Lateral Raise',de:'Lateral Raise',es:'Lateral Raise',ru:'Lateral Raise',ar:'Lateral Raise'}, type:'reps', sets:3, reps:15 },
+  concentrationCurl: { muscle:{tr:'Biceps',en:'Biceps',de:'Bizeps',es:'Bíceps',ru:'Бицепс',ar:'البايسبس'}, name:{tr:'Concentration Curl',en:'Concentration Curl',de:'Concentration Curl',es:'Concentration Curl',ru:'Concentration Curl',ar:'Concentration Curl'}, equipment:true,
+    how:{tr:'Otur, dirseğini iç uyluğuna daya, dambılı tek kolla yukarı kıvır.',en:'Sit down, brace your elbow against your inner thigh, curl the dumbbell up with one arm.',de:'Setz dich hin, stütze den Ellbogen an der Innenseite des Oberschenkels ab, curl die Kurzhantel mit einem Arm hoch.',es:'Siéntate, apoya el codo contra la parte interna del muslo, flexiona la mancuerna hacia arriba con un brazo.',ru:'Сядь, упри локоть во внутреннюю часть бедра, согни гантель вверх одной рукой.',ar:'اجلس، ثبّت مرفقك عند الجزء الداخلي من فخذك، اثنِ الدمبل للأعلى بذراع واحدة.'},
+    alt:{tr:'Bicep Curl',en:'Bicep Curl',de:'Bicep Curl',es:'Bicep Curl',ru:'Bicep Curl',ar:'Bicep Curl'}, alt2:{tr:'Hammer Curl',en:'Hammer Curl',de:'Hammer Curl',es:'Hammer Curl',ru:'Hammer Curl',ar:'Hammer Curl'}, alt3:{tr:'EZ Bar Curl',en:'EZ Bar Curl',de:'EZ Bar Curl',es:'EZ Bar Curl',ru:'EZ Bar Curl',ar:'EZ Bar Curl'}, type:'reps', sets:3, reps:12 },
+  tricepKickback: { muscle:{tr:'Triceps',en:'Triceps',de:'Trizeps',es:'Tríceps',ru:'Трицепс',ar:'الترايسبس'}, name:{tr:'Tricep Kickback',en:'Tricep Kickback',de:'Tricep Kickback',es:'Tricep Kickback',ru:'Tricep Kickback',ar:'Tricep Kickback'}, equipment:true,
+    how:{tr:'Öne eğil, üst kolunu sabit tut, dirseğini geriye doğru düz uzat.',en:'Hinge forward, keep your upper arm still, extend your elbow straight back.',de:'Beuge dich nach vorne, halte den Oberarm ruhig, strecke den Ellbogen gerade nach hinten.',es:'Inclínate hacia adelante, mantén el brazo superior quieto, extiende el codo recto hacia atrás.',ru:'Наклонись вперёд, держи плечо неподвижным, разгибай локоть строго назад.',ar:'انحنِ للأمام، ثبّت ذراعك العلوية، مدّ مرفقك مستقيمًا للخلف.'},
+    alt:{tr:'Tricep Pushdown',en:'Tricep Pushdown',de:'Tricep Pushdown',es:'Tricep Pushdown',ru:'Tricep Pushdown',ar:'Tricep Pushdown'}, alt2:{tr:'Tricep Dips',en:'Tricep Dips',de:'Tricep Dips',es:'Tricep Dips',ru:'Tricep Dips',ar:'Tricep Dips'}, alt3:{tr:'Skull Crusher (EZ Bar)',en:'Skull Crusher (EZ Bar)',de:'Skull Crusher (EZ Bar)',es:'Skull Crusher (EZ Bar)',ru:'Skull Crusher (EZ Bar)',ar:'Skull Crusher (EZ Bar)'}, type:'reps', sets:3, reps:15 },
+  gobletSquat: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes',de:'Beine / Gesäß',es:'Piernas / Glúteos',ru:'Ноги / Ягодицы',ar:'الأرجل / الأرداف'}, name:{tr:'Goblet Squat',en:'Goblet Squat',de:'Goblet Squat',es:'Goblet Squat',ru:'Goblet Squat',ar:'Goblet Squat'}, equipment:true,
+    how:{tr:'Dambılı göğsünün önünde iki elinle tut, squat pozisyonuna in, kalk.',en:'Hold a dumbbell at chest height with both hands, squat down, then stand back up.',de:'Halte eine Kurzhantel mit beiden Händen auf Brusthöhe, gehe in die Kniebeuge, dann stehe wieder auf.',es:'Sostén una mancuerna a la altura del pecho con ambas manos, baja en sentadilla, luego ponte de pie.',ru:'Держи гантель обеими руками на уровне груди, присядь, затем встань.',ar:'أمسك دمبلًا عند مستوى صدرك بكلتا يديك، اقرفص، ثم قف مجددًا.'},
+    alt:{tr:'Squat',en:'Squat',de:'Squat',es:'Squat',ru:'Squat',ar:'Squat'}, alt2:{tr:'Leg Press',en:'Leg Press',de:'Leg Press',es:'Leg Press',ru:'Leg Press',ar:'Leg Press'}, alt3:{tr:'Jump Squat',en:'Jump Squat',de:'Jump Squat',es:'Jump Squat',ru:'Jump Squat',ar:'Jump Squat'}, type:'reps', sets:4, reps:12 },
+  dumbbellRDL: { muscle:{tr:'Hamstring / Kalça',en:'Hamstrings / Glutes',de:'Beinbeuger / Gesäß',es:'Isquiotibiales / Glúteos',ru:'Бицепс бедра / Ягодицы',ar:'الفخذ الخلفي / الأرداف'}, name:{tr:'Dumbbell Romanian Deadlift',en:'Dumbbell Romanian Deadlift',de:'Dumbbell Romanian Deadlift',es:'Dumbbell Romanian Deadlift',ru:'Dumbbell Romanian Deadlift',ar:'Dumbbell Romanian Deadlift'}, equipment:true,
+    how:{tr:'Dambılleri tut, kalçandan öne eğil, bacaklar hafif bükülü, sırt düz kalsın, sonra dik ol.',en:'Hold dumbbells, hinge forward from your hips with a slight knee bend, keep your back flat, then stand back up.',de:'Halte Kurzhanteln, beuge dich mit leicht gebeugten Knien aus der Hüfte nach vorne, halte den Rücken gerade, dann stehe wieder auf.',es:'Sostén las mancuernas, inclínate desde las caderas con las rodillas ligeramente dobladas, mantén la espalda recta, luego ponte de pie.',ru:'Держи гантели, наклонись вперёд от бёдер с лёгким сгибом коленей, держи спину прямой, затем выпрямись.',ar:'أمسك الدمبل، انحنِ من وركيك مع ثني بسيط للركبتين، حافظ على استقامة ظهرك، ثم قف مجددًا.'},
+    alt:{tr:'Deadlift',en:'Deadlift',de:'Deadlift',es:'Deadlift',ru:'Deadlift',ar:'Deadlift'}, alt2:{tr:'Glute Bridge',en:'Glute Bridge',de:'Glute Bridge',es:'Glute Bridge',ru:'Glute Bridge',ar:'Glute Bridge'}, alt3:{tr:'Leg Curl',en:'Leg Curl',de:'Leg Curl',es:'Leg Curl',ru:'Leg Curl',ar:'Leg Curl'}, type:'reps', sets:3, reps:12 },
+  dumbbellLunge: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes',de:'Beine / Gesäß',es:'Piernas / Glúteos',ru:'Ноги / Ягодицы',ar:'الأرجل / الأرداف'}, name:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge',de:'Dumbbell Lunge',es:'Dumbbell Lunge',ru:'Dumbbell Lunge',ar:'Dumbbell Lunge'}, equipment:true,
+    how:{tr:'İki elinde dambılla öne adım at, arka diz yere yaklaşsın, geri dön.',en:'Holding dumbbells, step forward into a lunge, lower your back knee toward the floor, then return.',de:'Mit Kurzhanteln einen Schritt nach vorne in den Ausfallschritt, das hintere Knie Richtung Boden senken, dann zurück.',es:'Sosteniendo mancuernas, da un paso adelante en una zancada, baja la rodilla trasera hacia el suelo, luego vuelve.',ru:'С гантелями сделай выпад вперёд, опусти заднее колено к полу, затем вернись.',ar:'ممسكًا بالدمبل، تقدم بخطوة إلى وضعية الطعنة، أنزل ركبتك الخلفية نحو الأرض، ثم عد.'},
+    alt:{tr:'Lunge',en:'Lunge',de:'Lunge',es:'Lunge',ru:'Lunge',ar:'Lunge'}, alt2:{tr:'Jump Squat',en:'Jump Squat',de:'Jump Squat',es:'Jump Squat',ru:'Jump Squat',ar:'Jump Squat'}, alt3:{tr:'Goblet Squat',en:'Goblet Squat',de:'Goblet Squat',es:'Goblet Squat',ru:'Goblet Squat',ar:'Goblet Squat'}, type:'reps', sets:3, reps:12 },
+  dumbbellStepUp: { muscle:{tr:'Bacak / Kalça',en:'Legs / Glutes',de:'Beine / Gesäß',es:'Piernas / Glúteos',ru:'Ноги / Ягодицы',ar:'الأرجل / الأرداف'}, name:{tr:'Dumbbell Step-up',en:'Dumbbell Step-up',de:'Dumbbell Step-up',es:'Dumbbell Step-up',ru:'Dumbbell Step-up',ar:'Dumbbell Step-up'}, equipment:true,
+    how:{tr:'Dambılleri tut, bir ayağınla bench/platforma çık, diğerini yukarı getir, kontrollü in.',en:'Holding dumbbells, step up onto a bench or platform with one leg, bring the other up, then step down under control.',de:'Mit Kurzhanteln mit einem Bein auf eine Bank oder Plattform steigen, das andere Bein nachziehen, dann kontrolliert wieder heruntersteigen.',es:'Sosteniendo mancuernas, sube a un banco o plataforma con una pierna, lleva la otra arriba, luego baja con control.',ru:'С гантелями наступи одной ногой на скамью или платформу, подтяни другую ногу, затем спустись подконтрольно.',ar:'ممسكًا بالدمبل، اصعد على مقعد أو منصة بساق واحدة، اجلب الأخرى للأعلى، ثم انزل بتحكم.'},
+    alt:{tr:'Leg Press',en:'Leg Press',de:'Leg Press',es:'Leg Press',ru:'Leg Press',ar:'Leg Press'}, alt2:{tr:'Lunge',en:'Lunge',de:'Lunge',es:'Lunge',ru:'Lunge',ar:'Lunge'}, alt3:{tr:'Dumbbell Lunge',en:'Dumbbell Lunge',de:'Dumbbell Lunge',es:'Dumbbell Lunge',ru:'Dumbbell Lunge',ar:'Dumbbell Lunge'}, type:'reps', sets:3, reps:12 },
   // Warm-up cardio, automatically added to the START of every workout day
   // (see exercisesForDay) so each session opens with a few minutes of raised
   // heart rate before lifting -- lighter for muscle-focused goals (just
   // enough to warm up), longer for fat-loss goals (real extra cardio volume,
   // since burning more calories is part of the point for that goal).
-  warmupWalk: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Isınma Yürüyüşü',en:'Warm-up Walk'}, equipment:false,
-    how:{tr:'Antrenmana başlamadan önce tempolu şekilde yürü, kalbini ısıt ve eklemlerini hazırla.',en:'Before you start lifting, walk at a brisk pace to raise your heart rate and loosen up your joints.'},
-    alt:{tr:'Sabit Bisiklet (Hafif)',en:'Stationary Bike (Easy)'}, alt2:{tr:'Yerinde Yürüyüş',en:'March in Place'},
+  warmupWalk: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Isınma Yürüyüşü',en:'Warm-up Walk',de:'Warm-up Walk',es:'Warm-up Walk',ru:'Warm-up Walk',ar:'Warm-up Walk'}, equipment:false,
+    how:{tr:'Antrenmana başlamadan önce tempolu şekilde yürü, kalbini ısıt ve eklemlerini hazırla.',en:'Before you start lifting, walk at a brisk pace to raise your heart rate and loosen up your joints.',de:'Bevor du mit dem Training beginnst, gehe zügig, um deinen Puls zu erhöhen und die Gelenke zu lockern.',es:'Antes de empezar a levantar pesas, camina a paso rápido para elevar tu ritmo cardíaco y soltar las articulaciones.',ru:'Перед началом тренировки быстро походи, чтобы повысить пульс и разогреть суставы.',ar:'قبل بدء التمرين، امشِ بوتيرة سريعة لرفع معدل ضربات قلبك وتليين مفاصلك.'},
+    alt:{tr:'Sabit Bisiklet (Hafif)',en:'Stationary Bike (Easy)',de:'Stationary Bike (Easy)',es:'Stationary Bike (Easy)',ru:'Stationary Bike (Easy)',ar:'Stationary Bike (Easy)'}, alt2:{tr:'Yerinde Yürüyüş',en:'March in Place',de:'March in Place',es:'March in Place',ru:'March in Place',ar:'March in Place'},
     type:'duration', sets:1, duration:15, durationUnit:'min' },
-  warmupCardio: { muscle:{tr:'Kardiyo',en:'Cardio'}, name:{tr:'Tempolu Yürüyüş / Bisiklet',en:'Brisk Walk / Bike'}, equipment:false,
-    how:{tr:'Antrenmana başlamadan önce nefesini zorlayacak ama konuşabileceğin tempoda yürü ya da bisiklet sür -- kilo verme hedefine ekstra kalori yakımı katar.',en:'Before you start lifting, walk or cycle at a pace that raises your breathing but still lets you talk -- extra calorie burn that supports your fat-loss goal.'},
-    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike'}, alt2:{tr:'Eliptik Bisiklet',en:'Elliptical'},
+  warmupCardio: { muscle:{tr:'Kardiyo',en:'Cardio',de:'Cardio',es:'Cardio',ru:'Кардио',ar:'كارديو'}, name:{tr:'Tempolu Yürüyüş / Bisiklet',en:'Brisk Walk / Bike',de:'Brisk Walk / Bike',es:'Brisk Walk / Bike',ru:'Brisk Walk / Bike',ar:'Brisk Walk / Bike'}, equipment:false,
+    how:{tr:'Antrenmana başlamadan önce nefesini zorlayacak ama konuşabileceğin tempoda yürü ya da bisiklet sür -- kilo verme hedefine ekstra kalori yakımı katar.',en:'Before you start lifting, walk or cycle at a pace that raises your breathing but still lets you talk -- extra calorie burn that supports your fat-loss goal.',de:'Bevor du mit dem Training beginnst, gehe oder fahre Rad in einem Tempo, bei dem deine Atmung schneller wird, du aber noch sprechen kannst — zusätzlicher Kalorienverbrauch, der dein Fettabbauziel unterstützt.',es:'Antes de empezar a levantar pesas, camina o pedalea a un ritmo que acelere tu respiración pero que aún te permita hablar — quema calorías extra que apoya tu objetivo de pérdida de grasa.',ru:'Перед началом тренировки походи или покрути педали в темпе, при котором дыхание учащается, но ты ещё можешь говорить — дополнительное сжигание калорий в помощь твоей цели по снижению жира.',ar:'قبل بدء التمرين، امشِ أو استخدم الدراجة بوتيرة ترفع تنفسك لكنها لا تزال تسمح لك بالتحدث — حرق سعرات إضافي يدعم هدفك في خسارة الدهون.'},
+    alt:{tr:'Sabit Bisiklet',en:'Stationary Bike',de:'Stationary Bike',es:'Stationary Bike',ru:'Stationary Bike',ar:'Stationary Bike'}, alt2:{tr:'Eliptik Bisiklet',en:'Elliptical',de:'Elliptical',es:'Elliptical',ru:'Elliptical',ar:'Elliptical'},
     // 30 min (not 25) so 3 lifting days already clear 90 min/week on their
     // own, getting the week as a whole closer to ACSM's 225+ min/week
     // threshold for clinically significant weight loss once the two
@@ -1187,7 +1537,7 @@ function applyModalPreview(pId, pVariant){
     document.getElementById('modalExPhoto').src = info.src;
     document.getElementById('modalExPhotoWrap').style.display = 'block';
     noPhotoNote.style.display = info.isFallback ? 'block' : 'none';
-    noPhotoNote.textContent = info.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
+    noPhotoNote.textContent = info.isFallback ? t('noPhotoNote') : '';
   }
   const pEx = EX[pId];
   let pName = pEx.name[lang];
@@ -1268,9 +1618,14 @@ Object.entries(ZONE_EXERCISES).forEach(([zone, ids]) => {
   ids.forEach(id => { (ID_ZONES[id] = ID_ZONES[id] || []).push(zone); });
 });
 const FOCUS_ZONE_LABELS = {
-  shoulders:{tr:'Omuz',en:'Shoulders'}, chest:{tr:'Göğüs',en:'Chest'},
-  biceps:{tr:'Ön Kol (Biceps)',en:'Biceps (Front arm)'}, triceps:{tr:'Arka Kol (Triceps)',en:'Triceps (Back arm)'},
-  abs:{tr:'Karın',en:'Abs'}, legs:{tr:'Bacak',en:'Legs'}, back:{tr:'Sırt',en:'Back'}, glutes:{tr:'Kalça',en:'Glutes'}
+  shoulders:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'},
+  chest:{tr:'Göğüs',en:'Chest',de:'Brust',es:'Pecho',ru:'Грудь',ar:'الصدر'},
+  biceps:{tr:'Ön Kol (Biceps)',en:'Biceps (Front arm)',de:'Bizeps (vorderer Arm)',es:'Bíceps (brazo delantero)',ru:'Бицепс (передняя часть руки)',ar:'البايسبس (الذراع الأمامية)'},
+  triceps:{tr:'Arka Kol (Triceps)',en:'Triceps (Back arm)',de:'Trizeps (hinterer Arm)',es:'Tríceps (brazo trasero)',ru:'Трицепс (задняя часть руки)',ar:'الترايسبس (الذراع الخلفية)'},
+  abs:{tr:'Karın',en:'Abs',de:'Bauch',es:'Abdomen',ru:'Пресс',ar:'البطن'},
+  legs:{tr:'Bacak',en:'Legs',de:'Beine',es:'Piernas',ru:'Ноги',ar:'الأرجل'},
+  back:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'},
+  glutes:{tr:'Kalça',en:'Glutes',de:'Gesäß',es:'Glúteos',ru:'Ягодицы',ar:'الأرداف'}
 };
 // Which weekly template pattern each zone belongs to, used only for the
 // full-week reshape (muscle / recomp goals).
@@ -1312,10 +1667,36 @@ function focusDayLists(zones){
   return lists;
 }
 
+// "Sadece seçtiğim bölgeler" tiki açıkken haftanın HER antrenman günü sadece
+// seçilen bölgelerin egzersiz havuzundan oluşur -- push/pull/legs dengesi ve
+// normal hedef şablonları tamamen devre dışı kalır. Günler arasında çeşitlilik
+// olsun diye havuzun başlangıç noktası her antrenman gününde kaydırılır.
+function buildFocusOnlyWeek(zones, restSet){
+  const pools = zones.map(z => ZONE_EXERCISES[z]).filter(Boolean);
+  const combined = [];
+  pools.forEach(p => p.forEach(id => { if (!combined.includes(id)) combined.push(id); }));
+  const week = [];
+  let offset = 0;
+  const shift = Math.max(1, Math.floor(combined.length / 3) || 1);
+  for (let d = 0; d < 7; d++){
+    if (restSet.has(d)) { week.push('rest'); continue; }
+    if (!combined.length) { week.push([]); continue; }
+    const start = offset % combined.length;
+    const rotated = combined.slice(start).concat(combined.slice(0, start));
+    week.push(rotated.slice(0, Math.min(6, rotated.length)));
+    offset += shift;
+  }
+  return week;
+}
+
 function buildWeekProgram(profile){
   const restSet = new Set(profile.restDays || [3,6]);
   const zones = profile.focusAreas || [];
   const week = [];
+
+  if (profile.focusOnly && zones.length > 0){
+    return buildFocusOnlyWeek(zones, restSet);
+  }
 
   if ((profile.goal === 'muscle' || profile.goal === 'recomp') && zones.length > 0){
     const seq = buildFocusSequence(zones) || WORKOUT_SEQUENCES[profile.goal];
@@ -1677,7 +2058,7 @@ function miniZoneSVG(view, zones){
 function muscleMiniWidget(id){
   const info = EX_ZONE_MAP[id] || { view:'front', zones:[] };
   const muscleName = EX[id].muscle[lang];
-  const label = lang === 'tr' ? `${muscleName} çalışıyor` : `${muscleName} is working`;
+  const label = t('muscleWorkingLabel').replace('{muscle}', muscleName);
   return miniZoneSVG(info.view, info.zones) + `<div class="mini-muscle-label">${label}</div>`;
 }
 
@@ -1928,7 +2309,7 @@ function macrosForTarget(target, weight, goal){
 }
 
 function computeProfile(draft){
-  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas } = draft;
+  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas, focusOnly } = draft;
   // The onboarding step collects which days the user WILL train (easier to
   // reason about); the rest of the app works in terms of rest days, so we
   // invert here, once, at save time.
@@ -1945,9 +2326,11 @@ function computeProfile(draft){
   const { proteinG, fatG, carbG } = macrosForTarget(target, weight, goal);
   const bmi = Math.round((weight / ((height/100)**2)) * 10) / 10;
 
+  const focusAreasFinal = Array.isArray(focusAreas) ? focusAreas : [];
   return { gender, age, height, weight, activity, goal, restDays,
     targetWeight: (targetWeight && targetWeight > 0) ? targetWeight : null,
-    focusAreas: Array.isArray(focusAreas) ? focusAreas : [],
+    focusAreas: focusAreasFinal,
+    focusOnly: !!focusOnly && focusAreasFinal.length > 0,
     tdee: Math.round(tdee), bmr: Math.round(bmr), target: Math.round(target), proteinG, fatG, carbG, bmi };
 }
 
@@ -1998,12 +2381,21 @@ function renderOnboarding(){
       </div>`, !!obDraft.goal);
   } else if (step === 'focusAreas') {
     const fa = obDraft.focusAreas || [];
+    const focusOnlyRow = fa.length ? `
+      <div class="ob-checkbox-row" id="focusOnlyRow" style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:12px;border-radius:12px;background:var(--card2);cursor:pointer;">
+        <input type="checkbox" id="focusOnlyCheckbox" ${obDraft.focusOnly ? 'checked' : ''} style="margin-top:2px;width:18px;height:18px;flex-shrink:0;">
+        <div>
+          <div style="font-size:13.5px;font-weight:700;">${t('focusOnlyToggleLabel')}</div>
+          <div style="font-size:11.5px;color:var(--muted);margin-top:3px;">${t('focusOnlyToggleNote')}</div>
+        </div>
+      </div>` : '';
     html = obShell(t('obFocusQ'), `
       <div class="bodymap-wrap">
         ${bodyMapSVG(fa)}
       </div>
       <div style="font-size:12px;color:var(--muted);margin-top:10px;">${t('focusAreasNote')}</div>
-      ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}`,
+      ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}
+      ${focusOnlyRow}`,
       true);
   } else if (step === 'targetWeight') {
     html = obShell(t('obTargetWeightQ'), `
@@ -2019,7 +2411,7 @@ function renderOnboarding(){
       <div class="ob-options">
         ${DAY_LABELS[lang].full.map((d,i) => `<div class="ob-opt ${td.includes(i)?'selected':''}" data-restday="${i}"><div class="t">${d}</div></div>`).join('')}
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${td.length} ${t('selectedCount')} (${lang==='tr'?'opsiyonel':'optional'})</div>`,
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${td.length} ${t('selectedCount')} (${t('targetWeightPlaceholder')})</div>`,
       true);
   } else if (step === 'result') {
     const p = computeProfile(obDraft);
@@ -2101,36 +2493,36 @@ function bodyMapSVG(selected){
   // button grid; hovering a name also previews the highlight on the photo
   // (see the mouseover/mouseout delegation in attachOnboardingHandlers).
   const chip = (id, label) => `<div class="${chipCls(id)}" data-zone="${id}"><span class="zone-chip-dot"></span>${label}</div>`;
-  const chipLabel = (tr, en) => lang === 'tr' ? tr : en;
+  const chipLabel = (zoneKey) => t(zoneKey);
   const frontChips = `<div class="zone-chip-row">
-      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
-      ${chip('chest', chipLabel('Göğüs','Chest'))}
-      ${chip('abs', chipLabel('Karın','Abs'))}
-      ${chip('biceps', chipLabel('Biceps','Biceps'))}
-      ${chip('legs', chipLabel('Bacak','Legs'))}
+      ${chip('shoulders', chipLabel('zoneShoulders'))}
+      ${chip('chest', chipLabel('zoneChest'))}
+      ${chip('abs', chipLabel('zoneAbs'))}
+      ${chip('biceps', chipLabel('zoneBiceps'))}
+      ${chip('legs', chipLabel('zoneLegs'))}
     </div>`;
   const backChips = `<div class="zone-chip-row">
-      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
-      ${chip('back', chipLabel('Sırt','Back'))}
-      ${chip('glutes', chipLabel('Kalça','Glutes'))}
-      ${chip('triceps', chipLabel('Triceps','Triceps'))}
-      ${chip('legs', chipLabel('Bacak','Legs'))}
+      ${chip('shoulders', chipLabel('zoneShoulders'))}
+      ${chip('back', chipLabel('zoneBack'))}
+      ${chip('glutes', chipLabel('zoneGlutes'))}
+      ${chip('triceps', chipLabel('zoneTriceps'))}
+      ${chip('legs', chipLabel('zoneLegs'))}
     </div>`;
 
   const countLabel = selected.length
-    ? (lang === 'tr' ? `${selected.length} bölge seçili` : `${selected.length} area(s) selected`)
-    : (lang === 'tr' ? 'Henüz seçim yok' : 'Nothing selected yet');
+    ? t('areasSelectedCount').replace('{n}', selected.length)
+    : t('noAreasSelected');
 
   return `<div class="bodymap-card">
     <div class="bodymap-header">
-      <div class="bodymap-title">${lang==='tr'?'Vücut Haritası':'Body Map'}</div>
+      <div class="bodymap-title">${t('bodyMapTitle')}</div>
       <div class="bodymap-count-pill${selected.length ? ' active' : ''}">${countLabel}</div>
     </div>
     <div class="bodymap-row">
-      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Ön':'Front'}</div>${frontFig}${frontChips}</div>
-      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Arka':'Back'}</div>${backFig}${backChips}</div>
+      <div class="bodymap-col"><div class="bodymap-label">${t('frontLabel')}</div>${frontFig}${frontChips}</div>
+      <div class="bodymap-col"><div class="bodymap-label">${t('bodyBackLabel')}</div>${backFig}${backChips}</div>
     </div>
-    <div class="bodymap-legend">${lang==='tr'?'Çalıştırmak istediğin bölgelere dokun (ya da isme tıkla)':'Tap the areas you want to work on (or tap a name)'}</div>
+    <div class="bodymap-legend">${t('bodyMapLegend')}</div>
   </div>`;
 }
 function toggleFocusZone(zone){
@@ -2141,6 +2533,9 @@ function toggleFocusZone(zone){
     fa = [...fa, zone];
   }
   obDraft.focusAreas = fa;
+  // Hiç bölge seçili değilken "sadece seçtiğim bölgeler" anlamsız kalır --
+  // bölge kalmayınca tiki de otomatik kapat.
+  if (!fa.length) obDraft.focusOnly = false;
   renderOnboarding();
 }
 
@@ -2187,6 +2582,12 @@ function attachOnboardingHandlers(){
     el.addEventListener('touchstart', () => setHint(true), { passive: true });
     el.addEventListener('touchend', () => setHint(false));
   });
+  const focusOnlyCheckbox = document.getElementById('focusOnlyCheckbox');
+  if (focusOnlyCheckbox) {
+    focusOnlyCheckbox.addEventListener('change', () => {
+      obDraft.focusOnly = focusOnlyCheckbox.checked;
+    });
+  }
   document.querySelectorAll('#obSteps .ob-opt[data-restday]').forEach(el => {
     el.addEventListener('click', () => {
       const day = parseInt(el.dataset.restday, 10);
@@ -2359,7 +2760,11 @@ function renderWeek(){
   chips += '</div>';
   panel.innerHTML = `<h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('weeklyProgram')}</h3>` + chips + `<div id="weekDayDetail"></div>`;
   panel.querySelectorAll('.week-chip').forEach(chip => {
-    chip.addEventListener('click', () => renderWeekDayDetail(parseInt(chip.dataset.idx,10)));
+    chip.addEventListener('click', () => {
+      panel.querySelectorAll('.week-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderWeekDayDetail(parseInt(chip.dataset.idx,10));
+    });
   });
   renderWeekDayDetail(idx);
 }
@@ -2552,7 +2957,7 @@ function openFoodModal(foodId){
   document.getElementById('foodModalPer100').textContent = `${food.kcal} kcal · P ${food.p}g · C ${food.c}g · F ${food.f}g (${t('per100g')})`;
   foodGramsInput.value = 100;
   updateFoodCalc();
-  foodModal.classList.add('open');
+  fpOpenModal(foodModal);
 }
 function updateFoodCalc(){
   const food = allFoods().find(f => f.id === currentFoodId);
@@ -2569,8 +2974,8 @@ function updateFoodCalc(){
     <div class="box"><div class="v">${c}g</div><div class="l">${t('carb')}</div></div>`;
 }
 foodGramsInput.addEventListener('input', updateFoodCalc);
-document.getElementById('foodModalCloseBtn').addEventListener('click', () => foodModal.classList.remove('open'));
-foodModal.addEventListener('click', (e) => { if (e.target === foodModal) foodModal.classList.remove('open'); });
+document.getElementById('foodModalCloseBtn').addEventListener('click', () => fpCloseModal(foodModal));
+foodModal.addEventListener('click', (e) => { if (e.target === foodModal) fpCloseModal(foodModal); });
 document.getElementById('foodAddBtn').addEventListener('click', () => {
   const food = allFoods().find(f => f.id === currentFoodId);
   if (!food) return;
@@ -2584,7 +2989,7 @@ document.getElementById('foodAddBtn').addEventListener('click', () => {
     kcal: food.kcal * ratio, p: food.p * ratio, c: food.c * ratio, f: food.f * ratio
   });
   saveNutritionLog();
-  foodModal.classList.remove('open');
+  fpCloseModal(foodModal);
   renderNutrition();
 });
 
@@ -2600,11 +3005,11 @@ function openCustomFoodModal(prefillName){
   document.getElementById('customFoodSaveBtn').textContent = t('saveAndAdd');
   customFoodNameInput.value = prefillName || '';
   customFoodKcalInput.value = '';
-  customFoodModal.classList.add('open');
+  fpOpenModal(customFoodModal);
   setTimeout(() => customFoodKcalInput.focus(), 50);
 }
-document.getElementById('customFoodCloseBtn').addEventListener('click', () => customFoodModal.classList.remove('open'));
-customFoodModal.addEventListener('click', (e) => { if (e.target === customFoodModal) customFoodModal.classList.remove('open'); });
+document.getElementById('customFoodCloseBtn').addEventListener('click', () => fpCloseModal(customFoodModal));
+customFoodModal.addEventListener('click', (e) => { if (e.target === customFoodModal) fpCloseModal(customFoodModal); });
 document.getElementById('customFoodSaveBtn').addEventListener('click', () => {
   const name = customFoodNameInput.value.trim();
   const kcal = parseFloat(customFoodKcalInput.value);
@@ -2613,7 +3018,7 @@ document.getElementById('customFoodSaveBtn').addEventListener('click', () => {
   const food = { id, tr: name, en: name, kcal, p: 0, c: 0, f: 0 };
   customFoods.push(food);
   saveCustomFoods();
-  customFoodModal.classList.remove('open');
+  fpCloseModal(customFoodModal);
   openFoodModal(id);
 });
 
@@ -2632,7 +3037,7 @@ function renderProfileTab(){
   panel.innerHTML = `
     <h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('yourProfile')}</h3>
     <div class="card">
-      <div class="big-stat">${profile.target}<span class="unit">kcal / ${lang==='tr'?'gün':'day'}</span></div>
+      <div class="big-stat">${profile.target}<span class="unit">kcal / ${t('perDayWord')}</span></div>
       <div class="row-sub">${calorieContextText(profile.target, profile.tdee)}</div>
       <div class="stat-grid">
         <div class="stat-box"><div class="val">${profile.proteinG}g</div><div class="lbl">${t('protein')}</div></div>
@@ -2718,7 +3123,7 @@ function openExerciseModal(id, key, dayList){
     document.getElementById('modalExPhoto').src = photoInfo.src;
     photoWrap.style.display = 'block';
     noPhotoNote.style.display = photoInfo.isFallback ? 'block' : 'none';
-    noPhotoNote.textContent = photoInfo.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
+    noPhotoNote.textContent = photoInfo.isFallback ? t('noPhotoNote') : '';
   } else {
     photoWrap.style.display = 'none';
   }
@@ -2763,18 +3168,18 @@ function openExerciseModal(id, key, dayList){
   const setsHtml = ex.type === 'reps'
     ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.reps}</div><div class="l">${t('reps')}</div></div>`
     : (modalGoalSR.sets > 1
-      ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`
-      : `<div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`);
+      ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${t('durationLabel')}</div></div>`
+      : `<div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${t('durationLabel')}</div></div>`);
   document.getElementById('modalExSets').innerHTML = setsHtml;
   const done = !!getDayProgress(key)[id];
   updateModalDoneBtn(done);
-  exerciseModal.classList.add('open');
+  fpOpenModal(exerciseModal);
 }
 function updateModalDoneBtn(done){
   modalDoneBtn.textContent = done ? t('alreadyDone') : t('markDone');
   modalDoneBtn.classList.toggle('done', done);
 }
-function closeExerciseModal(){ exerciseModal.classList.remove('open'); }
+function closeExerciseModal(){ fpCloseModal(exerciseModal); }
 modalCloseBtn.addEventListener('click', closeExerciseModal);
 exerciseModal.addEventListener('click', (e) => { if (e.target === exerciseModal) closeExerciseModal(); });
 
@@ -2824,10 +3229,10 @@ function openCheckinModal(expandMeasurements){
   document.getElementById('checkinWeightInput').value = profile.weight || '';
   MEASURE_FIELDS.forEach(k => { document.getElementById('measure_' + k).value = ''; });
   document.getElementById('measurementsSection').style.display = expandMeasurements ? 'block' : 'none';
-  checkinModal.classList.add('open');
+  fpOpenModal(checkinModal);
   setTimeout(() => document.getElementById('checkinWeightInput').focus(), 50);
 }
-function closeCheckinModal(){ checkinModal.classList.remove('open'); }
+function closeCheckinModal(){ fpCloseModal(checkinModal); }
 document.getElementById('checkinCloseBtn').addEventListener('click', closeCheckinModal);
 checkinModal.addEventListener('click', (e) => { if (e.target === checkinModal) closeCheckinModal(); });
 document.getElementById('measurementsToggleBtn').addEventListener('click', () => {
@@ -2858,10 +3263,11 @@ document.getElementById('checkinSaveBtn').addEventListener('click', () => {
 /* =========================================================
    LANGUAGE SWITCH
 ========================================================= */
+const LANG_NAMES = { tr: 'Türkçe', en: 'English', de: 'Deutsch', es: 'Español', ru: 'Русский', ar: 'العربية' };
 const langSelect = document.getElementById('langSelect');
-['tr','en'].forEach(code => {
+['tr','en','de','es','ru','ar'].forEach(code => {
   const opt = document.createElement('option');
-  opt.value = code; opt.textContent = code === 'tr' ? 'Türkçe' : 'English';
+  opt.value = code; opt.textContent = LANG_NAMES[code];
   langSelect.appendChild(opt);
 });
 langSelect.value = 'tr';
@@ -2880,6 +3286,9 @@ function applyStaticLabels(){
   document.getElementById('tabProfileLabel').textContent = t('tabProfile');
   document.getElementById('modalHowLabel').textContent = t('howToLabel');
   document.documentElement.lang = lang;
+  // Arapça sağdan sola yazılır -- tarayıcı metin akışını ve hizalamayı
+  // buna göre otomatik ayarlasın diye dir="rtl" veriyoruz.
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 }
 
 /* =========================================================
@@ -2905,6 +3314,66 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     navigator.serviceWorker.register('service-worker.js').catch(() => {});
   });
 }
+
+/* =========================================================
+   TELEFONUN GERİ TUŞU (Android donanım geri tuşu) YÖNETİMİ
+   -----------------------------------------------------------
+   Amaç 1: Bir pencere (egzersiz/besin/tartılma kartı, resim vb.)
+   açıkken geri tuşuna basınca UYGULAMADAN ÇIKMASIN, sadece o
+   pencere kapansın.
+   Amaç 2: Hiçbir pencere açık değilken (ana ekranlardayken) geri
+   tuşuna basınca uygulama direkt kapanmasın; "Çıkmak için tekrar
+   geri tuşuna basın" yazısı çıksın, 2 saniye içinde tekrar
+   basılırsa uygulama gerçekten kapansın, basılmazsa hiçbir şey
+   olmasın (uygulamada kalınsın).
+   Teknik: her pencere açıldığında tarayıcı geçmişine (history)
+   bir kayıt ekleniyor. Geri tuşu bu kaydı tüketiyor ve bizim
+   kodumuz bunu yakalayıp pencereyi kapatıyor; gerçek uygulamadan
+   çıkış ancak kayıt kalmadığında native tarafta gerçekleşiyor.
+========================================================= */
+let fpModalHistoryOpen = false;
+let fpExitArmed = false;
+let fpExitGuardTimer = null;
+
+function fpOpenModal(el){
+  el.classList.add('open');
+  fpModalHistoryOpen = true;
+  history.pushState({ fpModal: true }, '');
+}
+function fpCloseModal(el){
+  if (!el.classList.contains('open')) return;
+  el.classList.remove('open');
+  if (fpModalHistoryOpen) {
+    fpModalHistoryOpen = false;
+    history.back();
+  }
+}
+window.addEventListener('popstate', () => {
+  const openModal = document.querySelector('.modal-overlay.open');
+  if (openModal) {
+    // Geri tuşu bir pencere açıkken basıldı -> sadece pencereyi kapat, uygulamadan çıkma.
+    fpModalHistoryOpen = false;
+    openModal.classList.remove('open');
+    return;
+  }
+  // Hiçbir pencere açık değil -> ana ekrandayız, "çık" niyeti.
+  if (!fpExitArmed) {
+    fpExitArmed = true;
+    showToast(t('exitConfirmToast'));
+    // 2 saniye içinde ikinci kez basılmazsa, korumayı geri kur (bir dahaki
+    // tek basışta yine sadece uyarı çıksın, direkt çıkılmasın).
+    fpExitGuardTimer = setTimeout(() => {
+      fpExitArmed = false;
+      history.pushState({ fpGuard: true }, '');
+    }, 2000);
+  }
+  // fpExitArmed zaten true ise: hiçbir şey yapmıyoruz -- geçmişte artık
+  // geri gidilecek kayıt kalmadı, bir sonraki gerçek geri tuşu basışında
+  // uygulama (native tarafta) gerçekten kapanır.
+});
+// Uygulama ilk açıldığında bir "koruma" kaydı ekle ki ilk geri tuşu basışı
+// direkt uygulamadan çıkarmasın, önce uyarı göstersin.
+history.pushState({ fpGuard: true }, '');
 </script>
 
 </body>

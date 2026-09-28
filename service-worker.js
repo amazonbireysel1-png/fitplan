@@ -6,7 +6,7 @@
 const CACHE_NAME = 'fitplan-cache-v2';
 const CORE_ASSETS = [
   './',
-  './fitness-track.html',
+  './index.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
