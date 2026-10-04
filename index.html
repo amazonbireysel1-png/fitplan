@@ -3046,7 +3046,16 @@ function openExerciseModal(id, key, dayList){
   document.getElementById('modalExName').textContent = active.name;
   document.getElementById('modalExMuscle').textContent = ex.muscle[lang];
   const altEl = document.getElementById('modalExAlt');
-  const opts = swapOptions(id, dayList);
+  const rawOpts = swapOptions(id, dayList);
+  // "Ana Hareket" satırı: swapOptions bunu sadece gerçekten bir alternatife
+  // GEÇİLMİŞSE listeye koyuyor. Ama satıra tıklayıp sadece ÖNİZLEME
+  // yaptığında (henüz "Kullan" demeden) commit edilmiş durum değişmiyor,
+  // dolayısıyla ana harekete dönecek bir satır da kalmıyordu. Bu yüzden ana
+  // hareket seçeneğini, önizleme/commit durumundan bağımsız olarak, her
+  // zaman en üstte gösteriyoruz.
+  const opts = rawOpts.some(o => o.variant === 0)
+    ? rawOpts
+    : [{ variant: 0, name: ex.name[lang], nameEn: ex.name.en }, ...rawOpts];
   if (opts.length > 0) {
     altEl.style.display = 'block';
     const swappedNote = active.variant !== 0 ? `<div class="modal-swapped-note">🔁 ${t('usingAltBadge')}</div>` : '';
