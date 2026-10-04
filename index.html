@@ -511,9 +511,6 @@
       <img id="modalExPhoto" alt="">
       <div class="no-photo-note" id="modalNoPhotoNote" style="display:none;"></div>
     </div>
-    <div class="figure-stage">
-      <div id="figureMuscleMini"></div>
-    </div>
     <div class="modal-title" id="modalExName"></div>
     <div class="modal-muscle" id="modalExMuscle"></div>
     <div class="modal-alt" id="modalExAlt" style="display:none;"></div>
@@ -2259,6 +2256,7 @@ function computeProfile(draft){
 ========================================================= */
 let obDraft = {};
 let obStepIdx = 0;
+let obLastRenderedStepIdx = -1;
 const OB_STEPS = ['gender','age','height','weight','activity','goal','focusAreas','targetWeight','restDays','result'];
 
 function renderOnboarding(){
@@ -2266,7 +2264,14 @@ function renderOnboarding(){
   const progWrap = document.getElementById('obProgress');
   progWrap.innerHTML = OB_STEPS.slice(0,-1).map((_,i) =>
     `<span class="${i <= obStepIdx ? 'on' : ''}"></span>`).join('');
-  document.getElementById('onboarding').scrollTop = 0;
+  // Only snap back to the top when the question itself changes (next/back).
+  // Re-rendering the SAME step -- e.g. toggling a body-map region, a day,
+  // or an option card -- must not move the scroll position, otherwise every
+  // tap throws the user back up and they have to scroll down again.
+  if (obStepIdx !== obLastRenderedStepIdx) {
+    document.getElementById('onboarding').scrollTop = 0;
+    obLastRenderedStepIdx = obStepIdx;
+  }
 
   const step = OB_STEPS[obStepIdx];
   let html = '';
@@ -2540,7 +2545,7 @@ function finishOnboarding(){
 }
 
 function startOnboarding(){
-  obDraft = {}; obStepIdx = 0;
+  obDraft = {}; obStepIdx = 0; obLastRenderedStepIdx = -1;
   document.getElementById('onboarding').style.display = 'flex';
   document.getElementById('mainTabs').style.display = 'none';
   document.getElementById('contentScroll').style.display = 'none';
@@ -3006,7 +3011,6 @@ function openExerciseModal(id, key, dayList){
   currentModalExId = id; currentModalKey = key;
   const ex = EX[id];
   const active = activeVariant(id);
-  document.getElementById('figureMuscleMini').innerHTML = muscleMiniWidget(id);
   const photoWrap = document.getElementById('modalExPhotoWrap');
   const photoInfo = imageInfoForOptionVariant(id, exerciseSwaps[id] || 0);
   const noPhotoNote = document.getElementById('modalNoPhotoNote');
