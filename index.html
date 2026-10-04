@@ -396,19 +396,6 @@
   @keyframes poseFadeB { from { opacity: 0; } to { opacity: 1; } }
   .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 2px; }
   .modal-muscle { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
-  .modal-how-label {
-    font-size: 11px; color: var(--muted); font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 8px;
-  }
-  .modal-how { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 9px; }
-  .modal-how li {
-    display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; line-height: 1.5; color: #D7D9DC;
-  }
-  .modal-how .step-num {
-    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--card2);
-    color: var(--accent); font-size: 11px; font-weight: 800; display: flex; align-items: center;
-    justify-content: center; margin-top: 1px;
-  }
   .modal-sets { display: flex; gap: 10px; margin-bottom: 16px; }
   .modal-sets .box { flex: 1; background: var(--card); border-radius: 12px; padding: 10px; text-align: center; }
   .modal-sets .box .v { font-size: 17px; font-weight: 800; }
@@ -524,10 +511,11 @@
       <img id="modalExPhoto" alt="">
       <div class="no-photo-note" id="modalNoPhotoNote" style="display:none;"></div>
     </div>
+    <div class="figure-stage">
+      <div id="figureMuscleMini"></div>
+    </div>
     <div class="modal-title" id="modalExName"></div>
     <div class="modal-muscle" id="modalExMuscle"></div>
-    <div class="modal-how-label" id="modalHowLabel">Nasıl Yapılır</div>
-    <ul class="modal-how" id="modalExHow"></ul>
     <div class="modal-alt" id="modalExAlt" style="display:none;"></div>
     <div class="modal-sets" id="modalExSets"></div>
     <button class="modal-done-btn" id="modalDoneBtn">Tamamladım</button>
@@ -594,8 +582,6 @@ const T = {
     obFocusQ: "Özellikle hangi bölgeleri çalıştırmak istiyorsun?",
     focusAreasNote: "İstersen boş bırakabilirsin, o zaman program dengeli kalır. Seçtiğin bölgeler haftanda daha sık yer alır.",
     focusFatLossCaveat: "Not: Egzersizle sadece o bölgeden yağ eritemezsin — kilo verirken yağ tüm vücuttan orantılı olarak azalır. Buradaki seçim o bölgenin kasını daha çok çalıştırıp şekillendirmen içindir.",
-    focusOnlyToggleLabel: "Sadece seçtiğim bölgelerle ilgili program oluştur",
-    focusOnlyToggleNote: "Açarsan haftanın her antrenman günü sadece seçtiğin bölgelere yönelik olur, diğer bölgeler programa hiç girmez.",
     focusDayBadge: "🎯 Odak Günü",
     worksHereLabel: "Burası çalışıyor",
     howToLabel: "Nasıl Yapılır",
@@ -675,8 +661,6 @@ const T = {
     obFocusQ: "Which areas do you especially want to work on?",
     focusAreasNote: "You can leave this empty to keep a balanced program. Whatever you pick shows up more often in your week.",
     focusFatLossCaveat: "Note: exercise can't burn fat from just one area — when you lose weight, fat comes off the whole body proportionally. This selection is for building and toning that area's muscle, not spot fat loss.",
-    focusOnlyToggleLabel: "Only build the program from the zones I selected",
-    focusOnlyToggleNote: "If you turn this on, every training day for the week will target only your selected zones — no other areas will be included.",
     focusDayBadge: "🎯 Focus Day",
     worksHereLabel: "Works here",
     howToLabel: "How To",
@@ -756,8 +740,6 @@ const T = {
     obFocusQ: "Welche Bereiche möchtest du besonders trainieren?",
     focusAreasNote: "Du kannst dies leer lassen, dann bleibt das Programm ausgewogen. Ausgewählte Bereiche kommen in deiner Woche häufiger vor.",
     focusFatLossCaveat: "Hinweis: Durch Training kannst du nicht gezielt an einer Stelle Fett verbrennen — beim Abnehmen wird Fett proportional am ganzen Körper reduziert. Diese Auswahl dient dazu, den Muskel dieser Region gezielter zu trainieren und zu formen.",
-    focusOnlyToggleLabel: "Programm nur aus den von mir gewählten Bereichen erstellen",
-    focusOnlyToggleNote: "Wenn du dies aktivierst, zielt jeder Trainingstag der Woche nur auf deine gewählten Bereiche ab — andere Bereiche kommen gar nicht vor.",
     focusDayBadge: "🎯 Fokustag",
     worksHereLabel: "Wirkt hier",
     howToLabel: "Ausführung",
@@ -837,8 +819,6 @@ const T = {
     obFocusQ: "¿Qué zonas quieres trabajar especialmente?",
     focusAreasNote: "Puedes dejarlo vacío para mantener un programa equilibrado. Las zonas que elijas aparecerán con más frecuencia en tu semana.",
     focusFatLossCaveat: "Nota: el ejercicio no puede quemar grasa solo de una zona — al perder peso, la grasa se reduce de forma proporcional en todo el cuerpo. Esta selección sirve para trabajar y tonificar el músculo de esa zona, no para eliminar grasa localizada.",
-    focusOnlyToggleLabel: "Crear el programa solo con las zonas que elegí",
-    focusOnlyToggleNote: "Si activas esto, cada día de entrenamiento de la semana se enfocará solo en tus zonas elegidas — ninguna otra zona se incluirá.",
     focusDayBadge: "🎯 Día de Enfoque",
     worksHereLabel: "Trabaja aquí",
     howToLabel: "Cómo Hacerlo",
@@ -918,8 +898,6 @@ const T = {
     obFocusQ: "Какие зоны ты особенно хочешь проработать?",
     focusAreasNote: "Можешь оставить пустым, тогда программа останется сбалансированной. Выбранные зоны будут чаще встречаться в течение недели.",
     focusFatLossCaveat: "Примечание: упражнения не сжигают жир только в одной зоне — при похудении жир уходит пропорционально со всего тела. Этот выбор нужен для проработки и формирования мышц именно этой зоны, а не для локального жиросжигания.",
-    focusOnlyToggleLabel: "Составить программу только из выбранных мной зон",
-    focusOnlyToggleNote: "Если включишь это, каждый тренировочный день недели будет посвящён только выбранным зонам — остальные зоны не войдут в программу вообще.",
     focusDayBadge: "🎯 Фокус-день",
     worksHereLabel: "Работает здесь",
     howToLabel: "Как Выполнять",
@@ -963,15 +941,7 @@ const T = {
     onTrackMsg: "Отличный прогресс! Твоя норма калорий осталась прежней.",
     tooSoonMsg: "Вес сохранён. Взвесься снова минимум через 6 дней, чтобы автоматически обновить норму калорий.",
     goalReachedMsg: "Поздравляем, ты достиг целевого веса! 🎉 При желании можешь установить новую цель.",
-    weightSaved: "Вес сохранён.",
-    noPhotoNote: "Для этого варианта пока нет фото — показано основное упражнение",
-    muscleWorkingLabel: "Работает: {muscle}",
-    zoneShoulders: "Плечи", zoneChest: "Грудь", zoneAbs: "Пресс", zoneBiceps: "Бицепс",
-    zoneLegs: "Ноги", zoneBack: "Спина", zoneGlutes: "Ягодицы", zoneTriceps: "Трицепс",
-    areasSelectedCount: "Выбрано зон: {n}", noAreasSelected: "Пока ничего не выбрано",
-    bodyMapTitle: "Карта Тела", frontLabel: "Спереди", bodyBackLabel: "Сзади",
-    bodyMapLegend: "Нажми на зоны, которые хочешь проработать (или нажми на название)",
-    perDayWord: "день", durationLabel: "Длительность"
+    weightSaved: "Вес сохранён."
   },
   ar: {
     pageTitle: "FitPlan — برنامج تمرين شخصي",
@@ -999,8 +969,6 @@ const T = {
     obFocusQ: "ما هي المناطق التي تريد التركيز عليها بشكل خاص؟",
     focusAreasNote: "يمكنك تركها فارغة للحفاظ على برنامج متوازن. المناطق التي تختارها ستظهر بشكل أكثر تكرارًا في أسبوعك.",
     focusFatLossCaveat: "ملاحظة: لا يمكن للتمارين حرق الدهون من منطقة واحدة فقط — عند خسارة الوزن، تنخفض الدهون بشكل متناسب من كل الجسم. هذا الاختيار مخصص لتقوية وتشكيل عضلات تلك المنطقة، وليس لحرق الدهون الموضعي.",
-    focusOnlyToggleLabel: "أنشئ البرنامج فقط من المناطق التي اخترتها",
-    focusOnlyToggleNote: "إذا فعّلت هذا، سيركّز كل يوم تمرين في الأسبوع فقط على المناطق التي اخترتها — لن تُدرج أي مناطق أخرى في البرنامج.",
     focusDayBadge: "🎯 يوم التركيز",
     worksHereLabel: "يعمل هنا",
     howToLabel: "طريقة الأداء",
@@ -1044,31 +1012,23 @@ const T = {
     onTrackMsg: "أنت تسير بشكل رائع! هدفك من السعرات بقي كما هو.",
     tooSoonMsg: "تم حفظ وزنك. زِن نفسك مرة أخرى بعد 6 أيام على الأقل لتحديث هدف السعرات تلقائيًا.",
     goalReachedMsg: "تهانينا، لقد وصلت إلى وزنك المستهدف! 🎉 يمكنك تحديد هدف جديد إذا أردت.",
-    weightSaved: "تم حفظ الوزن.",
-    noPhotoNote: "لا توجد صورة لهذا البديل بعد — يتم عرض التمرين الأساسي",
-    muscleWorkingLabel: "{muscle} يعمل",
-    zoneShoulders: "الأكتاف", zoneChest: "الصدر", zoneAbs: "البطن", zoneBiceps: "البايسبس",
-    zoneLegs: "الأرجل", zoneBack: "الظهر", zoneGlutes: "الأرداف", zoneTriceps: "الترايسبس",
-    areasSelectedCount: "تم اختيار {n} منطقة", noAreasSelected: "لم يتم الاختيار بعد",
-    bodyMapTitle: "خريطة الجسم", frontLabel: "أمامي", bodyBackLabel: "خلفي",
-    bodyMapLegend: "اضغط على المناطق التي تريد تدريبها (أو اضغط على اسم)",
-    perDayWord: "يوم", durationLabel: "المدة"
+    weightSaved: "تم حفظ الوزن."
   }
 };
 let lang = "tr";
 function t(key){ return (T[lang] && T[lang][key] !== undefined) ? T[lang][key] : T.en[key]; }
 
 const GOAL_LABELS = {
-  lose: {tr:"Zayıflamak", en:"Lose weight", de:"Abnehmen", es:"Perder peso", ru:"Похудеть", ar:"خسارة الوزن"},
-  gain: {tr:"Kilo almak", en:"Gain weight", de:"Zunehmen", es:"Ganar peso", ru:"Набрать вес", ar:"زيادة الوزن"},
-  muscle: {tr:"Kas yapmak", en:"Build muscle", de:"Muskeln aufbauen", es:"Ganar músculo", ru:"Набрать мышечную массу", ar:"بناء العضلات"},
-  leanBulk: {tr:"Kilo alırken kas yapmak", en:"Lean bulk", de:"Lean Bulk", es:"Lean bulk", ru:"Lean bulk", ar:"Lean bulk"},
-  recomp: {tr:"Zayıflarken kas yapmak", en:"Recomp", de:"Recomp", es:"Recomp", ru:"Recomp", ar:"Recomp"}
+  lose: {tr:"Zayıflamak", en:"Lose weight"},
+  gain: {tr:"Kilo almak", en:"Gain weight"},
+  muscle: {tr:"Kas yapmak", en:"Build muscle"},
+  leanBulk: {tr:"Kilo alırken kas yapmak", en:"Lean bulk"},
+  recomp: {tr:"Zayıflarken kas yapmak", en:"Recomp"}
 };
 const ACTIVITY_LABELS = {
-  low: {tr:"Az hareketli", en:"Low activity", de:"Wenig aktiv", es:"Poco activo", ru:"Малоподвижный", ar:"نشاط قليل"},
-  mid: {tr:"Orta hareketli", en:"Moderate", de:"Mäßig aktiv", es:"Moderadamente activo", ru:"Средняя активность", ar:"نشاط متوسط"},
-  high: {tr:"Çok hareketli", en:"Very active", de:"Sehr aktiv", es:"Muy activo", ru:"Очень активный", ar:"نشاط عالٍ"}
+  low: {tr:"Az hareketli", en:"Low activity"},
+  mid: {tr:"Orta hareketli", en:"Moderate"},
+  high: {tr:"Çok hareketli", en:"Very active"}
 };
 const ACTIVITY_MULT = { low: 1.25, mid: 1.5, high: 1.8 };
 // Daily calorie offset from TDEE used when the plan is first created, and the
@@ -1083,11 +1043,7 @@ const KCAL_PER_KG = 7700;
 ========================================================= */
 const DAY_LABELS = {
   tr: { full: ["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"], short: ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"] },
-  en: { full: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], short: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
-  de: { full: ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"], short: ["Mo","Di","Mi","Do","Fr","Sa","So"] },
-  es: { full: ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"], short: ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"] },
-  ru: { full: ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"], short: ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"] },
-  ar: { full: ["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"], short: ["إثن","ثلا","أرب","خمي","جمع","سبت","أحد"] }
+  en: { full: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"], short: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] }
 };
 function todayIndex(){ return (new Date().getDay() + 6) % 7; } // 0=Mon..6=Sun
 function dateKey(offsetDays){
@@ -1534,7 +1490,7 @@ function applyModalPreview(pId, pVariant){
     document.getElementById('modalExPhoto').src = info.src;
     document.getElementById('modalExPhotoWrap').style.display = 'block';
     noPhotoNote.style.display = info.isFallback ? 'block' : 'none';
-    noPhotoNote.textContent = info.isFallback ? t('noPhotoNote') : '';
+    noPhotoNote.textContent = info.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
   }
   const pEx = EX[pId];
   let pName = pEx.name[lang];
@@ -1615,14 +1571,9 @@ Object.entries(ZONE_EXERCISES).forEach(([zone, ids]) => {
   ids.forEach(id => { (ID_ZONES[id] = ID_ZONES[id] || []).push(zone); });
 });
 const FOCUS_ZONE_LABELS = {
-  shoulders:{tr:'Omuz',en:'Shoulders',de:'Schultern',es:'Hombros',ru:'Плечи',ar:'الأكتاف'},
-  chest:{tr:'Göğüs',en:'Chest',de:'Brust',es:'Pecho',ru:'Грудь',ar:'الصدر'},
-  biceps:{tr:'Ön Kol (Biceps)',en:'Biceps (Front arm)',de:'Bizeps (vorderer Arm)',es:'Bíceps (brazo delantero)',ru:'Бицепс (передняя часть руки)',ar:'البايسبس (الذراع الأمامية)'},
-  triceps:{tr:'Arka Kol (Triceps)',en:'Triceps (Back arm)',de:'Trizeps (hinterer Arm)',es:'Tríceps (brazo trasero)',ru:'Трицепс (задняя часть руки)',ar:'الترايسبس (الذراع الخلفية)'},
-  abs:{tr:'Karın',en:'Abs',de:'Bauch',es:'Abdomen',ru:'Пресс',ar:'البطن'},
-  legs:{tr:'Bacak',en:'Legs',de:'Beine',es:'Piernas',ru:'Ноги',ar:'الأرجل'},
-  back:{tr:'Sırt',en:'Back',de:'Rücken',es:'Espalda',ru:'Спина',ar:'الظهر'},
-  glutes:{tr:'Kalça',en:'Glutes',de:'Gesäß',es:'Glúteos',ru:'Ягодицы',ar:'الأرداف'}
+  shoulders:{tr:'Omuz',en:'Shoulders'}, chest:{tr:'Göğüs',en:'Chest'},
+  biceps:{tr:'Ön Kol (Biceps)',en:'Biceps (Front arm)'}, triceps:{tr:'Arka Kol (Triceps)',en:'Triceps (Back arm)'},
+  abs:{tr:'Karın',en:'Abs'}, legs:{tr:'Bacak',en:'Legs'}, back:{tr:'Sırt',en:'Back'}, glutes:{tr:'Kalça',en:'Glutes'}
 };
 // Which weekly template pattern each zone belongs to, used only for the
 // full-week reshape (muscle / recomp goals).
@@ -1664,36 +1615,10 @@ function focusDayLists(zones){
   return lists;
 }
 
-// "Sadece seçtiğim bölgeler" tiki açıkken haftanın HER antrenman günü sadece
-// seçilen bölgelerin egzersiz havuzundan oluşur -- push/pull/legs dengesi ve
-// normal hedef şablonları tamamen devre dışı kalır. Günler arasında çeşitlilik
-// olsun diye havuzun başlangıç noktası her antrenman gününde kaydırılır.
-function buildFocusOnlyWeek(zones, restSet){
-  const pools = zones.map(z => ZONE_EXERCISES[z]).filter(Boolean);
-  const combined = [];
-  pools.forEach(p => p.forEach(id => { if (!combined.includes(id)) combined.push(id); }));
-  const week = [];
-  let offset = 0;
-  const shift = Math.max(1, Math.floor(combined.length / 3) || 1);
-  for (let d = 0; d < 7; d++){
-    if (restSet.has(d)) { week.push('rest'); continue; }
-    if (!combined.length) { week.push([]); continue; }
-    const start = offset % combined.length;
-    const rotated = combined.slice(start).concat(combined.slice(0, start));
-    week.push(rotated.slice(0, Math.min(6, rotated.length)));
-    offset += shift;
-  }
-  return week;
-}
-
 function buildWeekProgram(profile){
   const restSet = new Set(profile.restDays || [3,6]);
   const zones = profile.focusAreas || [];
   const week = [];
-
-  if (profile.focusOnly && zones.length > 0){
-    return buildFocusOnlyWeek(zones, restSet);
-  }
 
   if ((profile.goal === 'muscle' || profile.goal === 'recomp') && zones.length > 0){
     const seq = buildFocusSequence(zones) || WORKOUT_SEQUENCES[profile.goal];
@@ -2055,7 +1980,7 @@ function miniZoneSVG(view, zones){
 function muscleMiniWidget(id){
   const info = EX_ZONE_MAP[id] || { view:'front', zones:[] };
   const muscleName = EX[id].muscle[lang];
-  const label = t('muscleWorkingLabel').replace('{muscle}', muscleName);
+  const label = lang === 'tr' ? `${muscleName} çalışıyor` : `${muscleName} is working`;
   return miniZoneSVG(info.view, info.zones) + `<div class="mini-muscle-label">${label}</div>`;
 }
 
@@ -2306,7 +2231,7 @@ function macrosForTarget(target, weight, goal){
 }
 
 function computeProfile(draft){
-  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas, focusOnly } = draft;
+  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas } = draft;
   // The onboarding step collects which days the user WILL train (easier to
   // reason about); the rest of the app works in terms of rest days, so we
   // invert here, once, at save time.
@@ -2323,11 +2248,9 @@ function computeProfile(draft){
   const { proteinG, fatG, carbG } = macrosForTarget(target, weight, goal);
   const bmi = Math.round((weight / ((height/100)**2)) * 10) / 10;
 
-  const focusAreasFinal = Array.isArray(focusAreas) ? focusAreas : [];
   return { gender, age, height, weight, activity, goal, restDays,
     targetWeight: (targetWeight && targetWeight > 0) ? targetWeight : null,
-    focusAreas: focusAreasFinal,
-    focusOnly: !!focusOnly && focusAreasFinal.length > 0,
+    focusAreas: Array.isArray(focusAreas) ? focusAreas : [],
     tdee: Math.round(tdee), bmr: Math.round(bmr), target: Math.round(target), proteinG, fatG, carbG, bmi };
 }
 
@@ -2338,20 +2261,12 @@ let obDraft = {};
 let obStepIdx = 0;
 const OB_STEPS = ['gender','age','height','weight','activity','goal','focusAreas','targetWeight','restDays','result'];
 
-let lastRenderedObStepIdx = -1;
 function renderOnboarding(){
   const wrap = document.getElementById('obSteps');
   const progWrap = document.getElementById('obProgress');
   progWrap.innerHTML = OB_STEPS.slice(0,-1).map((_,i) =>
     `<span class="${i <= obStepIdx ? 'on' : ''}"></span>`).join('');
-  // Sadece GERÇEKTEN yeni bir adıma geçildiğinde en üste kaydır. Aynı adım
-  // içinde (ör. vücut haritasında bir bölge seçince) renderOnboarding tekrar
-  // çağrılıyor -- eskiden bu da sayfayı en üste sıfırlıyordu, kullanıcı her
-  // seçimden sonra tekrar aşağı kaydırmak zorunda kalıyordu.
-  if (obStepIdx !== lastRenderedObStepIdx) {
-    document.getElementById('onboarding').scrollTop = 0;
-    lastRenderedObStepIdx = obStepIdx;
-  }
+  document.getElementById('onboarding').scrollTop = 0;
 
   const step = OB_STEPS[obStepIdx];
   let html = '';
@@ -2386,21 +2301,12 @@ function renderOnboarding(){
       </div>`, !!obDraft.goal);
   } else if (step === 'focusAreas') {
     const fa = obDraft.focusAreas || [];
-    const focusOnlyRow = fa.length ? `
-      <div class="ob-checkbox-row" id="focusOnlyRow" style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:12px;border-radius:12px;background:var(--card2);cursor:pointer;">
-        <input type="checkbox" id="focusOnlyCheckbox" ${obDraft.focusOnly ? 'checked' : ''} style="margin-top:2px;width:18px;height:18px;flex-shrink:0;">
-        <div>
-          <div style="font-size:13.5px;font-weight:700;">${t('focusOnlyToggleLabel')}</div>
-          <div style="font-size:11.5px;color:var(--muted);margin-top:3px;">${t('focusOnlyToggleNote')}</div>
-        </div>
-      </div>` : '';
     html = obShell(t('obFocusQ'), `
       <div class="bodymap-wrap">
         ${bodyMapSVG(fa)}
       </div>
       <div style="font-size:12px;color:var(--muted);margin-top:10px;">${t('focusAreasNote')}</div>
-      ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}
-      ${focusOnlyRow}`,
+      ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}`,
       true);
   } else if (step === 'targetWeight') {
     html = obShell(t('obTargetWeightQ'), `
@@ -2416,7 +2322,7 @@ function renderOnboarding(){
       <div class="ob-options">
         ${DAY_LABELS[lang].full.map((d,i) => `<div class="ob-opt ${td.includes(i)?'selected':''}" data-restday="${i}"><div class="t">${d}</div></div>`).join('')}
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${td.length} ${t('selectedCount')} (${t('targetWeightPlaceholder')})</div>`,
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">${td.length} ${t('selectedCount')} (${lang==='tr'?'opsiyonel':'optional'})</div>`,
       true);
   } else if (step === 'result') {
     const p = computeProfile(obDraft);
@@ -2498,36 +2404,36 @@ function bodyMapSVG(selected){
   // button grid; hovering a name also previews the highlight on the photo
   // (see the mouseover/mouseout delegation in attachOnboardingHandlers).
   const chip = (id, label) => `<div class="${chipCls(id)}" data-zone="${id}"><span class="zone-chip-dot"></span>${label}</div>`;
-  const chipLabel = (zoneKey) => t(zoneKey);
+  const chipLabel = (tr, en) => lang === 'tr' ? tr : en;
   const frontChips = `<div class="zone-chip-row">
-      ${chip('shoulders', chipLabel('zoneShoulders'))}
-      ${chip('chest', chipLabel('zoneChest'))}
-      ${chip('abs', chipLabel('zoneAbs'))}
-      ${chip('biceps', chipLabel('zoneBiceps'))}
-      ${chip('legs', chipLabel('zoneLegs'))}
+      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
+      ${chip('chest', chipLabel('Göğüs','Chest'))}
+      ${chip('abs', chipLabel('Karın','Abs'))}
+      ${chip('biceps', chipLabel('Biceps','Biceps'))}
+      ${chip('legs', chipLabel('Bacak','Legs'))}
     </div>`;
   const backChips = `<div class="zone-chip-row">
-      ${chip('shoulders', chipLabel('zoneShoulders'))}
-      ${chip('back', chipLabel('zoneBack'))}
-      ${chip('glutes', chipLabel('zoneGlutes'))}
-      ${chip('triceps', chipLabel('zoneTriceps'))}
-      ${chip('legs', chipLabel('zoneLegs'))}
+      ${chip('shoulders', chipLabel('Omuz','Shoulders'))}
+      ${chip('back', chipLabel('Sırt','Back'))}
+      ${chip('glutes', chipLabel('Kalça','Glutes'))}
+      ${chip('triceps', chipLabel('Triceps','Triceps'))}
+      ${chip('legs', chipLabel('Bacak','Legs'))}
     </div>`;
 
   const countLabel = selected.length
-    ? t('areasSelectedCount').replace('{n}', selected.length)
-    : t('noAreasSelected');
+    ? (lang === 'tr' ? `${selected.length} bölge seçili` : `${selected.length} area(s) selected`)
+    : (lang === 'tr' ? 'Henüz seçim yok' : 'Nothing selected yet');
 
   return `<div class="bodymap-card">
     <div class="bodymap-header">
-      <div class="bodymap-title">${t('bodyMapTitle')}</div>
+      <div class="bodymap-title">${lang==='tr'?'Vücut Haritası':'Body Map'}</div>
       <div class="bodymap-count-pill${selected.length ? ' active' : ''}">${countLabel}</div>
     </div>
     <div class="bodymap-row">
-      <div class="bodymap-col"><div class="bodymap-label">${t('frontLabel')}</div>${frontFig}${frontChips}</div>
-      <div class="bodymap-col"><div class="bodymap-label">${t('bodyBackLabel')}</div>${backFig}${backChips}</div>
+      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Ön':'Front'}</div>${frontFig}${frontChips}</div>
+      <div class="bodymap-col"><div class="bodymap-label">${lang==='tr'?'Arka':'Back'}</div>${backFig}${backChips}</div>
     </div>
-    <div class="bodymap-legend">${t('bodyMapLegend')}</div>
+    <div class="bodymap-legend">${lang==='tr'?'Çalıştırmak istediğin bölgelere dokun (ya da isme tıkla)':'Tap the areas you want to work on (or tap a name)'}</div>
   </div>`;
 }
 function toggleFocusZone(zone){
@@ -2538,9 +2444,6 @@ function toggleFocusZone(zone){
     fa = [...fa, zone];
   }
   obDraft.focusAreas = fa;
-  // Hiç bölge seçili değilken "sadece seçtiğim bölgeler" anlamsız kalır --
-  // bölge kalmayınca tiki de otomatik kapat.
-  if (!fa.length) obDraft.focusOnly = false;
   renderOnboarding();
 }
 
@@ -2587,12 +2490,6 @@ function attachOnboardingHandlers(){
     el.addEventListener('touchstart', () => setHint(true), { passive: true });
     el.addEventListener('touchend', () => setHint(false));
   });
-  const focusOnlyCheckbox = document.getElementById('focusOnlyCheckbox');
-  if (focusOnlyCheckbox) {
-    focusOnlyCheckbox.addEventListener('change', () => {
-      obDraft.focusOnly = focusOnlyCheckbox.checked;
-    });
-  }
   document.querySelectorAll('#obSteps .ob-opt[data-restday]').forEach(el => {
     el.addEventListener('click', () => {
       const day = parseInt(el.dataset.restday, 10);
@@ -3042,7 +2939,7 @@ function renderProfileTab(){
   panel.innerHTML = `
     <h3 style="color:var(--muted);font-size:12px;text-transform:uppercase;margin:10px 0 8px;">${t('yourProfile')}</h3>
     <div class="card">
-      <div class="big-stat">${profile.target}<span class="unit">kcal / ${t('perDayWord')}</span></div>
+      <div class="big-stat">${profile.target}<span class="unit">kcal / ${lang==='tr'?'gün':'day'}</span></div>
       <div class="row-sub">${calorieContextText(profile.target, profile.tdee)}</div>
       <div class="stat-grid">
         <div class="stat-box"><div class="val">${profile.proteinG}g</div><div class="lbl">${t('protein')}</div></div>
@@ -3105,21 +3002,11 @@ const exerciseModal = document.getElementById('exerciseModal');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const modalDoneBtn = document.getElementById('modalDoneBtn');
 
-// Splits the exercise's single-sentence "how" description into short,
-// numbered steps for the modal's step list (matching the checklist style
-// of apps like Strong/Hevy), instead of a single dense paragraph.
-function howSteps(text){
-  return text.split(',')
-    .map(s => s.trim())
-    .filter(Boolean)
-    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-    .map(s => /[.!?]$/.test(s) ? s : s + '.');
-}
-
 function openExerciseModal(id, key, dayList){
   currentModalExId = id; currentModalKey = key;
   const ex = EX[id];
   const active = activeVariant(id);
+  document.getElementById('figureMuscleMini').innerHTML = muscleMiniWidget(id);
   const photoWrap = document.getElementById('modalExPhotoWrap');
   const photoInfo = imageInfoForOptionVariant(id, exerciseSwaps[id] || 0);
   const noPhotoNote = document.getElementById('modalNoPhotoNote');
@@ -3127,15 +3014,12 @@ function openExerciseModal(id, key, dayList){
     document.getElementById('modalExPhoto').src = photoInfo.src;
     photoWrap.style.display = 'block';
     noPhotoNote.style.display = photoInfo.isFallback ? 'block' : 'none';
-    noPhotoNote.textContent = photoInfo.isFallback ? t('noPhotoNote') : '';
+    noPhotoNote.textContent = photoInfo.isFallback ? (lang==='tr' ? 'Bu hareketin görseli henüz yok, ana hareket gösteriliyor' : 'No photo for this one yet — showing the main exercise') : '';
   } else {
     photoWrap.style.display = 'none';
   }
   document.getElementById('modalExName').textContent = active.name;
   document.getElementById('modalExMuscle').textContent = ex.muscle[lang];
-  document.getElementById('modalExHow').innerHTML = howSteps(ex.how[lang])
-    .map((step, i) => `<li><span class="step-num">${i + 1}</span><span>${step}</span></li>`)
-    .join('');
   const altEl = document.getElementById('modalExAlt');
   const opts = swapOptions(id, dayList);
   if (opts.length > 0) {
@@ -3172,8 +3056,8 @@ function openExerciseModal(id, key, dayList){
   const setsHtml = ex.type === 'reps'
     ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.reps}</div><div class="l">${t('reps')}</div></div>`
     : (modalGoalSR.sets > 1
-      ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${t('durationLabel')}</div></div>`
-      : `<div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${t('durationLabel')}</div></div>`);
+      ? `<div class="box"><div class="v">${modalGoalSR.sets}</div><div class="l">${t('set')}</div></div><div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`
+      : `<div class="box"><div class="v">${modalGoalSR.duration}${modalDurUnit}</div><div class="l">${lang==='tr'?'Süre':'Duration'}</div></div>`);
   document.getElementById('modalExSets').innerHTML = setsHtml;
   const done = !!getDayProgress(key)[id];
   updateModalDoneBtn(done);
@@ -3267,11 +3151,10 @@ document.getElementById('checkinSaveBtn').addEventListener('click', () => {
 /* =========================================================
    LANGUAGE SWITCH
 ========================================================= */
-const LANG_NAMES = { tr: 'Türkçe', en: 'English', de: 'Deutsch', es: 'Español', ru: 'Русский', ar: 'العربية' };
 const langSelect = document.getElementById('langSelect');
-['tr','en','de','es','ru','ar'].forEach(code => {
+['tr','en'].forEach(code => {
   const opt = document.createElement('option');
-  opt.value = code; opt.textContent = LANG_NAMES[code];
+  opt.value = code; opt.textContent = code === 'tr' ? 'Türkçe' : 'English';
   langSelect.appendChild(opt);
 });
 langSelect.value = 'tr';
@@ -3288,11 +3171,7 @@ function applyStaticLabels(){
   document.getElementById('tabWeekLabel').textContent = t('tabWeek');
   document.getElementById('tabNutritionLabel').textContent = t('tabNutrition');
   document.getElementById('tabProfileLabel').textContent = t('tabProfile');
-  document.getElementById('modalHowLabel').textContent = t('howToLabel');
   document.documentElement.lang = lang;
-  // Arapça sağdan sola yazılır -- tarayıcı metin akışını ve hizalamayı
-  // buna göre otomatik ayarlasın diye dir="rtl" veriyoruz.
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 }
 
 /* =========================================================
@@ -3338,15 +3217,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 let fpModalHistoryOpen = false;
 let fpExitArmed = false;
 let fpExitGuardTimer = null;
-// X butonuna, karartılmış arka plana veya "Tamamladım/Kaydet" gibi bir
-// butona basarak pencereyi UYGULAMA İÇİNDEN kapatınca da kod arka planda
-// history.back() çağırıyor (geçmişi dengede tutmak için). Bu da bir
-// popstate olayı tetikliyor -- ama bu, telefonun GERÇEK geri tuşuna basmak
-// değil. Bu bayrak olmadan popstate işleyicisi bunu "ana ekranda geri
-// tuşuna basıldı" sanıp yanlışlıkla "çıkmak için tekrar bas" uyarısını
-// gösteriyordu. Bayrak, bu programatik kapatmaları gerçek geri tuşu
-// basışlarından ayırt etmemizi sağlıyor.
-let fpProgrammaticClose = false;
 
 function fpOpenModal(el){
   el.classList.add('open');
@@ -3358,17 +3228,10 @@ function fpCloseModal(el){
   el.classList.remove('open');
   if (fpModalHistoryOpen) {
     fpModalHistoryOpen = false;
-    fpProgrammaticClose = true;
     history.back();
   }
 }
 window.addEventListener('popstate', () => {
-  if (fpProgrammaticClose) {
-    // Pencere zaten uygulama içinden (X, arka plan veya bir buton ile)
-    // kapatıldı -- bu popstate sadece onun yan etkisi, hiçbir şey yapma.
-    fpProgrammaticClose = false;
-    return;
-  }
   const openModal = document.querySelector('.modal-overlay.open');
   if (openModal) {
     // Geri tuşu bir pencere açıkken basıldı -> sadece pencereyi kapat, uygulamadan çıkma.
