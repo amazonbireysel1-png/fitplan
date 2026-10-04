@@ -2449,7 +2449,28 @@ function toggleFocusZone(zone){
     fa = [...fa, zone];
   }
   obDraft.focusAreas = fa;
-  renderOnboarding();
+  // Bölge seçerken TÜM ekranı yeniden çizmek (renderOnboarding) sayfanın
+  // scroll konumunu sıçratıyordu (yukarı/aşağı). Onun yerine sadece
+  // tıklanan/ilgili elemanların görünümünü anlık güncelliyoruz -- hiçbir
+  // DOM yeniden oluşturulmuyor, dolayısıyla scroll hiç oynamıyor.
+  updateBodyMapSelectionUI(fa);
+}
+function updateBodyMapSelectionUI(fa){
+  document.querySelectorAll('#obSteps .bz[data-zone]').forEach(el => {
+    el.classList.toggle('sel', fa.includes(el.dataset.zone));
+  });
+  const frontGroups = ['shoulders','chest','abs','biceps','legs'];
+  const backGroups = ['shoulders','back','glutes','triceps','legs'];
+  const photos = document.querySelectorAll('#obSteps .bodymap-photo');
+  if (photos[0]) photos[0].classList.toggle('has-sel', frontGroups.some(z => fa.includes(z)));
+  if (photos[1]) photos[1].classList.toggle('has-sel', backGroups.some(z => fa.includes(z)));
+  const pill = document.querySelector('#obSteps .bodymap-count-pill');
+  if (pill){
+    pill.classList.toggle('active', fa.length > 0);
+    pill.textContent = fa.length
+      ? (lang === 'tr' ? `${fa.length} bölge seçili` : `${fa.length} area(s) selected`)
+      : (lang === 'tr' ? 'Henüz seçim yok' : 'Nothing selected yet');
+  }
 }
 
 function obShell(question, body, canProceed){
