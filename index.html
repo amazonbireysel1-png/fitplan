@@ -234,6 +234,15 @@
   .zone-chip.sel .zone-chip-dot { background: var(--accent); box-shadow: 0 0 8px rgba(224,41,61,0.8); }
   .zone-chip.sel::after { content: '✓'; margin-left: auto; color: var(--accent); font-weight: 900; }
   .bz-outline { fill: none; stroke: var(--line); stroke-width: 1; opacity: 0.5; }
+  .focus-only-row { display:none; align-items:flex-start; gap:12px; margin-top:12px; padding:12px 14px; background:var(--card2);
+    border:1.5px solid var(--line); border-radius:14px; cursor:pointer; transition:all .15s; }
+  .focus-only-row.show { display:flex; }
+  .focus-only-row.on { border-color:var(--accent); background:rgba(224,41,61,.12); }
+  .focus-only-box { flex:0 0 22px; width:22px; height:22px; border-radius:7px; border:2px solid var(--muted); display:flex; align-items:center;
+    justify-content:center; font-size:14px; font-weight:900; color:transparent; transition:all .15s; margin-top:1px; }
+  .focus-only-row.on .focus-only-box { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .focus-only-t { font-size:13.5px; font-weight:800; color:var(--ink); }
+  .focus-only-d { font-size:11.5px; color:var(--muted); margin-top:3px; }
   .bodymap-legend { font-size: 10.5px; color: var(--muted); text-align: center; max-width: 260px; }
   .focus-day-badge {
     display: inline-block; font-size: 10.5px; font-weight: 800; color: var(--accent);
@@ -578,6 +587,7 @@ const T = {
     obRestDaysQ: "Haftada hangi günler antrenman yapacaksın?", selectedCount: "gün seçildi",
     obFocusQ: "Özellikle hangi bölgeleri çalıştırmak istiyorsun?",
     focusAreasNote: "İstersen boş bırakabilirsin, o zaman program dengeli kalır. Seçtiğin bölgeler haftanda daha sık yer alır.",
+    focusOnlyLabel: "Sadece seçtiğim bölgeler odak olsun", focusOnlyHint: "İşaretlersen antrenman programın yalnızca seçtiğin bölgelere göre çıkar.",
     focusFatLossCaveat: "Not: Egzersizle sadece o bölgeden yağ eritemezsin — kilo verirken yağ tüm vücuttan orantılı olarak azalır. Buradaki seçim o bölgenin kasını daha çok çalıştırıp şekillendirmen içindir.",
     focusDayBadge: "🎯 Odak Günü",
     worksHereLabel: "Burası çalışıyor",
@@ -657,6 +667,7 @@ const T = {
     obRestDaysQ: "Which days will you train each week?", selectedCount: "days selected",
     obFocusQ: "Which areas do you especially want to work on?",
     focusAreasNote: "You can leave this empty to keep a balanced program. Whatever you pick shows up more often in your week.",
+    focusOnlyLabel: "Focus only on my selected areas", focusOnlyHint: "If checked, your whole program is built only from the areas you picked.",
     focusFatLossCaveat: "Note: exercise can't burn fat from just one area — when you lose weight, fat comes off the whole body proportionally. This selection is for building and toning that area's muscle, not spot fat loss.",
     focusDayBadge: "🎯 Focus Day",
     worksHereLabel: "Works here",
@@ -736,6 +747,7 @@ const T = {
     obRestDaysQ: "An welchen Tagen möchtest du trainieren?", selectedCount: "Tage ausgewählt",
     obFocusQ: "Welche Bereiche möchtest du besonders trainieren?",
     focusAreasNote: "Du kannst dies leer lassen, dann bleibt das Programm ausgewogen. Ausgewählte Bereiche kommen in deiner Woche häufiger vor.",
+    focusOnlyLabel: "Nur meine gewählten Bereiche trainieren", focusOnlyHint: "Wenn aktiviert, wird dein ganzes Programm nur aus den gewählten Bereichen erstellt.",
     focusFatLossCaveat: "Hinweis: Durch Training kannst du nicht gezielt an einer Stelle Fett verbrennen — beim Abnehmen wird Fett proportional am ganzen Körper reduziert. Diese Auswahl dient dazu, den Muskel dieser Region gezielter zu trainieren und zu formen.",
     focusDayBadge: "🎯 Fokustag",
     worksHereLabel: "Wirkt hier",
@@ -815,6 +827,7 @@ const T = {
     obRestDaysQ: "¿Qué días entrenarás cada semana?", selectedCount: "días seleccionados",
     obFocusQ: "¿Qué zonas quieres trabajar especialmente?",
     focusAreasNote: "Puedes dejarlo vacío para mantener un programa equilibrado. Las zonas que elijas aparecerán con más frecuencia en tu semana.",
+    focusOnlyLabel: "Entrenar solo las zonas que elegí", focusOnlyHint: "Si lo marcas, todo tu programa se crea solo con las zonas elegidas.",
     focusFatLossCaveat: "Nota: el ejercicio no puede quemar grasa solo de una zona — al perder peso, la grasa se reduce de forma proporcional en todo el cuerpo. Esta selección sirve para trabajar y tonificar el músculo de esa zona, no para eliminar grasa localizada.",
     focusDayBadge: "🎯 Día de Enfoque",
     worksHereLabel: "Trabaja aquí",
@@ -894,6 +907,7 @@ const T = {
     obRestDaysQ: "В какие дни недели ты будешь тренироваться?", selectedCount: "дней выбрано",
     obFocusQ: "Какие зоны ты особенно хочешь проработать?",
     focusAreasNote: "Можешь оставить пустым, тогда программа останется сбалансированной. Выбранные зоны будут чаще встречаться в течение недели.",
+    focusOnlyLabel: "Только выбранные зоны", focusOnlyHint: "Если отметить, вся программа будет составлена только из выбранных зон.",
     focusFatLossCaveat: "Примечание: упражнения не сжигают жир только в одной зоне — при похудении жир уходит пропорционально со всего тела. Этот выбор нужен для проработки и формирования мышц именно этой зоны, а не для локального жиросжигания.",
     focusDayBadge: "🎯 Фокус-день",
     worksHereLabel: "Работает здесь",
@@ -965,6 +979,7 @@ const T = {
     obRestDaysQ: "في أي أيام ستتدرب كل أسبوع؟", selectedCount: "أيام محددة",
     obFocusQ: "ما هي المناطق التي تريد التركيز عليها بشكل خاص؟",
     focusAreasNote: "يمكنك تركها فارغة للحفاظ على برنامج متوازن. المناطق التي تختارها ستظهر بشكل أكثر تكرارًا في أسبوعك.",
+    focusOnlyLabel: "ركّز فقط على المناطق التي اخترتها", focusOnlyHint: "عند التفعيل، يُبنى برنامجك بالكامل من المناطق التي اخترتها فقط.",
     focusFatLossCaveat: "ملاحظة: لا يمكن للتمارين حرق الدهون من منطقة واحدة فقط — عند خسارة الوزن، تنخفض الدهون بشكل متناسب من كل الجسم. هذا الاختيار مخصص لتقوية وتشكيل عضلات تلك المنطقة، وليس لحرق الدهون الموضعي.",
     focusDayBadge: "🎯 يوم التركيز",
     worksHereLabel: "يعمل هنا",
@@ -1612,10 +1627,40 @@ function focusDayLists(zones){
   return lists;
 }
 
+// "Sadece seçtiğim bölgeler" modu: haftanın TÜM antrenman günleri yalnızca seçilen
+// bölgelerin hareketlerinden kurulur (en fazla 3 farklı liste, günlere dönüşümlü).
+function focusOnlyLists(zones){
+  const pools = (zones||[]).map(z => ZONE_EXERCISES[z]).filter(Boolean);
+  if (!pools.length) return [];
+  const maxLen = Math.max(...pools.map(p => p.length));
+  const lists = [];
+  for (let v = 0; v < 3; v++){
+    const combined = [];
+    for (let i = 0; i < maxLen && combined.length < 6; i++){
+      for (const p of pools){
+        const id = p[(i+v) % p.length];
+        if (!combined.includes(id) && combined.length < 6) combined.push(id);
+      }
+    }
+    if (!lists.some(l => l.join() === combined.join())) lists.push(combined);
+  }
+  return lists;
+}
+
 function buildWeekProgram(profile){
   const restSet = new Set(profile.restDays || [3,6]);
   const zones = profile.focusAreas || [];
   const week = [];
+
+  if (profile.focusOnly && zones.length > 0){
+    const lists = focusOnlyLists(zones);
+    let si = 0;
+    for (let d=0; d<7; d++){
+      if (restSet.has(d)) week.push('rest');
+      else { week.push(lists[si % lists.length]); si++; }
+    }
+    return week;
+  }
 
   if ((profile.goal === 'muscle' || profile.goal === 'recomp') && zones.length > 0){
     const seq = buildFocusSequence(zones) || WORKOUT_SEQUENCES[profile.goal];
@@ -2228,7 +2273,7 @@ function macrosForTarget(target, weight, goal){
 }
 
 function computeProfile(draft){
-  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas } = draft;
+  const { gender, age, height, weight, activity, goal, trainDays, targetWeight, focusAreas, focusOnly } = draft;
   // The onboarding step collects which days the user WILL train (easier to
   // reason about); the rest of the app works in terms of rest days, so we
   // invert here, once, at save time.
@@ -2248,6 +2293,7 @@ function computeProfile(draft){
   return { gender, age, height, weight, activity, goal, restDays,
     targetWeight: (targetWeight && targetWeight > 0) ? targetWeight : null,
     focusAreas: Array.isArray(focusAreas) ? focusAreas : [],
+    focusOnly: !!focusOnly && Array.isArray(focusAreas) && focusAreas.length > 0,
     tdee: Math.round(tdee), bmr: Math.round(bmr), target: Math.round(target), proteinG, fatG, carbG, bmi };
 }
 
@@ -2309,6 +2355,10 @@ function renderOnboarding(){
     html = obShell(t('obFocusQ'), `
       <div class="bodymap-wrap">
         ${bodyMapSVG(fa)}
+      </div>
+      <div class="focus-only-row ${fa.length?'show':''} ${obDraft.focusOnly?'on':''}" id="focusOnlyRow">
+        <div class="focus-only-box">✓</div>
+        <div><div class="focus-only-t">${t('focusOnlyLabel')}</div><div class="focus-only-d">${t('focusOnlyHint')}</div></div>
       </div>
       <div style="font-size:12px;color:var(--muted);margin-top:10px;">${t('focusAreasNote')}</div>
       ${obDraft.goal === 'lose' ? `<div style="font-size:11.5px;color:var(--warn);margin-top:8px;">⚠️ ${t('focusFatLossCaveat')}</div>` : ''}`,
@@ -2464,6 +2514,11 @@ function updateBodyMapSelectionUI(fa){
   const photos = document.querySelectorAll('#obSteps .bodymap-photo');
   if (photos[0]) photos[0].classList.toggle('has-sel', frontGroups.some(z => fa.includes(z)));
   if (photos[1]) photos[1].classList.toggle('has-sel', backGroups.some(z => fa.includes(z)));
+  const foRow = document.getElementById('focusOnlyRow');
+  if (foRow){
+    foRow.classList.toggle('show', fa.length > 0);
+    if (!fa.length){ obDraft.focusOnly = false; foRow.classList.remove('on'); }
+  }
   const pill = document.querySelector('#obSteps .bodymap-count-pill');
   if (pill){
     pill.classList.toggle('active', fa.length > 0);
@@ -2498,6 +2553,11 @@ function attachOnboardingHandlers(){
   });
   document.querySelectorAll('#obSteps .bz[data-zone]').forEach(el => {
     el.addEventListener('click', () => toggleFocusZone(el.dataset.zone));
+  });
+  const foRow = document.getElementById('focusOnlyRow');
+  if (foRow) foRow.addEventListener('click', () => {
+    obDraft.focusOnly = !obDraft.focusOnly;
+    foRow.classList.toggle('on', !!obDraft.focusOnly);
   });
   // Hovering (or touch-pressing) either a name chip or the highlight area on
   // the photo previews that muscle everywhere it appears -- both photo
