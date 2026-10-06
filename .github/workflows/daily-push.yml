@@ -1,0 +1,25 @@
+name: Daily FitPlan Push
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send OneSignal push
+        env:
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+        run: |
+          curl --fail-with-body -sS -X POST "https://api.onesignal.com/notifications?c=push" \
+            -H "Authorization: Key $ONESIGNAL_API_KEY" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d '{
+              "app_id": "589cf089-8b82-4661-b875-c60214f12e90",
+              "included_segments": ["Total Subscriptions"],
+              "target_channel": "push",
+              "headings": {"en": "FitPlan"},
+              "contents": {"en": "Bugün antrenman günün! Programını kontrol etmeyi unutma."}
+            }'
